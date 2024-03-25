@@ -211,9 +211,9 @@
                     <p>Abaixo, você irá encontrar um questionário com perguntas sobre os tópicos anteriores. Responda com atenção!</p>
                 </div>
                 <div class="questions py-4">
-                    <form action="|">
-                        <div class="question q1 mb-5" data-correct="d">
-                            <h3>1. Qual dos seguintes NÃO é um desafio da computação quântica?</h3>
+                    <div class="question mb-5" data-number="1" data-correct="d">
+                        <h3>1. Qual dos seguintes NÃO é um desafio da computação quântica?</h3>
+                        <form action="#">
                             <div class="options my-3">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" value="a" id="1a">
@@ -232,11 +232,13 @@
                                     <label class="form-check-label" for="1d">Falta de mão de obra qualificada</label>
                                 </div>
                             </div>
-                            <button class="btn btn-primary w-100 verify-question">Verificar</button>
-                            <p class="message w-100 text-center mt-2 rounded"></p>
-                        </div>
-                        <div class="question q2 mb-5" data-correct="c">
-                            <h3>2. Qual área você acha que será mais impactada pela computação quântica?</h3>
+                            <div class="btn btn-primary w-100 verify-question">Verificar</div>
+                        </form>
+                        <p class="message w-100 text-center mt-2 rounded"></p>
+                    </div>
+                    <div class="question mb-5" data-number="2" data-correct="d">
+                        <h3>2. Qual área você acha que será mais impactada pela computação quântica?</h3>
+                        <form action="#">
                             <div class="options my-3">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" value="a" id="2a">
@@ -255,14 +257,17 @@
                                     <label class="form-check-label" for="2d">Todas as opções acima</label>
                                 </div>
                             </div>
-                            <button class="btn btn-primary w-100 verify-question">Verificar</button>
-                            <p class="message w-100 text-center mt-2 rounded"></p>
-                        </div>
-                        <div class="question q3 mb-5">
-                            <h3>3. Discuta como a computação quântica pode ser utilizada para solucionar um problema específico em sua área de interesse.</h3>
+                            <div class="btn btn-primary w-100 verify-question">Verificar</div>
+                        </form>
+                        <p class="message w-100 text-center mt-2 rounded"></p>
+                    </div>
+                    <div class="question mb-5" data-number="3">
+                        <h3>3. Discuta como a computação quântica pode ser utilizada para solucionar um problema específico em sua área de interesse.</h3>
+                        <form action="#">
                             <textarea name="q3-answer" id="" cols="30" rows="10" class="form-control"></textarea>
-                        </div>
-                    </form>
+                            <button class="btn btn-primary mt-3 w-100 send-text">Enviar</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </section>

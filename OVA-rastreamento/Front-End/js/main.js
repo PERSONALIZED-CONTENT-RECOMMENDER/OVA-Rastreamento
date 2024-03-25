@@ -3,6 +3,7 @@ $(document).ready(function () {
     const dropdown = $(".dropdown");
     const carrousels = $("section").find(".carrousel");
     const questions = $(".questions").children();
+    const sendText = $(".questions").find(".send-text");
 
     dropdown.css({"height": "0px"});
     dropdown.addClass("d-none");
@@ -46,9 +47,23 @@ $(document).ready(function () {
         const carrousel = carrousels.eq(index);
         carrousel.find(".arrow-left").on("click", function() {
             changePart(-1, carrousel, carrouselsActualParts);
+            let carrousel_data = {
+                carrousel_name: carrousel.data("carrousel-name"),
+                message: `The user x passed the image in the carrousel of ${carrousel.data("carrousel-name")}`
+            };
+            sendToLog(carrousel_data)
+            .then(response => console.log(response.message))
+            .catch(error => console.log(error));
         });
         carrousel.find(".arrow-right").on("click", function() {
             changePart(1, carrousel, carrouselsActualParts);
+            let carrousel_data = {
+                carrousel_name: carrousel.data("carrousel-name"),
+                message: `The user x passed the image in the carrousel of ${carrousel.data("carrousel-name")}`
+            };
+            sendToLog(carrousel_data)
+            .then(response => console.log(response.message))
+            .catch(error => console.log(error));
         });
     });
 
@@ -61,9 +76,16 @@ $(document).ready(function () {
             $(this).find("input").prop("checked", true);
         });
         const verifyQuestion = question.find(".verify-question");
-        verifyQuestion.on("click", e => {
+        verifyQuestion.on("click", function(e) {
             e.preventDefault();
             const checked = question.find(".options").find("input:checked");
+            console.log(checked);
+            let question_data = {
+                question_number: question.data("number"),
+                selected: checked.val(),
+                answer: question.data("correct"),
+                message: `The user x clicked the button of the question ${question.data("number")}`
+            };
             if (checked.val() == question.data("correct")) {
                 message.addClass("bg-success");
                 message.removeClass("bg-danger");
@@ -73,9 +95,26 @@ $(document).ready(function () {
                 message.removeClass("bg-success");
                 message.html("Incorrect.");
             }
+            sendToLog(question_data)
+            .then(response => console.log(response.message))
+            .catch(error => console.log(error));
         });
     });
 });
+
+function sendToLog(data) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:8080/",
+            data: JSON.stringify([data]),
+            dataType: "json",
+            contentType: "application/json",
+            success: (response) => resolve(response),
+            error: (response) => reject(response)
+        });
+    });
+}
 
 function changePart(side, carrousel, carrouselsActualParts) {
     const parts = carrousel.find(".parts").children();
