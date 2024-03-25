@@ -1,10 +1,13 @@
 from flask import Flask, request
+from flask_cors import CORS, cross_origin
 import logging
 
 app = Flask(__name__)
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
 logging.basicConfig(level=logging.INFO, filename="../ova.log")
 
 @app.route("/log", methods=["POST"])
+@cross_origin()
 def log():
     if request.method == 'POST':
         # request.get_json() parse a JSON data, but for the future we need use request.form() to get key/value pairs from the body of HTML forms - For more information: https://stackoverflow.com/questions/10434599/get-the-data-received-in-a-flask-request

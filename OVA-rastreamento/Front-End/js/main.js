@@ -1,5 +1,4 @@
 $(document).ready(function () {
-    console.log("Init");
     const headerDropdownButton = $(".header").find(".dropdown-button");
     const dropdown = $(".dropdown");
     const carrousels = $("section").find(".carrousel");
@@ -124,7 +123,11 @@ function sendToLog(data) {
             url: "http://localhost:8000/log",
             data: JSON.stringify([data]),
             dataType: "json",
+            crossDomain: true,
             contentType: "application/json",
+            headers: {
+                "Access-Control-Allow-Origin":"*"
+            },
             success: (response) => resolve(response),
             error: (response) => reject(response)
         });
