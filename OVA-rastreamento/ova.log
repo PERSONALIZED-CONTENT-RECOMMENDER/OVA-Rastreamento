@@ -1,10 +1,1 @@
-{"level":"info","message":[{"answer":"d","message":"The user x clicked the button of the question 1","question_number":1,"selected":"c"}]}
-{"level":"info","message":[{"answer":"d","message":"The user x clicked the button of the question 1","question_number":1}]}
-{"level":"info","message":[{"carrousel_name":"algorithms","message":"The user x passed the image in the carrousel ofalgorithms"}]}
-{"level":"info","message":[{"carrousel_name":"algorithms","message":"The user x passed the image in the carrousel ofalgorithms"}]}
-{"level":"INFO","time":"2024-03-25T06:30:13.626Z","pid":34316,"hostname":"eduardo-B660M-AORUS-PRO-DDR4","0":{"question_number":2,"selected":"a","answer":"d","message":"The user x clicked the button of the question 2"}}
-{"level":"INFO","time":"2024-03-25T06:30:15.945Z","pid":34316,"hostname":"eduardo-B660M-AORUS-PRO-DDR4","0":{"question_number":2,"selected":"d","answer":"d","message":"The user x clicked the button of the question 2"}}
-{"level":"INFO","time":"2024-03-25T06:31:52.528Z","pid":34316,"hostname":"eduardo-B660M-AORUS-PRO-DDR4","0":{"question_number":2,"selected":"b","answer":"d","message":"The user x clicked the button of the question 2"}}
-{"level":"info","message":[{"answer":"d","message":"The user x clicked the button of the question 1","question_number":1,"selected":"d"}]}
-{"level":"info","message":[{"answer":"d","message":"The user x clicked the button of the question 1","question_number":1,"selected":"b"}]}
-{"level":"info","message":[{"answer":"d","message":"The user x clicked the button of the question 1","question_number":1,"selected":"b"}]}
+{"level":"info","message":[{"answer":"d","message":"The user x clicked the button of the question 2","question":"2. Qual área você acha que será mais impactada pela computação quântica?","question_number":2,"selected":"d"}]}

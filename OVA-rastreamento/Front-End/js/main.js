@@ -1,8 +1,9 @@
 $(document).ready(function () {
+    console.log("Init");
     const headerDropdownButton = $(".header").find(".dropdown-button");
     const dropdown = $(".dropdown");
     const carrousels = $("section").find(".carrousel");
-    const questions = $(".questions").children();
+    const questions = $(".questions");
     const sendText = $(".questions").find(".send-text");
 
     dropdown.css({"height": "0px"});
@@ -67,8 +68,8 @@ $(document).ready(function () {
         });
     });
 
-    questions.each(index => {
-        const question = questions.eq(index);
+    questions.children().each(index => {
+        const question = questions.children().eq(index);
         const options = question.find(".options").children();
         const message = question.find(".message");
         options.on("click", function() {
@@ -81,6 +82,7 @@ $(document).ready(function () {
             const checked = question.find(".options").find("input:checked");
             console.log(checked);
             let question_data = {
+                question: question.find("h3").html(),
                 question_number: question.data("number"),
                 selected: checked.val(),
                 answer: question.data("correct"),
@@ -100,13 +102,26 @@ $(document).ready(function () {
             .catch(error => console.log(error));
         });
     });
+
+    sendText.on("click", async function(e) {
+        e.preventDefault();
+        const question = questions.find("[data-number='3']");
+        let text_data = {
+            question_number: questions.find,
+            question: question.find("h3").html(),
+            text: questions.find(".q3-answer").val()
+        };
+        sendToLog(text_data)
+        .then(response => console.log(response.message))
+        .catch(error => console.log(error));
+    });
 });
 
 function sendToLog(data) {
     return new Promise((resolve, reject) => {
         $.ajax({
             type: "POST",
-            url: "http://localhost:8080/",
+            url: "http://localhost:8000/log",
             data: JSON.stringify([data]),
             dataType: "json",
             contentType: "application/json",
