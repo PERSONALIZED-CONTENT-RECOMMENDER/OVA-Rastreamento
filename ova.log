@@ -1,0 +1,9 @@
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8000
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 874-736-898
+INFO:werkzeug:127.0.0.1 - - [26/Mar/2024 02:08:56] "OPTIONS /log HTTP/1.1" 200 -
+INFO:__main__:{'user': '{"RA":"20A.752355","password":"Password123"}', 'action': {'carrousel_name': 'algorithms', 'message': 'The user x passed the image in the carrousel of algorithms'}}
+INFO:werkzeug:127.0.0.1 - - [26/Mar/2024 02:08:56] "POST /log HTTP/1.1" 200 -

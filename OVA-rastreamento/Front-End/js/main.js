@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    localStorage.setItem("user", JSON.stringify({RA: "20A.752355", password: "Password123"}));
+
     const headerDropdownButton = $(".header").find(".dropdown-button");
     const dropdown = $(".dropdown");
     const carrousels = $("section").find(".carrousel");
@@ -51,7 +53,10 @@ $(document).ready(function () {
                 carrousel_name: carrousel.data("carrousel-name"),
                 message: `The user x passed the image in the carrousel of ${carrousel.data("carrousel-name")}`
             };
-            sendToLog(carrousel_data)
+            sendToLog({
+                user: localStorage.getItem("user"),
+                action: carrousel_data
+            })
             .then(response => console.log(response.message))
             .catch(error => console.log(error));
         });
@@ -61,7 +66,10 @@ $(document).ready(function () {
                 carrousel_name: carrousel.data("carrousel-name"),
                 message: `The user x passed the image in the carrousel of ${carrousel.data("carrousel-name")}`
             };
-            sendToLog(carrousel_data)
+            sendToLog({
+                user: localStorage.getItem("user"),
+                action: carrousel_data
+            })
             .then(response => console.log(response.message))
             .catch(error => console.log(error));
         });
@@ -96,7 +104,10 @@ $(document).ready(function () {
                 message.removeClass("bg-success");
                 message.html("Incorrect.");
             }
-            sendToLog(question_data)
+            sendToLog({
+                user: localStorage.getItem("user"),
+                action: question_data
+            })
             .then(response => console.log(response.message))
             .catch(error => console.log(error));
         });
@@ -110,7 +121,10 @@ $(document).ready(function () {
             question: question.find("h3").html(),
             text: questions.find(".q3-answer").val()
         };
-        sendToLog(text_data)
+        sendToLog({
+            user: localStorage.getItem("user"),
+            action: text_data
+        })
         .then(response => console.log(response.message))
         .catch(error => console.log(error));
     });

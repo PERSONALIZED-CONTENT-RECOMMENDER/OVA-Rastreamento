@@ -3,22 +3,32 @@ from flask_cors import CORS, cross_origin
 import logging
 import json
 
+class OnlyUserActions(logging.Filter):
+    def filter(self, record):
+        return record.levelno != logging.INFO
+
 app = Flask(__name__)
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
-logging.basicConfig(level=logging.INFO, filename="../ova.log")
+logging.basicConfig(level=logging.INFO, filename="./ova.log")
+
+logger = logging.getLogger(__name__)
+handler = logging.FileHandler("./ova.log")
+handler.setLevel(logging.INFO)
+handler.addFilter(OnlyUserActions())
+logger.addHandler(handler)
 
 @app.route("/log", methods=["POST"])
 @cross_origin()
 def log():
     if request.method == 'POST':
-        # request.get_json() parse a JSON data, but for the future we need use request.form() to get key/value pairs from the body of HTML forms - For more information: https://stackoverflow.com/questions/10434599/get-the-data-received-in-a-flask-request
+        request.get_json()
         try:
             log_request = request.get_json()
             log_data = log_request[0]
-            logging.info(log_data)
+            logger.info(log_data)
+            return json.dumps(log_data)
         except Exception:
             return json.dumps({"message", "erro"})
-        return json.dumps(log_data)
     else:
         return "Wrong Request Methods. Just POST Allowed", 405
 
