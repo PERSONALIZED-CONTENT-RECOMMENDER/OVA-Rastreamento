@@ -1,0 +1,3 @@
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 213-903-174
+INFO:werkzeug: * Detected change in '/media/eduardo/SSD2/Faculdade/duducaa-quantum-computing/OVA-rastreamento/Back-End/main.py', reloading

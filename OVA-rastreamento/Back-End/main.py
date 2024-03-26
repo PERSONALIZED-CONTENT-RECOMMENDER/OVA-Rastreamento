@@ -5,16 +5,24 @@ import json
 
 class OnlyUserActions(logging.Filter):
     def filter(self, record):
-        return record.levelno != logging.INFO
+        return record.levelno == logging.INFO
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
-logging.basicConfig(level=logging.INFO, filename="./ova.log")
+logging.basicConfig(level=logging.INFO)
+
+werkzeug_logger = logging.getLogger("werkzeug")
+werkzeug_logger.setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
-handler = logging.FileHandler("./ova.log")
+
+handler = logging.FileHandler("./Back-End/Logs/ova.log")
 handler.setLevel(logging.INFO)
 handler.addFilter(OnlyUserActions())
+
+formatter = logging.Formatter("%(asctime)s - %(message)s")
+handler.setFormatter(formatter)
+
 logger.addHandler(handler)
 
 @app.route("/log", methods=["POST"])

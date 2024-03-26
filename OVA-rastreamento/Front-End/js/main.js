@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    localStorage.setItem("user", JSON.stringify({RA: "20A.752355", password: "Password123"}));
+    localStorage.setItem("user", JSON.stringify({RA: new String("20A.752355"), password: new String("Password123")}));
 
     const headerDropdownButton = $(".header").find(".dropdown-button");
     const dropdown = $(".dropdown");
@@ -66,10 +66,7 @@ $(document).ready(function () {
                 carrousel_name: carrousel.data("carrousel-name"),
                 message: `The user x passed the image in the carrousel of ${carrousel.data("carrousel-name")}`
             };
-            sendToLog({
-                user: localStorage.getItem("user"),
-                action: carrousel_data
-            })
+            sendToLog(carrousel_data)
             .then(response => console.log(response.message))
             .catch(error => console.log(error));
         });
@@ -104,10 +101,7 @@ $(document).ready(function () {
                 message.removeClass("bg-success");
                 message.html("Incorrect.");
             }
-            sendToLog({
-                user: localStorage.getItem("user"),
-                action: question_data
-            })
+            sendToLog(question_data)
             .then(response => console.log(response.message))
             .catch(error => console.log(error));
         });
@@ -121,21 +115,25 @@ $(document).ready(function () {
             question: question.find("h3").html(),
             text: questions.find(".q3-answer").val()
         };
-        sendToLog({
-            user: localStorage.getItem("user"),
-            action: text_data
-        })
+        sendToLog(text_data)
         .then(response => console.log(response.message))
         .catch(error => console.log(error));
     });
 });
+
+function getFullData(data) {
+    return {
+        user: localStorage.getItem("user"),
+        action: data
+    }
+}
 
 function sendToLog(data) {
     return new Promise((resolve, reject) => {
         $.ajax({
             type: "POST",
             url: "http://localhost:8000/log",
-            data: JSON.stringify([data]),
+            data: JSON.stringify([getFullData(data)]),
             dataType: "json",
             crossDomain: true,
             contentType: "application/json",
