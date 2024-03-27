@@ -1,14 +1,10 @@
-$(document).ready(function () {
-    localStorage.setItem("user", JSON.stringify({RA: new String("20A.752355"), password: new String("Password123")}));
-
-    const headerDropdownButton = $(".header").find(".dropdown-button");
+$(document).ready(function() {
     const dropdown = $(".dropdown");
+    dropdown.css({"top": "-450px"});
+    const dropdownButton = $(".dropdown-button");
     const carrousels = $("section").find(".carrousel");
-    const questions = $(".questions");
+    const questions = $(".question");
     const sendText = $(".questions").find(".send-text");
-
-    dropdown.css({"height": "0px"});
-    dropdown.addClass("d-none");
 
     let carrouselsActualParts = {};
     carrousels.each(index => {
@@ -22,26 +18,18 @@ $(document).ready(function () {
         carrouselsActualParts[carrousel.data("carrousel-name")] = 0;
     });
 
-    headerDropdownButton.on("click", () => {
-        if (headerDropdownButton.hasClass("bi-list")) {
-            dropdown.removeClass("d-none");
-            headerDropdownButton.removeClass("bi-list");
-            headerDropdownButton.addClass("bi-x-lg");
-            dropdown.removeClass("opacity-0");
+    dropdownButton.on("click", function() {
+        if (!dropdownButton.hasClass("bi-x-lg")) {
+            dropdown.removeClass("z-n1").addClass("z-1");
             dropdown.animate({
-                opacity: 1,
-                height: "30vh"
-            }, 300);
+                top: "50px"
+            }, 250);
+            dropdownButton.addClass("bi-x-lg");
         } else {
-            headerDropdownButton.removeClass("bi-x-lg");
-            headerDropdownButton.addClass("bi-list");
             dropdown.animate({
-                opacity: 0,
-                height: "0px"
-            }, 300);
-            setTimeout(function() {
-                dropdown.addClass("d-none");
-            }, 300);
+                top: "-450px"
+            }, 250);
+            dropdownButton.removeClass("bi-x-lg");
         }
     });
 
@@ -57,7 +45,7 @@ $(document).ready(function () {
                 user: localStorage.getItem("user"),
                 action: carrousel_data
             })
-            .then(response => console.log(response.message))
+            .then(response => console.log("success"))
             .catch(error => console.log(error));
         });
         carrousel.find(".arrow-right").on("click", function() {
@@ -67,13 +55,13 @@ $(document).ready(function () {
                 message: `The user x passed the image in the carrousel of ${carrousel.data("carrousel-name")}`
             };
             sendToLog(carrousel_data)
-            .then(response => console.log(response.message))
+            .then(response => console.log("success"))
             .catch(error => console.log(error));
         });
     });
 
-    questions.children().each(index => {
-        const question = questions.children().eq(index);
+    questions.each(index => {
+        const question = questions.eq(index);
         const options = question.find(".options").children();
         const message = question.find(".message");
         options.on("click", function() {
@@ -121,31 +109,6 @@ $(document).ready(function () {
     });
 });
 
-function getFullData(data) {
-    return {
-        user: localStorage.getItem("user"),
-        action: data
-    }
-}
-
-function sendToLog(data) {
-    return new Promise((resolve, reject) => {
-        $.ajax({
-            type: "POST",
-            url: "http://localhost:8000/log",
-            data: JSON.stringify([getFullData(data)]),
-            dataType: "json",
-            crossDomain: true,
-            contentType: "application/json",
-            headers: {
-                "Access-Control-Allow-Origin":"*"
-            },
-            success: (response) => resolve(response),
-            error: (response) => reject(response)
-        });
-    });
-}
-
 function changePart(side, carrousel, carrouselsActualParts) {
     const parts = carrousel.find(".parts").children();
     let actualPart = carrouselsActualParts[carrousel.data("carrousel-name")];
@@ -178,5 +141,30 @@ function changeDots(carrousel, part) {
             dot.addClass("bi-circle");
             dot.removeClass("fs-5");
         }
+    });
+}
+
+function getFullData(data) {
+    return {
+        user: localStorage.getItem("user"),
+        action: data
+    }
+}
+
+function sendToLog(data) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:8000/log",
+            data: JSON.stringify([getFullData(data)]),
+            dataType: "json",
+            crossDomain: true,
+            contentType: "application/json",
+            headers: {
+                "Access-Control-Allow-Origin":"*"
+            },
+            success: (response) => resolve(response),
+            error: (response) => reject(response)
+        });
     });
 }

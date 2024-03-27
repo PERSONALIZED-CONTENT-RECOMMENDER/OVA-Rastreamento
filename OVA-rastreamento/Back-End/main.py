@@ -12,11 +12,13 @@ cors = CORS(app, resources={r"/*": {"origins": "*"}})
 logging.basicConfig(level=logging.INFO)
 
 werkzeug_logger = logging.getLogger("werkzeug")
-werkzeug_logger.setLevel(logging.WARNING)
+werkzeug_handler = logging.FileHandler("./Logs/api.log")
+werkzeug_handler.setLevel(logging.WARNING)
+werkzeug_logger.addHandler(werkzeug_handler)
 
 logger = logging.getLogger(__name__)
 
-handler = logging.FileHandler("./Back-End/Logs/ova.log")
+handler = logging.FileHandler("./Logs/ova.log")
 handler.setLevel(logging.INFO)
 handler.addFilter(OnlyUserActions())
 
@@ -36,7 +38,7 @@ def log():
             logger.info(log_data)
             return json.dumps(log_data)
         except Exception:
-            return json.dumps({"message", "erro"})
+            return json.dumps({"message", "error"})
     else:
         return "Wrong Request Methods. Just POST Allowed", 405
 
