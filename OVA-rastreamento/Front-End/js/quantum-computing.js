@@ -1,4 +1,4 @@
-import { doRequest } from "./request.js";
+import { doRequest, registerInteraction } from "./request.js";
 
 $(document).ready(function() {
     const dropdown = $(".dropdown");
@@ -37,23 +37,21 @@ $(document).ready(function() {
 
     carrousels.each(index => {
         const carrousel = carrousels.eq(index);
+        let carrousel_data = {
+            ra: localStorage.getItem("ra"),
+            ova_id: localStorage.getItem("ova_id"),
+            carrousel_name: carrousel.data("carrousel-name"),
+            action: `The user x passed the image in the carrousel of ${carrousel.data("carrousel-name")}`
+        };
         carrousel.find(".arrow-left").on("click", async function() {
             changePart(-1, carrousel, carrouselsActualParts);
-            let carrousel_data = {
-                carrousel_name: carrousel.data("carrousel-name"),
-                message: `The user x passed the image in the carrousel of ${carrousel.data("carrousel-name")}`
-            };
             await registerAction(carrousel_data)
             .then(response => console.log("success"))
             .catch(error => console.log(error));
         });
         carrousel.find(".arrow-right").on("click", async function() {
             changePart(1, carrousel, carrouselsActualParts);
-            let carrousel_data = {
-                carrousel_name: carrousel.data("carrousel-name"),
-                message: `The user x passed the image in the carrousel of ${carrousel.data("carrousel-name")}`
-            };
-            await registerAction(carrousel_data)
+            await registerInteraction(carrousel_data)
             .then(response => console.log("success"))
             .catch(error => console.log(error));
         });
@@ -73,11 +71,13 @@ $(document).ready(function() {
             const checked = question.find(".options").find("input:checked");
             console.log(checked);
             let question_data = {
+                ra: localStorage.getItem("ra"),
+                ova_id: localStorage.getItem("ova_id"),
                 question: question.find("h3").html(),
                 question_number: question.data("number"),
                 selected: checked.val(),
                 answer: question.data("correct"),
-                message: `The user x clicked the button of the question ${question.data("number")}`
+                action: `The user x clicked the button of the question ${question.data("number")}`
             };
             if (checked.val() == question.data("correct")) {
                 message.addClass("bg-success");
@@ -88,7 +88,7 @@ $(document).ready(function() {
                 message.removeClass("bg-success");
                 message.html("Incorrect.");
             }
-            await registerAction(question_data)
+            await registerInteraction(question_data)
             .then(response => console.log(response.message))
             .catch(error => console.log(error));
         });
@@ -98,11 +98,14 @@ $(document).ready(function() {
         e.preventDefault();
         const question = questions.find("[data-number='3']");
         let text_data = {
+            ra: localStorage.getItem("ra"),
+            ova_id: localStorage.getItem("ova_id"),
             question_number: questions.find,
             question: question.find("h3").html(),
-            text: questions.find(".q3-answer").val()
+            text: questions.find(".q3-answer").val(),
+            action: "The user submitted the answer of question 3"
         };
-        await registerAction(text_data)
+        await registerInteraction(text_data)
         .then(response => console.log(response.message))
         .catch(error => console.log(error));
     });
@@ -141,9 +144,4 @@ function changeDots(carrousel, part) {
             dot.removeClass("fs-5");
         }
     });
-}
-
-function registerAction(data) {
-    const url = "http://localhost:8000/interaction/register";
-    return doRequest(url, data);
 }

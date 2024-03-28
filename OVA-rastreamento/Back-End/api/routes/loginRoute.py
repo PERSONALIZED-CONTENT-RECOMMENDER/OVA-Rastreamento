@@ -32,7 +32,12 @@ def login():
             
             course = Course.select().where(Course.course_id == student.course_id).first()
 
-            return json.dumps({"Message": "Logged successfully!", "course_id": course.course_id}), 200
+            ids = {
+                "course_id": course.course_id,
+                "ra": student.ra
+            }
+            
+            return json.dumps({"Message": "Logged successfully!", "ids": ids}), 200
         except PeeweeException as err:
             return json.dumps({"Error": f"{err}"}), 501
     else:

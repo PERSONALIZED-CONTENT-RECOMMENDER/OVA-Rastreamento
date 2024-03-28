@@ -32,7 +32,8 @@ $(document).ready(function() {
             raInput.val("");
             passwordInput.val("");
             logged = true;
-            localStorage.setItem("course_id", response.course_id);
+            localStorage.setItem("course_id", response.ids.course_id);
+            localStorage.setItem("ra", response.ids.ra);
         }).catch(error => {
             statusBar.html(error.responseText);
             statusBar.addClass("bg-danger");
@@ -48,16 +49,21 @@ $(document).ready(function() {
                 const ova_list = $(".ova-list");
                 for (let i = 0; i < response.length; i++) {
                     const ova = response[i];
-                    ova_list.append(
-                        `
-                        <li class="list-group-item">
-                           <a href="quantum-computing.html">
-                            <p><span class="fw-bold">Nome:</span> ${ova.ova_name}</p>
-                            <p><span class="fw-bold">Complexidade:</span> ${ova.complexity}</p>
-                           </a>
-                        </li>
-                        `
-                    );
+                    console.log(ova.ova_id);
+                    const imageName = ova.html_link.split(".")[0];
+                    const listItem = $(`
+                    <li class="list-group-item d-flex flex-column">
+                       <a href="${ova.html_link}">
+                        <p><span class="fw-bold">Nome:</span> ${ova.ova_name}</p>
+                        <p><span class="fw-bold">Complexidade:</span> ${ova.complexity}</p>
+                       </a>
+                       <img src="../imagens/${imageName}.png" alt="" srcset="" class="img-fluid">
+                    </li>
+                    `);
+                    listItem.on("click", function() {
+                        localStorage.setItem("ova_id", ova.ova_id);
+                    });
+                    ova_list.append(listItem);
                 }
             })
             .catch(error => console.log(error));
@@ -87,8 +93,4 @@ function statusBarAnimation(statusBar) {
         }, 100);
     }, 1000);
     
-}
-
-function makeOVA(course) {
-
 }
