@@ -6,7 +6,7 @@ class OVA(BaseModel):
     ova_id = IntegerField(primary_key=True)
     ova_name = TextField()
     course_id = ForeignKeyField(Course, backref="OVAs", on_delete="CASCADE", on_update="CASCADE")
-    abstract = TextField()
+    complexity = TextField()
     html_link = TextField()
     
     class Meta:

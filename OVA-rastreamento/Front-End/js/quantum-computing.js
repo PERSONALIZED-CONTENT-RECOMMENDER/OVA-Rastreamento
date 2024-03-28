@@ -1,3 +1,5 @@
+import { doRequest } from "./request.js";
+
 $(document).ready(function() {
     const dropdown = $(".dropdown");
     dropdown.css({"top": "-450px"});
@@ -35,26 +37,23 @@ $(document).ready(function() {
 
     carrousels.each(index => {
         const carrousel = carrousels.eq(index);
-        carrousel.find(".arrow-left").on("click", function() {
+        carrousel.find(".arrow-left").on("click", async function() {
             changePart(-1, carrousel, carrouselsActualParts);
             let carrousel_data = {
                 carrousel_name: carrousel.data("carrousel-name"),
                 message: `The user x passed the image in the carrousel of ${carrousel.data("carrousel-name")}`
             };
-            sendToLog({
-                user: localStorage.getItem("user"),
-                action: carrousel_data
-            })
+            await registerAction(carrousel_data)
             .then(response => console.log("success"))
             .catch(error => console.log(error));
         });
-        carrousel.find(".arrow-right").on("click", function() {
+        carrousel.find(".arrow-right").on("click", async function() {
             changePart(1, carrousel, carrouselsActualParts);
             let carrousel_data = {
                 carrousel_name: carrousel.data("carrousel-name"),
                 message: `The user x passed the image in the carrousel of ${carrousel.data("carrousel-name")}`
             };
-            sendToLog(carrousel_data)
+            await registerAction(carrousel_data)
             .then(response => console.log("success"))
             .catch(error => console.log(error));
         });
@@ -69,7 +68,7 @@ $(document).ready(function() {
             $(this).find("input").prop("checked", true);
         });
         const verifyQuestion = question.find(".verify-question");
-        verifyQuestion.on("click", function(e) {
+        verifyQuestion.on("click", async function(e) {
             e.preventDefault();
             const checked = question.find(".options").find("input:checked");
             console.log(checked);
@@ -89,7 +88,7 @@ $(document).ready(function() {
                 message.removeClass("bg-success");
                 message.html("Incorrect.");
             }
-            sendToLog(question_data)
+            await registerAction(question_data)
             .then(response => console.log(response.message))
             .catch(error => console.log(error));
         });
@@ -103,7 +102,7 @@ $(document).ready(function() {
             question: question.find("h3").html(),
             text: questions.find(".q3-answer").val()
         };
-        sendToLog(text_data)
+        await registerAction(text_data)
         .then(response => console.log(response.message))
         .catch(error => console.log(error));
     });
@@ -144,27 +143,7 @@ function changeDots(carrousel, part) {
     });
 }
 
-function getFullData(data) {
-    return {
-        user: localStorage.getItem("user"),
-        action: data
-    }
-}
-
-function sendToLog(data) {
-    return new Promise((resolve, reject) => {
-        $.ajax({
-            type: "POST",
-            url: "http://localhost:8000/log",
-            data: JSON.stringify([getFullData(data)]),
-            dataType: "json",
-            crossDomain: true,
-            contentType: "application/json",
-            headers: {
-                "Access-Control-Allow-Origin":"*"
-            },
-            success: (response) => resolve(response),
-            error: (response) => reject(response)
-        });
-    });
+function registerAction(data) {
+    const url = "http://localhost:8000/interaction/register";
+    return doRequest(url, data);
 }
