@@ -6,7 +6,7 @@ class Student(BaseModel):
     ra = TextField(primary_key=True)
     student_password = TextField()
     student_name = TextField()
-    course_id = ForeignKeyField(Course, backref="students", on_delete="CASCADE", on_update="CASCADE")
+    course_id = ForeignKeyField(Course, backref="students", column_name="course_id", on_delete="CASCADE", on_update="CASCADE")
     
     class Meta:
         table_name = 'STUDENT'

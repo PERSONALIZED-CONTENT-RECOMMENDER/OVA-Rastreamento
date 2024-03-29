@@ -49,11 +49,10 @@ $(document).ready(function() {
                 const ova_list = $(".ova-list");
                 for (let i = 0; i < response.length; i++) {
                     const ova = response[i];
-                    console.log(ova.ova_id);
-                    const imageName = ova.html_link.split(".")[0];
+                    const imageName = ova.link.split(".")[0];
                     const listItem = $(`
                     <li class="list-group-item d-flex flex-column">
-                       <a href="${ova.html_link}">
+                       <a href="${ova.link}">
                         <p><span class="fw-bold">Nome:</span> ${ova.ova_name}</p>
                         <p><span class="fw-bold">Complexidade:</span> ${ova.complexity}</p>
                        </a>

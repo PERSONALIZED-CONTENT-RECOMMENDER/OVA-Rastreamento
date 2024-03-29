@@ -25,7 +25,7 @@ def show_OVAs(course_id):
                     "ova_id": ova.ova_id,
                     "ova_name": ova.ova_name,
                     "complexity": ova.complexity,
-                    "html_link": ova.html_link
+                    "link": ova.link
                 }
                 ova_list.append(ova_dict.copy())
             return json.dumps(ova_list)
