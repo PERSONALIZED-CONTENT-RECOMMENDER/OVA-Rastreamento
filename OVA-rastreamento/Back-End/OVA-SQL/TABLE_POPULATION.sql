@@ -20,3 +20,10 @@ values
 	("42L.910086", "Password-4", "André Lucas", 1),
 	("49Z.339516", "Password-5", "João Carlos", 6),
 	("22G.822160", "Password-6", "Hayana Fiscina Menezes Dias", 8);
+    
+insert into OVA
+values
+	(1, "Computação Quântica", 1, 2, "quantum-computing.html"),
+    (2, "Visão Computacional", 1, 3, "computer-vision.html");
+    
+    

@@ -1,7 +1,7 @@
 use OVA_DB;
 
 create table COURSE (
-	COURSE_ID int primary key not null,
+	COURSE_ID int primary key not null auto_increment,
     COURSE_NAME varchar(50)
 );
 
@@ -14,16 +14,16 @@ create table STUDENT (
 );
 
 create table OVA (
-	OVA_ID int primary key not null,
+	OVA_ID int primary key not null auto_increment,
     OVA_NAME varchar(30),
     COURSE_ID int,
-    ABSTRACT text,
-    HMTL_LINK text,
+    COMPLEXITY text,
+    LINK text,
     foreign key (COURSE_ID) references COURSE(COURSE_ID) on delete cascade on update cascade
 );
 
 create table INTERACTION (
-	INTERACTION_ID int primary key not null,
+	INTERACTION_ID int primary key not null auto_increment,
     INTERACTION_DATE date,
     INTERACTION_TIME time,
     STUDENT_ACTION text,
