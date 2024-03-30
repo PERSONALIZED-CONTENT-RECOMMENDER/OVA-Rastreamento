@@ -1,21 +1,23 @@
 use OVA_DB;
 
+#drop table INTERACTION, OVA, STUDENT, COURSE
+
 create table COURSE (
 	COURSE_ID int primary key not null auto_increment,
-    COURSE_NAME varchar(50)
+    COURSE_NAME varchar(100)
 );
 
 create table STUDENT (
 	RA varchar(10) primary key not null,
-    STUDENT_PASSWORD varchar(50),
-    STUDENT_NAME varchar(255),
+    STUDENT_PASSWORD varchar(30),
+    STUDENT_NAME varchar(100),
     COURSE_ID int,
     foreign key (COURSE_ID) references COURSE(COURSE_ID) on delete cascade on update cascade
 );
 
 create table OVA (
 	OVA_ID int primary key not null auto_increment,
-    OVA_NAME varchar(30),
+    OVA_NAME varchar(70),
     COURSE_ID int,
     COMPLEXITY text,
     LINK text,

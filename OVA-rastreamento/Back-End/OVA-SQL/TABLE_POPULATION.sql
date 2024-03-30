@@ -19,11 +19,13 @@ values
 	("67Z.406178", "Password-3", "Rodrigo de Jesus Macêdo", 1),
 	("42L.910086", "Password-4", "André Lucas", 1),
 	("49Z.339516", "Password-5", "João Carlos", 6),
-	("22G.822160", "Password-6", "Hayana Fiscina Menezes Dias", 8);
+	("22G.822160", "Password-6", "Hayana Fiscina Menezes Dias", 8),
+    ("30F.340348", "Password-7", "Carlos Henrique de Brandão", 4);
     
 insert into OVA
 values
 	(1, "Computação Quântica", 1, 2, "quantum-computing.html"),
-    (2, "Visão Computacional", 1, 3, "computer-vision.html");
-    
-    
+    (2, "Visão Computacional", 1, 3, "computer-vision.html"),
+    (3, "Machine Learning", 1, 7, "machine-learning.html"),
+    (4, "Circuitos Elétricos", 4, 2, "eletric-circuits.html"),
+    (5, "Modelagem e Controle de Sistemas", 4, 6, "modeling-control.html");
