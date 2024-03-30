@@ -5,6 +5,10 @@ $(document).ready(function() {
     const raInput = $("#ra-input");
     const passwordInput = $("#password-input");
     const loginButton = $(".login-button");
+    const loginTab = $("#login");
+    const chooseCoursesTab = $("#choose-course");
+    const filterOptions = $(".filter-option");
+    const ovaList = $(".ova-list");
 
     togglePassword.on("click", function() {
         if (!togglePassword.hasClass("bi-eye-slash-fill")) {
@@ -14,6 +18,18 @@ $(document).ready(function() {
             passwordInput.attr("type", "password");
             togglePassword.removeClass("bi-eye-slash-fill");
         }
+    });
+
+    filterOptions.each(index => {
+        const option = filterOptions.eq(index);
+        option.on("click", async function() {
+            ovaList.html("");
+            filterOptions.prop("checked", false);
+            option.prop("checked", true);
+            await getOVAs(option.val())
+            .then(response => makeOVAOptions(response, ovaList))
+            .catch(error => console.log(error));
+        });
     });
 
     loginButton.on("click", async function(e) {
@@ -40,46 +56,47 @@ $(document).ready(function() {
             statusBarAnimation(statusBar);
         });
         if (logged) {
-            const login = $("#login");
-            const chooseCourses = $("#choose-course");
-            login.addClass("d-none");
-            chooseCourses.removeClass("d-none");
-            await getOVAs(localStorage.getItem("course_id"))
-            .then(response => {
-                const ova_list = $(".ova-list");
-                for (let i = 0; i < response.length; i++) {
-                    const ova = response[i];
-                    const imageName = ova.link.split(".")[0];
-                    const listItem = $(`
-                    <li class="list-group-item d-flex flex-column">
-                       <a href="${ova.link}">
-                        <p><span class="fw-bold">Nome:</span> ${ova.ova_name}</p>
-                        <p><span class="fw-bold">Complexidade:</span> ${ova.complexity}</p>
-                       </a>
-                       <img src="../imagens/${imageName}.png" alt="" srcset="" class="img-fluid">
-                    </li>
-                    `);
-                    listItem.on("click", function() {
-                        localStorage.setItem("ova_id", ova.ova_id);
-                    });
-                    ova_list.append(listItem);
-                }
-            })
-            .catch(error => console.log(error));
+            setTimeout(async function() {
+                loginTab.addClass("d-none");
+                chooseCoursesTab.removeClass("d-none");
+                const option = $(".filter-option:checked");
+                await getOVAs(option.val())
+                .then(response => makeOVAOptions(response, ovaList))
+                .catch(error => console.log(error));
+            }, 500);
         }
     });
-
-
 });
 
 function login(user_data) {
-    const url = "http://localhost:8000/login";
+    const url = "/login";
     return doRequest(url, user_data, "POST", true);
 }
 
-function getOVAs(course_id) {
-    const url = `http://localhost:8000/ova/${course_id}`;
+function getOVAs(option) {
+    const course_id = localStorage.getItem("course_id")
+    const url = (option === "all") ? "/ova/all" : `/ova/${course_id}`;
     return doRequest(url, {}, "GET");
+}
+
+function makeOVAOptions(response, ovaList) {
+    for (let i = 0; i < response.length; i++) {
+        const ova = response[i];
+        const imageName = ova.link.split(".")[0];
+        const listItem = $(`
+        <li class="list-group-item d-flex flex-column justify-content-between align-items-center">
+            <a class="align-self-start" href="${ova.link}">
+                <p><span class="fw-bold">Nome:</span> ${ova.ova_name}</p>
+                <p><span class="fw-bold">Complexidade:</span> ${ova.complexity}</p>
+            </a>
+            <img class="img-fluid w-100 ova-img" src="../imagens/${imageName}.png" alt="" srcset="">
+        </li>
+        `);
+        listItem.on("click", function() {
+            localStorage.setItem("ova_id", ova.ova_id);
+        });
+        ovaList.append(listItem);
+    }
 }
 
 function statusBarAnimation(statusBar) {

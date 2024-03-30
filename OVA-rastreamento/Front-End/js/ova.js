@@ -1,4 +1,4 @@
-import { doRequest, registerInteraction } from "./request.js";
+import { registerInteraction } from "./request.js";
 
 $(document).ready(function() {
     const dropdown = $(".dropdown");
