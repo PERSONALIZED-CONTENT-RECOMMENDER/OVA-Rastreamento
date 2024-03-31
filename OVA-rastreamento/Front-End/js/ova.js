@@ -5,6 +5,7 @@ $(document).ready(function() {
     if (logged == null | logged == false) {
         window.location.href = "login.html";
     }
+    
     let scrollPoints = {
         20: false,
         40: false,
