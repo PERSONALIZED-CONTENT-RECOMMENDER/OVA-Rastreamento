@@ -1,6 +1,9 @@
 import { doRequest } from "./request.js";
 
 $(document).ready(function() {
+    localStorage.clear();
+    localStorage.setItem("logged", false);
+
     const togglePassword = $(".toggle-password");
     const raInput = $("#ra-input");
     const passwordInput = $("#password-input");
@@ -35,7 +38,6 @@ $(document).ready(function() {
     loginButton.on("click", async function(e) {
         const statusBar = $(".login-form").find(".status-bar");
         e.preventDefault();
-        let logged = false;
         const user_data = {
             ra: raInput.val(),
             password: passwordInput.val()
@@ -47,7 +49,7 @@ $(document).ready(function() {
             statusBarAnimation(statusBar);
             raInput.val("");
             passwordInput.val("");
-            logged = true;
+            localStorage.setItem("logged", true);
             localStorage.setItem("course_id", response.ids.course_id);
             localStorage.setItem("ra", response.ids.ra);
         }).catch(error => {
@@ -55,7 +57,7 @@ $(document).ready(function() {
             statusBar.addClass("bg-danger");
             statusBarAnimation(statusBar);
         });
-        if (logged) {
+        if (JSON.parse(localStorage.getItem("logged")) === true) {
             setTimeout(async function() {
                 loginTab.addClass("d-none");
                 chooseCoursesTab.removeClass("d-none");

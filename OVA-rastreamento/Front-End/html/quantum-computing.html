@@ -54,7 +54,7 @@
 <body>
     <header class="header fixed-top">
         <nav class="navbar position-relative">
-            <div class="bg-primary w-100 px-3 py-1 z-0 d-flex justify-content-end align-items-center position-absolute top-0 start-0 vw-100 z-2">
+            <div class="bg-primary w-100 px-3 z-0 d-flex justify-content-end align-items-center position-absolute top-0 start-0 vw-100 z-2">
                 <i class="dropdown-button bi bi-list fs-1 text-light"></i>
             </div>
             <ul class="dropdown navbar-nav d-flex position-absolute end-0 text-end mt-2 z-n1 px-1">
@@ -81,6 +81,7 @@
                 </li>
             </ul>
         </nav>
+        <progress id="progressbar" value="0" max="100" class="w-100 mt-4"></progress>
     </header>
     <section id="introduction" class="text-light px-4 py-5" style="background-color: #04093b;">
         <div class="d-flex flex-column justify-content-around align-items-center text-center">
@@ -181,12 +182,44 @@
         <h1 class="title text-light bg-primary text-center py-5">Diferenças da Computação Tradicional</h1>
         <div class="container p-5">
             <div class="fs-5">
-                <h2>Linguagem de Programação</h2>
-                <p>A computação quântica não tem um código próprio para programação e utiliza o desenvolvimento e implementação de algoritmos muito específicos. Porém, a informática tradicional possui linguagens padronizadas como Java, SQL ou Python, entre muitas outras.</p>
-                <h2>Funcionalidade</h2>
-                <p>Um computador quântico não é uma ferramenta para uso popular ou cotidiano, como um computador pessoal (PC). Estes supercomputadores são tão complexos que só têm cabida no âmbito corporativo, científico e tecnológico.</p>
-                <h2>Arquitetura</h2>
-                <p>A composição de um computador quântico é mais simples que a de um convencional e não tem memória nem processador. Estes equipamentos se limitam a um conjunto de qubits que servem de base para seu funcionamento.</p>
+                <div class="accordion">
+                    <div class="accordion-item">
+                      <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                          Linguagem de Programação
+                        </button>
+                      </h2>
+                      <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                          <p>A computação quântica não tem um código próprio para programação e utiliza o desenvolvimento e implementação de algoritmos muito específicos. Porém, a informática tradicional possui linguagens padronizadas como Java, SQL ou Python, entre muitas outras.</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="accordion-item">
+                      <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                          Funcionalidade
+                        </button>
+                      </h2>
+                      <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                          <p>Um computador quântico não é uma ferramenta para uso popular ou cotidiano, como um computador pessoal (PC). Estes supercomputadores são tão complexos que só têm cabida no âmbito corporativo, científico e tecnológico.</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="accordion-item">
+                      <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                          Arquitetura
+                        </button>
+                      </h2>
+                      <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                          <p>A composição de um computador quântico é mais simples que a de um convencional e não tem memória nem processador. Estes equipamentos se limitam a um conjunto de qubits que servem de base para seu funcionamento.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
             </div>
         </div>
     </section>
@@ -195,12 +228,44 @@
         <div class="container p-5">
             <div class="fs-5">
                 <p>A computação quântica, apesar de seu enorme potencial, ainda enfrenta diversos desafios técnicos que precisam ser superados para alcançar seu pleno potencial. Entre os principais obstáculos, podemos destacar:</p>
-                <h2>Decoerência</h2>
-                <p>A decoerência é a perda de informação quântica devido à interação com o ambiente, visto que a mesma limita o tempo que os qubits podem manter a superposição, crucial para cálculos complexos.</p>
-                <h2>Erros Quânticos</h2>
-                <p>Erros quânticos são falhas que podem ocorrer em cálculos quânticos, como a mudança de estado de um qubit ou a perda de superposição. Podem ser causados por ruído térmico, até pela própria decoerência. Os erros quânticos podem levar à falha completa de um cálculo ou a resultados incorretos.</p>
-                <h2>Refrigeração</h2>
-                <p>Para manter os qubits em um estado de superposição, é necessário refrigerá-los a temperaturas próximas do zero absoluto, o que torna essa refrigeração complexa e cara, representando um desafio para a viabilidade da computação quântica em larga escala.</p>
+                <div class="accordion">
+                    <div class="accordion-item">
+                      <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                          Decoerência
+                        </button>
+                      </h2>
+                      <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                          <p>A decoerência é a perda de informação quântica devido à interação com o ambiente, visto que a mesma limita o tempo que os qubits podem manter a superposição, crucial para cálculos complexos.</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="accordion-item">
+                      <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                          Erros Quânticos
+                        </button>
+                      </h2>
+                      <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                          <p>Erros quânticos são falhas que podem ocorrer em cálculos quânticos, como a mudança de estado de um qubit ou a perda de superposição. Podem ser causados por ruído térmico, até pela própria decoerência. Os erros quânticos podem levar à falha completa de um cálculo ou a resultados incorretos.</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="accordion-item">
+                      <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                          Refrigeração
+                        </button>
+                      </h2>
+                      <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                          <p>Para manter os qubits em um estado de superposição, é necessário refrigerá-los a temperaturas próximas do zero absoluto, o que torna essa refrigeração complexa e cara, representando um desafio para a viabilidade da computação quântica em larga escala.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
             </div>
         </div>
     </section>
@@ -277,10 +342,10 @@
         <div class="container p-5">
             <p class="fs-5">Caso queira se aprofundar no assunto de Computação Quântica, aqui estão alguns vídeos para você. Aproveite!</p>
             <div class="ratio ratio-16x9 my-5">
-                <iframe width="796" height="448" src="https://www.youtube.com/embed/fLN1zQOPT2E" title="Computação Quântica | Nerdologia Tech" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                <iframe id="player1" width="796" height="448" src="https://www.youtube.com/embed/fLN1zQOPT2E?autoplay=1&enablejsapi=1" title="Computação Quântica | Nerdologia Tech" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
             </div>
             <div class="ratio ratio-16x9 mt-5">
-                <iframe width="796" height="451" src="https://www.youtube.com/embed/s9MyPVujd7E" title="O que é um Computador Quântico - Conceitos e Funcionamento" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                <iframe id="player2" width="796" height="451" src="https://www.youtube.com/embed/s9MyPVujd7E?autoplay=1&enablejsapi=1" title="O que é um Computador Quântico - Conceitos e Funcionamento" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
             </div>
         </div>
     </section>

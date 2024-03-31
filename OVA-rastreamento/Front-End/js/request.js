@@ -24,3 +24,7 @@ export function doRequest(url, data, type="POST", is_login=0) {
         });
     });
 }
+
+function test() {
+    new pageYOffset.P
+}

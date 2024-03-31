@@ -1,13 +1,81 @@
 import { registerInteraction } from "./request.js";
 
 $(document).ready(function() {
+    const logged = JSON.parse(localStorage.getItem("logged"));
+    if (logged == null | logged == false) {
+        window.location.href = "login.html";
+    }
+    let scrollPoints = {
+        20: false,
+        40: false,
+        60: false,
+        80: false,
+        100: false
+    };
+
     const dropdown = $(".dropdown");
     dropdown.css({"top": "-450px"});
     const dropdownButton = $(".dropdown-button");
     const carrousels = $("section").find(".carrousel");
     const questions = $(".question");
     const sendText = $(".questions").find(".send-text");
+    const accordionItems = $(".accordion-item");
 
+    let accordionView = [];
+
+    accordionItems.each(index => {
+        const accordionItem = accordionItems.eq(index);
+        accordionView.push(false);
+        accordionItem.find(".accordion-header").on("click", function(e) {
+            e.preventDefault();
+            if (accordionItem.find(".accordion-button").hasClass("collapsed")) {
+                accordionItems.find(".accordion-button").addClass("collapsed");
+                accordionItems.find(".accordion-collapse").removeClass("show");
+                accordionItem.find(".accordion-button").removeClass("collapsed");
+                accordionItem.find(".accordion-collapse").addClass("show");
+                if (!accordionView[index]) {
+                    const itemName = accordionItem.find(".accordion-button").html();
+                    const accordion_data = {
+                        ra: localStorage.getItem("ra"),
+                        ova_id: localStorage.getItem("ova_id"),
+                        action: `The user read the ${itemName} accordion`
+                    };
+                    registerInteraction(accordion_data)
+                    .then(response => console.log("success"))
+                    .catch(error => console.log(error));
+                }
+            } else {
+                accordionItem.find(".accordion-button").addClass("collapsed");
+                accordionItem.find(".accordion-collapse").removeClass("show");
+            }
+        });
+    });
+
+    $(window).on("scroll", function () {
+        const s = $(window).scrollTop(),
+        d = $(document).height(),
+        c = $(window).height();
+        const scrollPercent = (s / (d - c)) * 100;
+        const position = scrollPercent;
+
+        const pointKeys = Object.keys(scrollPoints);
+        pointKeys.forEach(async function(point) {
+            if (scrollPercent >= point & scrollPoints[point] === false) {
+                scrollPoints[point] = true;
+                const progress_data = {
+                    ra: localStorage.getItem("ra"),
+                    ova_id: localStorage.getItem("ova_id"),
+                    action: `This student reached ${point}% in this OVA`
+                };
+                await registerInteraction(progress_data)
+                .then(response => console.log("success"))
+                .catch(error => console.log(error));
+            }
+        });
+        
+        $("#progressbar").attr('value', position);
+    });
+    
     let carrouselsActualParts = {};
     carrousels.each(index => {
         const carrousel = carrousels.eq(index);
