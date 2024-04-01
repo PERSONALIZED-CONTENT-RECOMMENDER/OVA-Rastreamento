@@ -15,29 +15,23 @@ function generatePoints(x) {
 }
 
 let players = [];
+
 function onYouTubeIframeAPIReady() {
-    players.push({
-        player: new YT.Player('player1', {
-            videoId: 'fLN1zQOPT2E',
-            events: {
-            'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange
-            }
-        }),
-        points: generatePoints(20)
-    });
-    players.push({
-        player: new YT.Player('player2', {
-            videoId: 's9MyPVujd7E',
-            events: {
-            'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange
-            }
-        }),
-        points: generatePoints(20)
-    });
-    players.forEach(player => {
-        
+    const iframes = document.querySelectorAll("iframe");
+    iframes.forEach(iframe => {
+        const url = iframe.src;
+        const urlSplitted = url.split("/")
+        let videoId = urlSplitted[urlSplitted.length - 1];
+        players.push({
+            player: new YT.Player(iframe.id, {
+                videoId: videoId,
+                events: {
+                    "onReady": onPlayerReady,
+                    "onStateChange": onPlayerStateChange
+                }
+            }),
+            points: generatePoints(20)
+        });
     });
 }
 
@@ -47,8 +41,6 @@ function onPlayerReady(event) {
     const iframe = player.getIframe();
     const iframeId = iframe.dataset.playerlistPos;
     const playerData = players[iframeId];
-    console.log(playerData);
-    player.seekTo(0);
     setInterval(function() {
         const ct = player.getCurrentTime();
         const d = player.getDuration();
@@ -60,7 +52,7 @@ function onPlayerReady(event) {
             }
             if (player.getPlayerState() == 0 & !playerData.points[100]) {
                 playerData.points[100] = true;
-                console.log("Finished the video");
+                console.log(`Finished the ${iframe.title} video`);
             }
         });
     }, 500);
