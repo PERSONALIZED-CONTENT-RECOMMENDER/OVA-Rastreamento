@@ -1,5 +1,3 @@
-import { registerInteraction } from "./request.js";
-
 var tag = document.createElement('script');
 
 tag.src = "https://www.youtube.com/iframe_api";
@@ -28,8 +26,7 @@ function onYouTubeIframeAPIReady() {
             player: new YT.Player(iframe.id, {
                 videoId: videoId,
                 events: {
-                    "onReady": onPlayerReady,
-                    "onStateChange": onPlayerStateChange
+                    "onReady": onPlayerReady
                 }
             }),
             points: generatePoints(20)
@@ -37,18 +34,12 @@ function onYouTubeIframeAPIReady() {
     });
 }
 
-onYouTubeIframeAPIReady();
-
 function onPlayerReady(event) {
     const player = event.target;
-    player.seekTo(0);
     const iframe = player.getIframe();
     const iframeId = iframe.dataset.playerlistPos;
     const playerData = players[iframeId];
-    const video_data = {
-        ra: localStorage.getItem("ra"),
-        
-    }
+    player.seekTo(1);
     setInterval(function() {
         const ct = player.getCurrentTime();
         const d = player.getDuration();
@@ -66,14 +57,10 @@ function onPlayerReady(event) {
     }, 500);
 }
 
-let done = false;
+var done = false;
 function onPlayerStateChange(event) {
     if (event.data == YT.PlayerState.PLAYING && !done) {
+        event.target.stopVideo()
         done = true;
-        stopVideo(event);
     }
-}
-
-function stopVideo(event) {
-    event.target.stopVideo();
 }
