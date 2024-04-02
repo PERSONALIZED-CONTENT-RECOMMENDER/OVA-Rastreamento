@@ -1,3 +1,5 @@
+import { registerInteraction } from "./request.js";
+
 var tag = document.createElement('script');
 
 tag.src = "https://www.youtube.com/iframe_api";
@@ -35,12 +37,18 @@ function onYouTubeIframeAPIReady() {
     });
 }
 
+onYouTubeIframeAPIReady();
+
 function onPlayerReady(event) {
     const player = event.target;
     player.seekTo(0);
     const iframe = player.getIframe();
     const iframeId = iframe.dataset.playerlistPos;
     const playerData = players[iframeId];
+    const video_data = {
+        ra: localStorage.getItem("ra"),
+        
+    }
     setInterval(function() {
         const ct = player.getCurrentTime();
         const d = player.getDuration();

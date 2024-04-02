@@ -36,12 +36,8 @@ $(document).ready(function() {
                 accordionItem.find(".accordion-collapse").addClass("show");
                 if (!accordionView[index]) {
                     const itemName = accordionItem.find(".accordion-button").html();
-                    const accordion_data = {
-                        ra: localStorage.getItem("ra"),
-                        ova_id: localStorage.getItem("ova_id"),
-                        action: `The user read the ${itemName} accordion`
-                    };
-                    registerInteraction(accordion_data)
+                    const action = `The user read the ${itemName} accordion`;
+                    registerInteraction(action)
                     .then(response => console.log("success"))
                     .catch(error => console.log(error));
                 }
@@ -63,12 +59,8 @@ $(document).ready(function() {
         pointKeys.forEach(async function(point) {
             if (scrollPercent >= point & scrollPoints[point] === false) {
                 scrollPoints[point] = true;
-                const progress_data = {
-                    ra: localStorage.getItem("ra"),
-                    ova_id: localStorage.getItem("ova_id"),
-                    action: `This student reached ${point}% in this OVA`
-                };
-                await registerInteraction(progress_data)
+                const action = `This student reached ${point}% in this OVA`;
+                await registerInteraction(action)
                 .then(response => console.log("success"))
                 .catch(error => console.log(error));
             }
@@ -106,21 +98,16 @@ $(document).ready(function() {
 
     carrousels.each(index => {
         const carrousel = carrousels.eq(index);
-        let carrousel_data = {
-            ra: localStorage.getItem("ra"),
-            ova_id: localStorage.getItem("ova_id"),
-            carrousel_name: carrousel.data("carrousel-name"),
-            action: `The user x passed the image in the carrousel of ${carrousel.data("carrousel-name")}`
-        };
+        let action = `The user x passed the image in the carrousel of ${carrousel.data("carrousel-name")}`;
         carrousel.find(".arrow-left").on("click", async function() {
             changePart(-1, carrousel, carrouselsActualParts);
-            await registerAction(carrousel_data)
+            await registerInteraction(action)
             .then(response => console.log("success"))
             .catch(error => console.log(error));
         });
         carrousel.find(".arrow-right").on("click", async function() {
             changePart(1, carrousel, carrouselsActualParts);
-            await registerInteraction(carrousel_data)
+            await registerInteraction(action)
             .then(response => console.log("success"))
             .catch(error => console.log(error));
         });
@@ -139,15 +126,7 @@ $(document).ready(function() {
             e.preventDefault();
             const checked = question.find(".options").find("input:checked");
             console.log(checked);
-            let question_data = {
-                ra: localStorage.getItem("ra"),
-                ova_id: localStorage.getItem("ova_id"),
-                question: question.find("h3").html(),
-                question_number: question.data("number"),
-                selected: checked.val(),
-                answer: question.data("correct"),
-                action: `The user x clicked the button of the question ${question.data("number")}`
-            };
+            let action =`The user x clicked the button of the question ${question.data("number")}`;
             if (checked.val() == question.data("correct")) {
                 message.addClass("bg-success");
                 message.removeClass("bg-danger");
@@ -157,7 +136,7 @@ $(document).ready(function() {
                 message.removeClass("bg-success");
                 message.html("Incorrect.");
             }
-            await registerInteraction(question_data)
+            await registerInteraction(action)
             .then(response => console.log(response.message))
             .catch(error => console.log(error));
         });
@@ -166,15 +145,16 @@ $(document).ready(function() {
     sendText.on("click", async function(e) {
         e.preventDefault();
         const question = questions.find("[data-number='3']");
-        let text_data = {
-            ra: localStorage.getItem("ra"),
-            ova_id: localStorage.getItem("ova_id"),
-            question_number: questions.find,
-            question: question.find("h3").html(),
-            text: questions.find(".q3-answer").val(),
-            action: "The user submitted the answer of question 3"
-        };
-        await registerInteraction(text_data)
+        const action = "The user submitted the answer of question 3";
+        // let text_data = {
+        //     ra: localStorage.getItem("ra"),
+        //     ova_id: localStorage.getItem("ova_id"),
+        //     question_number: questions.find,
+        //     question: question.find("h3").html(),
+        //     text: questions.find(".q3-answer").val(),
+        //     action: "The user submitted the answer of question 3"
+        // };
+        await registerInteraction(action)
         .then(response => console.log(response.message))
         .catch(error => console.log(error));
     });

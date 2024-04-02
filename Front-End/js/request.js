@@ -2,8 +2,13 @@ const PORT = 8000;
 const HOST = "localhost";
 const BASE_URL = `http://${HOST}:${PORT}`
 
-export function registerInteraction(data) {
+export function registerInteraction(interaction) {
     const url = "/interaction/register";
+    const data = {
+        ra: localStorage.getItem("ra"),
+        ova_id: localStorage.getItem("ova_id"),
+        action: interaction
+    }
     return doRequest(url, data);
 }
 
@@ -23,8 +28,4 @@ export function doRequest(url, data, type="POST", is_login=0) {
             error: (response) => reject(response)
         });
     });
-}
-
-function test() {
-    new pageYOffset.P
 }
