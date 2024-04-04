@@ -27,8 +27,6 @@ def register():
             student = Student.select().where(Student.ra == interaction_data["ra"]).first()
             ova = OVA.select().where(OVA.ova_id == interaction_data["ova_id"]).first()
             
-            print(interaction_data)
-            
             interaction = Interaction.create(
                 interaction_date = datetime.datetime.now().strftime("%Y/%m/%d"),
                 interaction_time = datetime.datetime.now().strftime("%X"),

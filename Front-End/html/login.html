@@ -18,10 +18,38 @@
                 width: 75%;
             }
         }
+
+        @media (min-width: 768px) {
+            .ova-item {
+                max-width: 33%;
+                z-index: 0;
+            }
+
+            .ova-item:hover {
+                transform: scale(1.1);
+                z-index: 1;
+            }
+
+            .ova-img {
+                width: 100%;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .ova-item {
+                max-width: 25%;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .ova-item {
+                max-width: 20%;
+            }
+        }
     </style>
 </head>
 <body class="bg-primary vh-100">
-    <div class="vh-50 w-75 position-absolute top-50 start-50 translate-middle bg-light rounded-4 tabs">
+    <div class="vh-50 w-75 position-absolute top-50 start-50 translate-middle bg-light rounded-4 tabs shadow">
         <div id="login" class="container w-100 p-4 d-flex flex-column justify-content-between flex-md-row justify-content-md-around align-items-md-center ">
             <h1 class="title text-center resp-title">Login</h1>
             <form action="#" class="login-form d-flex flex-column align-items-center pb-4">
@@ -55,7 +83,7 @@
                 </div>
             </form>
             <div class="div-list">
-                <ul class="ova-list list-group list-group-horizontal-lg"></ul>
+                <ul class="list-group list-group-horizontal-md d-flex flex-wrap w-100 ova-list p-3"></ul>
             </div>
         </div>
     </div>

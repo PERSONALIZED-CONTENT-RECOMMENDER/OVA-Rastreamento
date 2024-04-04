@@ -26,7 +26,6 @@ $(document).ready(function() {
     filterOptions.each(index => {
         const option = filterOptions.eq(index);
         option.on("click", async function() {
-            ovaList.html("");
             filterOptions.prop("checked", false);
             option.prop("checked", true);
             await getOVAs(option.val())
@@ -82,16 +81,17 @@ function getOVAs(option) {
 }
 
 function makeOVAOptions(response, ovaList) {
+    ovaList.html("");
     for (let i = 0; i < response.length; i++) {
         const ova = response[i];
         const imageName = ova.link.split(".")[0];
         const listItem = $(`
-        <li class="list-group-item d-flex flex-column justify-content-between align-items-center">
+        <li class="ova-item list-group-item d-flex flex-column justify-content-between align-items-center rounded-3 shadow">
             <a class="align-self-start" href="${ova.link}">
                 <p><span class="fw-bold">Nome:</span> ${ova.ova_name}</p>
                 <p><span class="fw-bold">Complexidade:</span> ${ova.complexity}</p>
+                <img class="img-fluid w-100 ova-img rounded-3 shadow" src="../imagens/${imageName}.png" alt="" srcset="">
             </a>
-            <img class="img-fluid w-100 ova-img" src="../imagens/${imageName}.png" alt="" srcset="">
         </li>
         `);
         listItem.on("click", function() {

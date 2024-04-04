@@ -1,18 +1,33 @@
 import { registerInteraction } from "./request.js";
 
+function generateScrollPoints(readTime, n_points) {
+    let points = [];
+    const perc = 100 / n_points;
+    const perc_time = readTime / n_points;
+    for (let i = 1; i <= n_points; i++) {
+        points.push({
+            perc: perc * i,
+            time: perc_time * i,
+            status: false
+        });
+    }
+
+    return points;
+}
+
 $(document).ready(function() {
+    let timePassed = 0;
+    setInterval(function() {
+        console.log(timePassed);
+        timePassed++;
+    }, 1000);
+
     const logged = JSON.parse(localStorage.getItem("logged"));
     if (logged == null | logged == false) {
         window.location.href = "login.html";
     }
     
-    let scrollPoints = {
-        20: false,
-        40: false,
-        60: false,
-        80: false,
-        100: false
-    };
+    let scrollPoints = generateScrollPoints(360, 5);
 
     const dropdown = $(".dropdown");
     dropdown.css({"top": "-450px"});
@@ -48,18 +63,29 @@ $(document).ready(function() {
         });
     });
 
+    const sections = $(".section-content");
     $(window).on("scroll", function () {
         const s = $(window).scrollTop(),
-        d = $(document).height(),
-        c = $(window).height();
+            d = $(document).height(),
+            c = $(window).height();
+            
+        $.each(sections, function(index) {
+            const section = sections.eq(index);
+            if (s - section.parent().offset().top >= - c / 2) {
+                section.animate({
+                    left: "0px",
+                    opacity: 1 
+                }, 500);
+            }
+        });
+
         const scrollPercent = (s / (d - c)) * 100;
         const position = scrollPercent;
 
-        const pointKeys = Object.keys(scrollPoints);
-        pointKeys.forEach(async function(point) {
-            if (scrollPercent >= point & scrollPoints[point] === false) {
-                scrollPoints[point] = true;
-                const action = `This student reached ${point}% in this OVA`;
+        scrollPoints.forEach(async point => {
+            if (scrollPercent >= point.perc & point.status === false & timePassed >= point.time) {
+                point.status = true;
+                const action = `This student reached ${point.perc}% in this OVA`;
                 await registerInteraction(action)
                 .then(response => console.log("success"))
                 .catch(error => console.log(error));
@@ -125,7 +151,6 @@ $(document).ready(function() {
         verifyQuestion.on("click", async function(e) {
             e.preventDefault();
             const checked = question.find(".options").find("input:checked");
-            console.log(checked);
             let action =`The user x clicked the button of the question ${question.data("number")}`;
             if (checked.val() == question.data("correct")) {
                 message.addClass("bg-success");
@@ -137,7 +162,7 @@ $(document).ready(function() {
                 message.html("Incorrect.");
             }
             await registerInteraction(action)
-            .then(response => console.log(response.message))
+            .then(response => console.log("success"))
             .catch(error => console.log(error));
         });
     });
@@ -155,7 +180,7 @@ $(document).ready(function() {
         //     action: "The user submitted the answer of question 3"
         // };
         await registerInteraction(action)
-        .then(response => console.log(response.message))
+        .then(response => console.log("success"))
         .catch(error => console.log(error));
     });
 });

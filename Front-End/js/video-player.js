@@ -25,6 +25,7 @@ function onYouTubeIframeAPIReady() {
         players.push({
             player: new YT.Player(iframe.id, {
                 videoId: videoId,
+                playerVars: { 'autoplay': 1, 'controls': 0 },
                 events: {
                     "onReady": onPlayerReady
                 }
@@ -39,7 +40,6 @@ function onPlayerReady(event) {
     const iframe = player.getIframe();
     const iframeId = iframe.dataset.playerlistPos;
     const playerData = players[iframeId];
-    player.seekTo(1);
     setInterval(function() {
         const ct = player.getCurrentTime();
         const d = player.getDuration();
@@ -54,7 +54,7 @@ function onPlayerReady(event) {
                 console.log(`Finished the ${iframe.title} video`);
             }
         });
-    }, 500);
+    }, 1000);
 }
 
 var done = false;
