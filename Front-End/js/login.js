@@ -96,6 +96,7 @@ function makeOVAOptions(response, ovaList) {
         `);
         listItem.on("click", function() {
             localStorage.setItem("ova_id", ova.ova_id);
+            localStorage.setItem("ova_link", `${ova.link}`);
         });
         ovaList.append(listItem);
     }

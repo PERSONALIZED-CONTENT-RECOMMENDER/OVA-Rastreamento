@@ -4,11 +4,12 @@ function generateScrollPoints(readTime, n_points) {
     let points = [];
     const perc = 100 / n_points;
     const perc_time = readTime / n_points;
+    const alreadyScrolled = JSON.parse(localStorage.getItem("perc_scrolled"));
     for (let i = 1; i <= n_points; i++) {
         points.push({
             perc: perc * i,
             time: perc_time * i,
-            status: false
+            status: perc * i <= alreadyScrolled
         });
     }
 
@@ -16,7 +17,16 @@ function generateScrollPoints(readTime, n_points) {
 }
 
 $(document).ready(function() {
-    let timePassed = 0;
+    const read_time = localStorage.getItem("read_time");
+    let timePassed;
+    if (read_time == null) {
+        timePassed = 0;
+        localStorage.setItem("read_time", 0);
+    } else timePassed = read_time;
+
+    if (localStorage.getItem("perc_scrolled") == null) {
+        localStorage.setItem("perc_scrolled", 0);
+    }
     setInterval(function() {
         timePassed++;
     }, 1000);
@@ -29,7 +39,7 @@ $(document).ready(function() {
     let scrollPoints = generateScrollPoints(360, 5);
 
     const dropdown = $(".dropdown");
-    dropdown.css({"top": "-450px"});
+    dropdown.css({"top": "-600px"});
     const dropdownButton = $(".dropdown-button");
     const carrousels = $("section").find(".carrousel");
     const questions = $(".question");
@@ -84,6 +94,8 @@ $(document).ready(function() {
         scrollPoints.forEach(async point => {
             if (scrollPercent >= point.perc & point.status === false & timePassed >= point.time) {
                 point.status = true;
+                localStorage.setItem("perc_scrolled", point.perc);
+                localStorage.setItem("read_time", point.time);
                 const action = `This student reached ${point.perc}% in this OVA`;
                 await registerInteraction(action)
                 .then(response => console.log("success"))
@@ -115,7 +127,7 @@ $(document).ready(function() {
             dropdownButton.addClass("bi-x-lg");
         } else {
             dropdown.animate({
-                top: "-450px"
+                top: "-600px"
             }, 250);
             dropdownButton.removeClass("bi-x-lg");
         }

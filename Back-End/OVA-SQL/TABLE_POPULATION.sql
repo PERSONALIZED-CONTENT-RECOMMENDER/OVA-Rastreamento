@@ -20,7 +20,8 @@ values
 	("42L.910086", "Password-4", "André Lucas", 1),
 	("49Z.339516", "Password-5", "João Carlos", 6),
 	("22G.822160", "Password-6", "Hayana Fiscina Menezes Dias", 8),
-    ("30F.340348", "Password-7", "Carlos Henrique de Brandão", 4);
+    ("30F.340348", "Password-7", "Carlos Henrique de Brandão", 4),
+    ("50Y.102840", "Password-8", "Maria Clara Barbosa", 4);
     
 insert into OVA
 values
