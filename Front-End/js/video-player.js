@@ -1,3 +1,7 @@
+const PORT = 8000;
+const HOST = "localhost";
+const BASE_URL = `http://${HOST}:${PORT}`
+
 var tag = document.createElement('script');
 
 tag.src = "https://www.youtube.com/iframe_api";
@@ -47,20 +51,40 @@ function onPlayerReady(event) {
         Object.keys(playerData.points).forEach(point => {
             if (perc >= point & !playerData.points[point]) {
                 playerData.points[point] = true;
-                console.log(`Watched ${point}% of the ${iframe.title} video`);
+                videoVisualization(`Watched ${point}% of the ${iframe.title} video`)
+                .then(response => console.log("success"))
+                .catch(error => console.log(error));
             }
             if (player.getPlayerState() == 0 & !playerData.points[100]) {
                 playerData.points[100] = true;
-                console.log(`Finished the ${iframe.title} video`);
+                videoVisualization(`Watched 100% of the ${iframe.title} video`)
+                .then(response => console.log("success"))
+                .catch(error => console.log(error));
             }
         });
     }, 1000);
 }
 
-var done = false;
-function onPlayerStateChange(event) {
-    if (event.data == YT.PlayerState.PLAYING && !done) {
-        event.target.stopVideo()
-        done = true;
-    }
+function videoVisualization(perc_watched, type="POST") {
+    const data = {
+        ra: localStorage.getItem("ra"),
+        ova_id: localStorage.getItem("ova_id"),
+        action: perc_watched
+    };
+
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            type: type,
+            url: BASE_URL + "/interaction/register",
+            data: JSON.stringify([data]),
+            dataType: "json",
+            crossDomain: true,
+            contentType: "application/json",
+            headers: {
+                "Access-Control-Allow-Origin":"http:"
+            },
+            success: (response) => resolve(response),
+            error: (response) => reject(response)
+        });
+    });
 }

@@ -18,7 +18,6 @@ function generateScrollPoints(readTime, n_points) {
 $(document).ready(function() {
     let timePassed = 0;
     setInterval(function() {
-        console.log(timePassed);
         timePassed++;
     }, 1000);
 
