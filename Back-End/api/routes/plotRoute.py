@@ -7,7 +7,7 @@ from flask import Blueprint, request
 from flask_cors import cross_origin
 import json
 
-from data_analysis import analysis
+from data_analysis import allPlots
 
 app_plot = Blueprint("plot", __name__)
 
@@ -15,6 +15,6 @@ app_plot = Blueprint("plot", __name__)
 @cross_origin()
 def get_plots():
     if request.method == "GET":
-        return json.dumps(analysis())
+        return json.dumps(allPlots())
     else:
         return "Wrong Request Methods. Only POST Allowed", 405

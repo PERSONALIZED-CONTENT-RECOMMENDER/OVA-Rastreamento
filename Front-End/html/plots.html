@@ -9,18 +9,18 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-2.30.0.min.js" charset="utf-8"></script>
     <style>
-        #plots {
+        .plots {
             width: 100%;
         }
         
         @media (min-width: 768px) {
-            #plots {
+            .plots {
                 width: 75%;
             }
         }
 
         @media (min-width: 992px) {
-            #plots {
+            .plots {
                 width: 50%;
             }
         }
@@ -35,7 +35,7 @@
         <i class="bi bi-arrow-left-circle-fill fs-1 text-info ms-2 mt-1"></i>
     </a>
     <div class="container d-flex flex-column align-items-center">
-        <div id="plots">
+        <div class="plots">
 
         </div>
         <button class="btn btn-primary update">Atualizar</button>
