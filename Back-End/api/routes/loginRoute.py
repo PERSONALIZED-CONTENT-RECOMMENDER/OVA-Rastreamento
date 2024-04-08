@@ -12,7 +12,7 @@ from peewee import PeeweeException
 from student import Student
 from course import Course
 
-app_login = Blueprint('student', __name__)
+app_login = Blueprint('login', __name__)
 
 @app_login.route("/logout")
 @cross_origin()

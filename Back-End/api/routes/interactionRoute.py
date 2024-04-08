@@ -29,7 +29,7 @@ def register():
             
             interaction = Interaction.create(
                 interaction_date = datetime.datetime.now().strftime("%Y/%m/%d"),
-                interaction_time = datetime.datetime.now().strftime("%X"),
+                interaction_time = datetime.datetime.now().strftime("%H:%M:%S"),
                 student_action = interaction_data["action"],
                 student_ra = student,
                 ova_id = ova

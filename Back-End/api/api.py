@@ -5,6 +5,7 @@ from routes.loginRoute import app_login
 from routes.ovaRoute import app_ova
 from routes.courseRoute import app_course
 from routes.interactionRoute import app_interaction
+from routes.studentRoute import app_student
 from routes.plotRoute import app_plot
 
 app = Flask(__name__)
@@ -14,6 +15,7 @@ app.register_blueprint(app_login)
 app.register_blueprint(app_ova)
 app.register_blueprint(app_course)
 app.register_blueprint(app_interaction)
+app.register_blueprint(app_student)
 app.register_blueprint(app_plot)
 
 if __name__ == "__main__":

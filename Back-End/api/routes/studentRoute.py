@@ -9,24 +9,24 @@ from flask_cors import cross_origin
 from peewee import PeeweeException
 import json
 
-from course import Course
+from student import Student
 
-app_course = Blueprint("course", __name__)
+app_student = Blueprint("student", __name__)
 
-@app_course.route("/courses", methods=["GET"])
+@app_student.route("/student/course/<int:course_id>", methods=["GET"])
 @cross_origin()
-def show_courses():
+def student_by_course(course_id):
     if request.method == "GET":
         try:
-            courses = Course.select()
-            course_list = []
-            for course in courses:
-                course_dict = {
-                    "course_id": course.course_id,
-                    "course_name": course.course_name
+            students = Student.select().where(Student.course_id == course_id)
+            student_list = []
+            for student in students:
+                student_dict = {
+                    "ra": student.ra,
+                    "student_name": student.student_name
                 }
-                course_list.append(course_dict.copy())
-            return json.dumps(course_list)
+                student_list.append(student_dict.copy())
+            return json.dumps(student_list)
         except PeeweeException as err:
             return json.dumps({"Error": f"{err}"}), 501
     else:
