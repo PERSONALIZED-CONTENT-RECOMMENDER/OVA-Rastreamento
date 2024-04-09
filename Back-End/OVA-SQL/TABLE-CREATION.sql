@@ -1,6 +1,6 @@
 use OVA_DB;
 
-#drop table INTERACTION, OVA, STUDENT, COURSE
+drop table INTERACTION, OVA, STUDENT, COURSE;
 
 create table COURSE (
 	COURSE_ID int primary key not null auto_increment,
@@ -12,6 +12,7 @@ create table STUDENT (
     STUDENT_PASSWORD varchar(30),
     STUDENT_NAME varchar(100),
     COURSE_ID int,
+    IS_ADMIN boolean,
     foreign key (COURSE_ID) references COURSE(COURSE_ID) on delete cascade on update cascade
 );
 

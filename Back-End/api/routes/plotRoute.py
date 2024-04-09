@@ -23,14 +23,16 @@ def get_plots():
     if request.method == "GET":
         return json.dumps(allPlots())
     else:
-        return "Wrong Request Methods. Only POST Allowed", 405
+        return "Wrong Request Methods. Only GET Allowed", 405
     
-@app_plot.route("/plot/student/<ra>", methods=["GET"])
+@app_plot.route("/plot/student", methods=["POST"])
 @cross_origin()
-def get_student_plots(ra):
-    if request.method == "GET":
+def get_student_plots():
+    if request.method == "POST":
+        student_data = request.get_json()[0]
         plots = []
-        plots.append(format_data("bar", studentPlot1(ra)))
+        plot = format_data("bar", studentPlot1(student_data))
+        plots.append(plot)
         return json.dumps(plots)
     else:
         return "Wrong Request Methods. Only POST Allowed", 405

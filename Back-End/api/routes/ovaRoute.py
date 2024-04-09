@@ -13,7 +13,7 @@ from ova import OVA
 
 app_ova = Blueprint("ova", __name__)
 
-@app_ova.route("/ova/<int:course_id>", methods=["GET"])
+@app_ova.route("/ova/course/<int:course_id>", methods=["GET"])
 @cross_origin()
 def show_course_OVAs(course_id):
     if request.method == "GET":

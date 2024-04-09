@@ -29,3 +29,26 @@ export function doRequest(url, data, type="POST", is_login=0) {
         });
     });
 }
+
+export function makeCourseOptions(data, select) {
+    for (let i = 0; i < data.length; i++) {
+        const option = $(`
+            <option value="${data[i]["course_id"]}">${data[i]["course_name"]}</option>
+        `);
+        select.append(option);
+    }
+}
+
+export function makeStudentOptions(data, select) {
+    for (let i = 0; i < data.length; i++) {
+        const option = $(`
+            <option value="${data[i]["ra"]}">${data[i]["student_name"]}</option>
+        `);
+        select.append(option);
+    }
+}
+
+export function getCourses() {
+    const url = "/courses";
+    return doRequest(url, {}, "GET");
+}

@@ -14,11 +14,6 @@ from course import Course
 
 app_login = Blueprint('login', __name__)
 
-@app_login.route("/logout")
-@cross_origin()
-def logout():
-    return redirect("../../../Front-End/html/login.html")
-
 @app_login.route("/login", methods=["POST"])
 @cross_origin()
 def login():
@@ -31,13 +26,13 @@ def login():
                 return "Wrong RA or Password", 401
             
             course = Course.select().where(Course.course_id == student.course_id).first()
-
+            
             ids = {
                 "course_id": course.course_id,
                 "ra": student.ra
             }
             
-            return json.dumps({"Message": "Logged successfully!", "ids": ids}), 200
+            return json.dumps({"Message": "Logged successfully!", "ids": ids, "is_admin": student.is_admin}), 200
         except PeeweeException as err:
             return json.dumps({"Error": f"{err}"}), 501
     else:

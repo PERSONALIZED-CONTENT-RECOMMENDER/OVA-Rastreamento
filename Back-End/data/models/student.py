@@ -7,6 +7,7 @@ class Student(BaseModel):
     student_password = TextField()
     student_name = TextField()
     course_id = ForeignKeyField(Course, backref="students", column_name="course_id", on_delete="CASCADE", on_update="CASCADE")
+    is_admin = BooleanField()
     
     class Meta:
         table_name = 'STUDENT'

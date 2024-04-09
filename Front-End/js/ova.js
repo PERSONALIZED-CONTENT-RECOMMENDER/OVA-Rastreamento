@@ -29,6 +29,7 @@ $(document).ready(function() {
     }
     setInterval(function() {
         timePassed++;
+        console.log(timePassed);
     }, 1000);
 
     const logged = JSON.parse(localStorage.getItem("logged"));
