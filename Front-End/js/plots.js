@@ -86,7 +86,18 @@ function getStudentsByCourse(course_id) {
 
 function makePlot(response, plots) {
     const layout = {
-
+        width: plots.width(),
+        font: {
+            size: 10
+        },
+        xaxis: {
+            tickangle: 20
+        }
+    };
+    const config = {
+        responsive: true,
+        displayModeBar: false,
+        scrollZoom: true
     };
     for (let i = 0; i < response.length; i++) {
         const plot = $(`<div id="plot-${i}"></div>`);
@@ -100,6 +111,6 @@ function makePlot(response, plots) {
                 type: plot_type
             }
         ];
-        Plotly.newPlot(`plot-${i}`, data);
+        Plotly.newPlot(`plot-${i}`, data, layout, config);
     }
 }
