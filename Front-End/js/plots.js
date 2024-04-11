@@ -85,7 +85,7 @@ function getStudentsByCourse(course_id) {
 }
 
 function makePlot(response, plots) {
-    const layout = {
+    const base_layout = {
         width: plots.width(),
         font: {
             size: 10
@@ -100,10 +100,13 @@ function makePlot(response, plots) {
         scrollZoom: true
     };
     for (let i = 0; i < response.length; i++) {
-        const plot = $(`<div id="plot-${i}"></div>`);
-        plots.append(plot);
-        const plot_data = response[i].data
-        const plot_type = response[i].type
+        const plotDiv = $(`<div id="plot-${i}"></div>`);
+        plots.append(plotDiv);
+
+        const plot = response[i];
+        const plot_data = plot.data
+        const plot_type = plot.type
+
         const data = [
             {
                 x: Object.keys(plot_data),
@@ -111,6 +114,12 @@ function makePlot(response, plots) {
                 type: plot_type
             }
         ];
+
+        const layout = base_layout;
+        layout.title = {
+            text: plot.title
+        }
+
         Plotly.newPlot(`plot-${i}`, data, layout, config);
     }
 }

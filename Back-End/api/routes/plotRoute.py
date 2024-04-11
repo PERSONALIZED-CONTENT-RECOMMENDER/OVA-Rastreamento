@@ -7,31 +7,25 @@ from flask import Blueprint, request
 from flask_cors import cross_origin
 import json
 
-from data_analysis import studentPlot1
+from data_analysis import ova_interactions_by_student
 
-def format_data(plot_type, data):
+def format_data(plot_type, data, title):
     return {
         "type": plot_type,
-        "data": data
+        "data": data,
+        "title": title
     }
 
 app_plot = Blueprint("plot", __name__)
 
-@app_plot.route("/plots", methods=["GET"])
-@cross_origin()
-def get_plots():
-    if request.method == "GET":
-        return json.dumps(allPlots())
-    else:
-        return "Wrong Request Methods. Only GET Allowed", 405
-    
 @app_plot.route("/plot/student", methods=["POST"])
 @cross_origin()
 def get_student_plots():
     if request.method == "POST":
         student_data = request.get_json()[0]
         plots = []
-        plot = format_data("bar", studentPlot1(student_data))
+        title, data = ova_interactions_by_student(student_data)
+        plot = format_data("bar", data, title)
         plots.append(plot)
         return json.dumps(plots)
     else:
