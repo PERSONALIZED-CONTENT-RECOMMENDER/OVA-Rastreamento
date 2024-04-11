@@ -4,4 +4,4 @@ db = MySQLDatabase("OVA_DB", user="duca", password="Password-123", host="localho
 
 class BaseModel(Model):
     class Meta:
-        database=db
+        database = db

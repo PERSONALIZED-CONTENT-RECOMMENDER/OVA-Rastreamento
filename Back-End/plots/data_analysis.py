@@ -1,41 +1,22 @@
-import pandas as pd
-import matplotlib.pyplot as plt
-import sqlalchemy
+import sys, os
+root = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+sys.path.append(root)
+sys.path.append(os.path.abspath(os.path.join(os.getcwd(), 'data/models')))
+sys.path.append(os.path.abspath(os.path.join(os.getcwd(), 'data')))
 
-pd.options.display.max_columns = 20
+from playhouse.shortcuts import model_to_dict, fn, JOIN
+from peewee import Select
 
+from student import Student
+from interaction import Interaction
+from ova import OVA
+from course import Course
 
+def ova_by_student(data):
+    I = Interaction.alias("I")
+    student_interactions = (I.select(I.interaction_id, I.ova_id).where(I.student_ra == data["ra"]))
+    SI = student_interactions.alias("SI")
+    query = (OVA.select(OVA, fn.COUNT(SI.c.interaction_id).alias("count")).join(SI, JOIN.LEFT_OUTER, on=(OVA.ova_id == SI.c.ova_id)).group_by(OVA))
     
-# course_students = student.merge(course, how="inner").drop("COURSE_ID", axis=1)
-# course_numbers = course_students[["COURSE_NAME", "RA"]].groupby(["COURSE_NAME"]).count()
-
-# course_numbers.plot(kind="bar", title="Number of students by course")
-# plt.xticks(rotation=8)
-# plt.yticks(range(course_numbers.max().iloc[0] + 1))
-# fig = plt.gcf()
-# plt.show()
-# fig.savefig("./plots/number-of-students-by-course.jpg", format="jpg")
-
-engine = sqlalchemy.create_engine("mysql+mysqldb://duca:Password-123@localhost:3306/OVA_DB")
-
-table_names = pd.read_sql("show tables", engine.connect()).iloc[:, 0]
-    
-def analysis():
-    student = pd.read_sql("select * from STUDENT", engine.connect())
-    course = pd.read_sql("select * from COURSE", engine.connect())
-    students_by_course = student.merge(course, "left", "COURSE_ID").drop("COURSE_ID", axis=1)
-    result = students_by_course[["COURSE_NAME", "RA"]].groupby("COURSE_NAME").count()
-    return result["RA"].to_dict()
-
-def analysis2():
-    interaction = pd.read_sql("select * from INTERACTION", engine.connect())
-    ova = pd.read_sql("select * from OVA", engine.connect())
-    ova_by_student = ova.merge(interaction, "left", "OVA_ID").drop("OVA_ID", axis=1)
-    result = ova_by_student[["OVA_NAME", "STUDENT_RA"]].groupby("OVA_NAME").count()
-    return result["STUDENT_RA"].to_dict()
-
-def studentPlot1(data):
-    interaction = pd.read_sql("select * from INTERACTION", engine.connect())
-    ova = pd.read_sql("select * from OVA", engine.connect())
-    interaction_by_ova = ova.merge(interaction, "left", "OVA_ID").drop("OVA_ID", axis=1)
-    return interaction_by_ova[["OVA_NAME", "INTERACTION_ID"]].groupby("OVA_NAME").count()["INTERACTION_ID"].to_dict()
+    [print(i.ova_name, i.count) for i in query]
+    return {record.ova_name: record.count for record in query}
