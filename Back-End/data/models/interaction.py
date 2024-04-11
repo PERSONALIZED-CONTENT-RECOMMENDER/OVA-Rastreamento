@@ -2,6 +2,7 @@ from base import BaseModel
 from student import Student
 from ova import OVA
 from peewee import *
+import datetime
 
 class Interaction(BaseModel):
     interaction_id = AutoField()
