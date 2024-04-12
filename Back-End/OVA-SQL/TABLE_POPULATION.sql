@@ -14,10 +14,28 @@ values
 
 insert into course_subjects
 values
-(1, "Cálculo A"),
-(2, "Metodologia de Pesquisa"),
-(3, "Banco de Dados 2")
-(4, "Modelagem e Controle de Sistemas 2";
+(1, "Metodologia de Pesquisa"),
+(2, "Relações Humanas no Trabalho"),
+(3, "Cálculo 1"),
+(4, "Banco de Dados 2"),
+(5, "Controle Digital Aplicado"),
+(6, "Estequiometria Industrial"),
+(7, "Eletromagnetismo"),
+(8, "Pesquisa Operacional 1"),
+(9, "Estradas 1"),
+(10, "Design de Interiores"),
+(11, "Máquinas de Fluxo");
+
+insert into offerings
+values
+(1, 1, 1),
+(2, 1, 2),
+(3, 1, 3),
+(4, 1, 4),
+(5, 2, 1),
+(6, 2, 2),
+(7, 2, 3),
+(8, 2, 5);
 
 insert into student
 values
