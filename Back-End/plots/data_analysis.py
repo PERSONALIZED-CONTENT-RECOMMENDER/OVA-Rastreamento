@@ -6,14 +6,14 @@ sys.path.append(os.path.abspath(os.path.join(os.getcwd(), 'data')))
 
 from playhouse.shortcuts import model_to_dict, fn, JOIN
 
-from student import Student
-from ova import OVA
-from interaction import Interaction
-from course import Course
+from students import Students
+from ovas import OVAs
+from interactions import Interactions
+from courses import Courses
 
 def ova_interactions_by_student(data):
-    I = Interaction.alias()
-    O = OVA.alias()
+    I = Interactions.alias()
+    O = OVAs.alias()
     
     student_interactions = I.select(I.interaction_id, I.ova_id).where(I.student_ra == data["ra"])
     SI = student_interactions.alias("SI")

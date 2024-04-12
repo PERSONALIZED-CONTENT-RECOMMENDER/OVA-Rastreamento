@@ -9,8 +9,8 @@ from flask_cors import cross_origin
 import json
 from peewee import PeeweeException
 
-from student import Student
-from course import Course
+from students import Students
+from courses import Courses
 
 app_login = Blueprint('login', __name__)
 
@@ -20,12 +20,12 @@ def login():
     if request.method == "POST":
         try:
             login_data = request.get_json()[0]
-            student = Student.select().where(Student.ra == login_data["ra"]).first()
+            student = Students.select().where(Students.ra == login_data["ra"]).first()
             
             if (not student or login_data["ra"] == "") or login_data["password"] != student.student_password:
                 return "Wrong RA or Password", 401
             
-            course = Course.select().where(Course.course_id == student.course_id).first()
+            course = Courses.select().where(Courses.course_id == student.course_id).first()
             
             ids = {
                 "course_id": course.course_id,

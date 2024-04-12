@@ -10,10 +10,9 @@ from peewee import PeeweeException
 import json
 import datetime
 
-from student import Student
-from ova import OVA
-
-from interaction import Interaction
+from students import Students
+from ovas import OVAs
+from interactions import Interactions
 
 app_interaction = Blueprint("interaction", __name__)
 
@@ -24,10 +23,10 @@ def register():
         try:
             interaction_data = request.get_json()[0]
             
-            student = Student.select().where(Student.ra == interaction_data["ra"]).first()
-            ova = OVA.select().where(OVA.ova_id == interaction_data["ova_id"]).first()
+            student = Students.select().where(Students.ra == interaction_data["ra"]).first()
+            ova = OVAs.select().where(OVAs.ova_id == interaction_data["ova_id"]).first()
             
-            interaction = Interaction.create(
+            interaction = Interactions.create(
                 interaction_date = datetime.datetime.now().strftime("%Y/%m/%d"),
                 interaction_time = datetime.datetime.now().strftime("%H:%M:%S"),
                 student_action = interaction_data["action"],

@@ -1,6 +1,6 @@
-use OVA_DB;
+use ova_db;
 
-insert into COURSE 
+insert into course 
 values 
 	(100, ""),
 	(1, "Engenharia de Computação"),
@@ -13,7 +13,7 @@ values
     (8, "Arquitetura e Urbanismo"),
     (9, "Engenharia Mecânica");
 
-insert into STUDENT
+insert into student
 values
 	("10A.047292", "Password-0", "", 100, true),
 	("20A.752355", "Password-1", "Eduardo Fiscina Menezes Moraes", 1, false),
@@ -25,10 +25,10 @@ values
     ("30F.340348", "Password-7", "Carlos Henrique de Brandão", 4, false),
     ("50Y.102840", "Password-8", "Maria Clara Barbosa", 4, false);
     
-insert into OVA
+insert into ova
 values
-	(1, "Computação Quântica", 1, 2, "quantum-computing.html"),
-    (2, "Visão Computacional", 1, 3, "computer-vision.html"),
-    (3, "Machine Learning", 1, 7, "machine-learning.html"),
-    (4, "Circuitos Elétricos", 4, 2, "eletric-circuits.html"),
-    (5, "Modelagem e Controle de Sistemas", 4, 6, "modeling-control.html");
+	(1, "Computação Quântica", 1, "quantum-computing.html"),
+    (2, "Visão Computacional", 1, "computer-vision.html"),
+    (3, "Machine Learning", 1, "machine-learning.html"),
+    (4, "Circuitos Elétricos", 4, "eletric-circuits.html"),
+    (5, "Modelagem e Controle de Sistemas", 4, "modeling-control.html");

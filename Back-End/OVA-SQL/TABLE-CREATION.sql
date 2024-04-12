@@ -1,37 +1,50 @@
-use OVA_DB;
+use ova_db;
 
-drop table INTERACTION, OVA, STUDENT, COURSE;
+#drop table interactions, ovas, students, competencies, course_subjects, courses;
 
-create table COURSE (
-	COURSE_ID int primary key not null auto_increment,
-    COURSE_NAME varchar(100)
+create table courses (
+	course_id int primary key not null auto_increment,
+    course_name varchar(100)
 );
 
-create table STUDENT (
-	RA varchar(10) primary key not null,
-    STUDENT_PASSWORD varchar(30),
-    STUDENT_NAME varchar(100),
-    COURSE_ID int,
-    IS_ADMIN boolean,
-    foreign key (COURSE_ID) references COURSE(COURSE_ID) on delete cascade on update cascade
+create table course_subjects (
+	subject_id int primary key not null auto_increment,
+    subject_name varchar(70),
+    course_id int,
+    foreign key (course_id) references courses(course_id) on delete cascade on update cascade
 );
 
-create table OVA (
-	OVA_ID int primary key not null auto_increment,
-    OVA_NAME varchar(70),
-    COURSE_ID int,
-    COMPLEXITY text,
-    LINK text,
-    foreign key (COURSE_ID) references COURSE(COURSE_ID) on delete cascade on update cascade
+create table competencies (
+	competency_id int primary key not null auto_increment,
+    competency_description varchar(255),
+    subject_id int,
+    foreign key (subject_id) references course_subjects(subject_id) on delete cascade on update cascade
 );
 
-create table INTERACTION (
-	INTERACTION_ID int primary key not null auto_increment,
-    INTERACTION_DATE date,
-    INTERACTION_TIME time,
-    STUDENT_ACTION text,
-    STUDENT_RA varchar(10),
-    OVA_ID int,
-    foreign key (STUDENT_RA) references STUDENT(RA) on delete cascade on update cascade,
-    foreign key (OVA_ID) references OVA(OVA_ID) on delete cascade on update cascade
+create table ovas (
+	ova_id int primary key not null auto_increment,
+    ova_name varchar(70),
+    competency_id int,
+    link text,
+    foreign key (competency_id) references competencies(competency_id) on delete cascade on update cascade
+);
+
+create table students (
+	ra varchar(10) primary key not null,
+    student_password varchar(30),
+    student_name varchar(100),
+    course_id int,
+    is_admin boolean,
+    foreign key (course_id) references courses(course_id) on delete cascade on update cascade
+);
+
+create table interactions (
+	interaction_id int primary key not null auto_increment,
+    interaction_date date,
+    interaction_time time,
+    student_action text,
+    student_ra varchar(10),
+    ova_id int,
+    foreign key (student_ra) references students(ra) on delete cascade on update cascade,
+    foreign key (ova_id) references ovas(ova_id) on delete cascade on update cascade
 );

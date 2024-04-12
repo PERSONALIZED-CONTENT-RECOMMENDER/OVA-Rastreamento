@@ -9,7 +9,7 @@ from flask_cors import cross_origin
 from peewee import PeeweeException
 import json
 
-from ova import OVA
+from ovas import OVAs
 
 app_ova = Blueprint("ova", __name__)
 
@@ -18,7 +18,7 @@ app_ova = Blueprint("ova", __name__)
 def show_course_OVAs(course_id):
     if request.method == "GET":
         try:
-            ovas = OVA.select().where(OVA.course_id == course_id)
+            ovas = OVAs.select().where(OVAs.course_id == course_id)
             ova_list = []
             for ova in ovas:
                 ova_dict = {
@@ -39,7 +39,7 @@ def show_course_OVAs(course_id):
 def show_all_OVAs():
     if request.method == "GET":
         try:
-            ovas = OVA.select()
+            ovas = OVAs.select()
             ova_list = []
             for ova in ovas:
                 ova_dict = {

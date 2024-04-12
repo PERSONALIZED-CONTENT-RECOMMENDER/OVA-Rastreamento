@@ -19,7 +19,7 @@ app.register_blueprint(app_student)
 app.register_blueprint(app_plot)
 
 if __name__ == "__main__":
-    app.run(debug=True, port=8000)
+    app.run(debug=True, port=8080)
     
 #dividir a tabela de interações em interações de questões e de progresso (tabelas filhas)
 #questões -> questão, alternativa escolhida (texto), arternativa correta (texto), se acertou ou não
