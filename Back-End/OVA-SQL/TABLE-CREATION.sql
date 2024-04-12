@@ -1,6 +1,6 @@
 use ova_db;
 
-#drop table interactions, ovas, students, competencies, course_subjects, courses;
+drop table interactions, ovas, students, competencies, course_subjects, courses;
 
 create table courses (
 	course_id int primary key not null auto_increment,
@@ -9,9 +9,16 @@ create table courses (
 
 create table course_subjects (
 	subject_id int primary key not null auto_increment,
-    subject_name varchar(70),
+    subject_name varchar(70)
+);
+
+create table offerings (
+	offering_id int primary key not null auto_increment,
     course_id int,
-    foreign key (course_id) references courses(course_id) on delete cascade on update cascade
+    subject_id int,
+    foreign key (course_id) references courses(course_id) on delete cascade on update cascade,
+    foreign key (subject_id) references course_subjects(subject_id) on delete cascade on update cascade,
+    constraint uc_offering unique(course_id, subject_id)
 );
 
 create table competencies (
