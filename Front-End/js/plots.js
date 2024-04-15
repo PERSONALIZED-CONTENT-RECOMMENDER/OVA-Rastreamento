@@ -44,7 +44,7 @@ $(document).ready(function () {
             const option = $(this).find("option:selected");
             if (option.val() != "") {
                 const student_data = {
-                    "ra": option.val(),
+                    "student_id": option.val(),
                     "course_id": courses.find("option:checked").val()
                 }
                 getStudentPlot(student_data)
@@ -56,7 +56,7 @@ $(document).ready(function () {
         adminOptions.insertBefore(plots);
     } else {
         const student_data = {
-            "ra": localStorage.getItem("ra"),
+            "student_id": localStorage.getItem("student_id"),
             "course_id": localStorage.getItem("course_id")
         }
         getStudentPlot(student_data)

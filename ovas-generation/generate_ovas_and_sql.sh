@@ -15,14 +15,16 @@ echo "insert into ovas"
 echo "values"
 
 id=0
+s=0
 while read line
 do 
+	s=$((++s))
 	for i in {1..4}
 	do
 		arq_name="$(tr ' ' '_' <<< "${line,,}")_$i.html"
 		arq_path="$path/$arq_name"
 		id=$((++id))
-		echo "($id, \"$arq_name\", $id),"
+		echo "($id, \"$line\", $s, \"Competência $i\", \"$arq_name\"),"
 
 		cp ./$template $arq_path
 		sed -i "s/----title----/${line,,}/" $arq_path

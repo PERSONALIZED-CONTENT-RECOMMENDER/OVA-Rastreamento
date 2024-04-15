@@ -5,11 +5,15 @@ sys.path.append(os.path.abspath(os.path.join(os.getcwd(), 'data/models')))
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), 'data')))
 
 from playhouse.shortcuts import model_to_dict, fn, JOIN
+from collections import defaultdict
 
 from students import Students
 from ovas import OVAs
 from interactions import Interactions
 from courses import Courses
+from offerings import Offerings
+from subjects import Subjects
+from competencies import Competencies
 
 def ova_interactions_by_student(data):
     I = Interactions.alias()
@@ -21,3 +25,8 @@ def ova_interactions_by_student(data):
     result = O.select(O.ova_name, fn.COUNT(SI.c.interaction_id).alias("count")).join(SI, JOIN.LEFT_OUTER, on=(SI.c.ova_id == O.ova_id)).group_by(O.ova_name)
     
     return "OVA interactions", {r.ova_name: r.count for r in result}
+
+def test_query(course_id=1):
+    
+    
+    return result

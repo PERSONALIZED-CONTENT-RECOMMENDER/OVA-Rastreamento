@@ -29,7 +29,7 @@ def login():
             
             ids = {
                 "course_id": course.course_id,
-                "ra": student.ra
+                "student_id": student.student_id
             }
             
             return json.dumps({"Message": "Logged successfully!", "ids": ids, "is_admin": student.is_admin}), 200

@@ -8,7 +8,11 @@ from flask import Blueprint, request
 from flask_cors import cross_origin
 from peewee import PeeweeException
 import json
+from collections import defaultdict
 
+from offerings import Offerings
+from subjects import Subjects
+from competencies import Competencies
 from ovas import OVAs
 
 app_ova = Blueprint("ova", __name__)
@@ -18,17 +22,23 @@ app_ova = Blueprint("ova", __name__)
 def show_course_OVAs(course_id):
     if request.method == "GET":
         try:
-            ovas = OVAs.select().where(OVAs.course_id == course_id)
-            ova_list = []
-            for ova in ovas:
-                ova_dict = {
-                    "ova_id": ova.ova_id,
-                    "ova_name": ova.ova_name,
-                    "complexity": ova.complexity,
-                    "link": ova.link
-                }
-                ova_list.append(ova_dict.copy())
-            return json.dumps(ova_list)
+            of = Offerings.alias()
+            s = Subjects.alias()
+            c = Competencies.alias()
+            o = OVAs.alias()
+            
+            query = o.select(s.subject_name, c.competency_description, o.ova_name, o.link).join(c).join(s).join(of).where(of.course_id == course_id)
+            
+            result = defaultdict(list)
+            
+            for subject in query:
+                competency = subject.competency_id
+                result[competency.subject_id.subject_name].append({
+                    "ova_name": subject.ova_name,
+                    "competency_description": competency.competency_description,
+                    "link": subject.link
+            })
+            return json.dumps(result)
         except PeeweeException as err:
             return json.dumps({"Error": f"{err}"}), 501
     else:

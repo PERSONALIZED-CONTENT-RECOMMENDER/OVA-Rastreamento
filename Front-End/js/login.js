@@ -10,7 +10,7 @@ $(document).ready(function() {
     const loginButton = $(".login-button");
     const loginTab = $("#login");
     const chooseOVAsTab = $("#choose-ova");
-    const ovaList = $(".ova-list");
+    const ovaDiv = $(".ova-div");
 
     togglePassword.on("click", function() {
         if (!togglePassword.hasClass("bi-eye-slash-fill")) {
@@ -39,7 +39,7 @@ $(document).ready(function() {
             localStorage.setItem("logged", true);
             localStorage.setItem("is_admin", response.is_admin);
             localStorage.setItem("course_id", response.ids.course_id);
-            localStorage.setItem("ra", response.ids.ra);
+            localStorage.setItem("student_id", response.ids.student_id);
 
             const isAdmin = JSON.parse(localStorage.getItem("is_admin"));
             if (JSON.parse(localStorage.getItem("logged")) === true) {
@@ -102,7 +102,19 @@ $(document).ready(function() {
                         adminForm.insertAfter(chooseOVAsTab.find(".title"));
                     } else {
                         await getOVAs(localStorage.getItem("course_id"))
-                        .then(response => makeOVAOptions(response, ovaList))
+                        .then(response => {
+                            console.log(response);
+                            for (let subject in response) {
+                                const subjectDiv = $(`
+                                    <div class="py-3 border-top">
+                                        <h2 class="subject text-center">${subject}</h2>
+                                        <ul class="list-group list-group-horizontal-md d-flex flex-wrap w-100 ova-list p-3"></ul>
+                                    </div>
+                                `);
+                                makeOVAOptions(response[subject], subjectDiv.find(".ova-list"));
+                                ovaDiv.append(subjectDiv);
+                            }
+                        })
                         .catch(error => console.log(error));
                     }
                 }, 500);
@@ -136,16 +148,15 @@ function getOVAs(course_id) {
 }
 
 function makeOVAOptions(response, ovaList) {
+    console.log(response);
     ovaList.html("");
     for (let i = 0; i < response.length; i++) {
         const ova = response[i];
-        const imageName = ova.link.split(".")[0];
         const listItem = $(`
         <li class="ova-item list-group-item d-flex flex-column justify-content-between align-items-center rounded-3 shadow">
-            <a class="align-self-start" href="${ova.link}">
+            <a class="align-self-start" href="./ovas/${ova.link}">
                 <p><span class="fw-bold">Nome:</span> ${ova.ova_name}</p>
-                <p><span class="fw-bold">Complexidade:</span> ${ova.complexity}</p>
-                <img class="img-fluid w-100 ova-img rounded-3 shadow" src="../imagens/${imageName}.png" alt="" srcset="">
+                <p><span class="fw-bold">Competência:</span> ${ova.competency_description}</p>
             </a>
         </li>
         `);

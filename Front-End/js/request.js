@@ -5,7 +5,7 @@ const BASE_URL = `http://${HOST}:${PORT}`
 export function registerInteraction(interaction) {
     const url = "/interaction/register";
     const data = {
-        ra: localStorage.getItem("ra"),
+        ra: localStorage.getItem("student_id"),
         ova_id: localStorage.getItem("ova_id"),
         action: interaction
     }
