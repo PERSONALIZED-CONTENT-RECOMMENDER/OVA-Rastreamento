@@ -1,11 +1,11 @@
-const PORT = 8080;
+const PORT = 8000;
 const HOST = "localhost";
 const BASE_URL = `http://${HOST}:${PORT}`
 
 export function registerInteraction(interaction) {
     const url = "/interaction/register";
     const data = {
-        ra: localStorage.getItem("student_id"),
+        student_id: localStorage.getItem("student_id"),
         ova_id: localStorage.getItem("ova_id"),
         action: interaction
     }

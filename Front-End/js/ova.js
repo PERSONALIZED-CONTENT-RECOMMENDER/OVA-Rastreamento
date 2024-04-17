@@ -17,6 +17,7 @@ function generateScrollPoints(readTime, n_points) {
 }
 
 $(document).ready(function() {
+    localStorage.setItem("past_page", "ova");
     const read_time = localStorage.getItem("read_time");
     let timePassed;
     if (read_time == null) {

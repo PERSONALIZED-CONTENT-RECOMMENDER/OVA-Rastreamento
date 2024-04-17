@@ -1,16 +1,24 @@
 import { doRequest, makeCourseOptions, getCourses } from "./request.js";
 
 $(document).ready(function() {
-    localStorage.clear();
-    localStorage.setItem("logged", false);
+    const loginTab = $("#login");
+    const chooseOVAsTab = $("#choose-ova");
+    const ovaDiv = $(".ova-div");
+
+    if (localStorage.getItem("past_page") == "plot") {
+        loginTab.addClass("d-none");
+        chooseOVAsTab.removeClass("d-none");
+        makeStudentOVAs(ovaDiv);
+    } else {
+        localStorage.clear();
+        localStorage.setItem("logged", false);
+    }
+    
 
     const togglePassword = $(".toggle-password");
     const raInput = $("#ra-input");
     const passwordInput = $("#password-input");
     const loginButton = $(".login-button");
-    const loginTab = $("#login");
-    const chooseOVAsTab = $("#choose-ova");
-    const ovaDiv = $(".ova-div");
 
     togglePassword.on("click", function() {
         if (!togglePassword.hasClass("bi-eye-slash-fill")) {
@@ -44,78 +52,13 @@ $(document).ready(function() {
             const isAdmin = JSON.parse(localStorage.getItem("is_admin"));
             if (JSON.parse(localStorage.getItem("logged")) === true) {
                 setTimeout(async function() {
-                    loginTab.addClass("d-none");
-                    chooseOVAsTab.removeClass("d-none");
         
-                    if (isAdmin == true) {
-                        const adminForm = $(`
-                            <form action="#" class="filter">
-                                <div class="form-check">
-                                    <input class="form-check-input filter-option" type="checkbox" value="all" id="all-ova">
-                                    <label class="form-check-label" for="all-ova">Todos</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input filter-option" type="checkbox" value="course" id="course-ova">
-                                    <label class="form-check-label" for="course-ova">Por Curso</label>
-                                </div>
-                                <div class="course-select mb-3 d-none">
-                                    <label for="courses">Curso:</label>
-                                    <select name="" id="courses" class="form-select">
-                                        <option value=""></option>
-                                    </select>
-                                </div>
-                            </form>
-                        `);
+                    if (isAdmin == true) window.location.href = "plots.html";
+                    else {
+                        loginTab.addClass("d-none");
+                        chooseOVAsTab.removeClass("d-none");
 
-                        const courses = adminForm.find("#courses");
-                        const filterOptions = adminForm.find(".filter-option");
-
-                        getCourses()
-                        .then(response => makeCourseOptions(response, courses))
-                        .catch(error => console.log(error));
-                        
-                        courses.on("change", async function() {
-                            const option = $(this).find("option:selected");
-                            if (option.val() != "") {
-                                const checked = filterOptions.find(":checked");
-                                await getOVAsAdmin(checked.val(), courses)
-                                .then(response => makeOVAOptions(response, ovaList))
-                                .catch(error => console.log(error));
-                            }
-                        });
-
-                        filterOptions.on("change", async function() {
-                            filterOptions.prop("checked", false);
-                            $(this).prop("checked", true);
-                            const select = adminForm.find(".course-select");
-                            if ($(this).attr("id") == "all-ova") {
-                                select.addClass("d-none");
-                                await getOVAsAdmin($(this).val(), adminForm.find("#courses"))
-                                .then(response => makeOVAOptions(response, ovaList))
-                                .catch(error => console.log(error));
-                            } else {
-                                select.removeClass("d-none");
-                                courses.val("");
-                            }
-                        });
-
-                        adminForm.insertAfter(chooseOVAsTab.find(".title"));
-                    } else {
-                        await getOVAs(localStorage.getItem("course_id"))
-                        .then(response => {
-                            console.log(response);
-                            for (let subject in response) {
-                                const subjectDiv = $(`
-                                    <div class="py-3 border-top">
-                                        <h2 class="subject text-center">${subject}</h2>
-                                        <ul class="list-group list-group-horizontal-md d-flex flex-wrap w-100 ova-list p-3"></ul>
-                                    </div>
-                                `);
-                                makeOVAOptions(response[subject], subjectDiv.find(".ova-list"));
-                                ovaDiv.append(subjectDiv);
-                            }
-                        })
-                        .catch(error => console.log(error));
+                        await makeStudentOVAs(ovaDiv);
                     }
                 }, 500);
             }
@@ -132,15 +75,21 @@ function login(user_data) {
     return doRequest(url, user_data, "POST", true);
 }
 
-function getOVAsAdmin(option, select) {
-    let url;
-    if (option == "all") url = "all";
-    else {
-       const courseId = select.find("option:checked").val();
-       url = `course/${courseId}`;
-    }
-    
-    return doRequest("/ova/" + url, {}, "GET");
+async function makeStudentOVAs(ovaDiv) {
+    await getOVAs(localStorage.getItem("course_id"))
+    .then(response => {
+        for (let subject in response) {
+            const subjectDiv = $(`
+                <div class="py-3 border-top">
+                    <h2 class="subject text-center">${subject}</h2>
+                    <ul class="list-group list-group-horizontal-md d-flex flex-wrap w-100 ova-list p-3"></ul>
+                </div>
+            `);
+            makeOVAOptions(response[subject], subjectDiv.find(".ova-list"));
+            ovaDiv.append(subjectDiv);
+        }
+    })
+    .catch(error => console.log(error));
 }
 
 function getOVAs(course_id) {
@@ -148,7 +97,6 @@ function getOVAs(course_id) {
 }
 
 function makeOVAOptions(response, ovaList) {
-    console.log(response);
     ovaList.html("");
     for (let i = 0; i < response.length; i++) {
         const ova = response[i];

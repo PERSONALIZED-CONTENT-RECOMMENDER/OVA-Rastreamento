@@ -16,17 +16,16 @@ from subjects import Subjects
 from competencies import Competencies
 
 def ova_interactions_by_student(data):
-    I = Interactions.alias()
-    O = OVAs.alias()
+    i = Interactions.alias()
+    o = OVAs.alias()
+    c = Competencies.alias()
+    s = Subjects.alias()
+    of = Offerings.alias()
     
-    student_interactions = I.select(I.interaction_id, I.ova_id).where(I.student_ra == data["ra"])
+    student_interactions = i.select(i.interaction_id, i.ova_id).where(i.student_id == data["student_id"])
     SI = student_interactions.alias("SI")
     
-    result = O.select(O.ova_name, fn.COUNT(SI.c.interaction_id).alias("count")).join(SI, JOIN.LEFT_OUTER, on=(SI.c.ova_id == O.ova_id)).group_by(O.ova_name)
+    result = o.select(o.ova_name, fn.COUNT(SI.c.interaction_id).alias("count")).join(SI, JOIN.LEFT_OUTER, on=(SI.c.ova_id == o.ova_id)).join(c, on=(o.competency_id == c.competency_id)).join(s).join(of).group_by(o.ova_name).where(of.course_id == data["course_id"])
+    
     
     return "OVA interactions", {r.ova_name: r.count for r in result}
-
-def test_query(course_id=1):
-    
-    
-    return result

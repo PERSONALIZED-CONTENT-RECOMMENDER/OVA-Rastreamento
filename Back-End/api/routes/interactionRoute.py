@@ -23,14 +23,14 @@ def register():
         try:
             interaction_data = request.get_json()[0]
             
-            student = Students.select().where(Students.ra == interaction_data["ra"]).first()
+            student = Students.select().where(Students.student_id == interaction_data["student_id"]).first()
             ova = OVAs.select().where(OVAs.ova_id == interaction_data["ova_id"]).first()
             
             interaction = Interactions.create(
                 interaction_date = datetime.datetime.now().strftime("%Y/%m/%d"),
                 interaction_time = datetime.datetime.now().strftime("%H:%M:%S"),
                 student_action = interaction_data["action"],
-                student_ra = student,
+                student_id = student,
                 ova_id = ova
             )
             

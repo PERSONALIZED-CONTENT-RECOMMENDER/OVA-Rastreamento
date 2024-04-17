@@ -27,16 +27,17 @@ def show_course_OVAs(course_id):
             c = Competencies.alias()
             o = OVAs.alias()
             
-            query = o.select(s.subject_name, c.competency_description, o.ova_name, o.link).join(c).join(s).join(of).where(of.course_id == course_id)
+            query = o.select(s.subject_name, c.competency_description, o.ova_id, o.ova_name, o.link).join(c).join(s).join(of).where(of.course_id == course_id)
             
             result = defaultdict(list)
             
-            for subject in query:
-                competency = subject.competency_id
+            for ova in query:
+                competency = ova.competency_id
                 result[competency.subject_id.subject_name].append({
-                    "ova_name": subject.ova_name,
+                    "ova_id": ova.ova_id,
+                    "ova_name": ova.ova_name,
                     "competency_description": competency.competency_description,
-                    "link": subject.link
+                    "link": ova.link
             })
             return json.dumps(result)
         except PeeweeException as err:

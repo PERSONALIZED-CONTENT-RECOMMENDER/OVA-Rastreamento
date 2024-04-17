@@ -22,7 +22,7 @@ def student_by_course(course_id):
             student_list = []
             for student in students:
                 student_dict = {
-                    "ra": student.ra,
+                    "student_id": student.student_id,
                     "student_name": student.student_name
                 }
                 student_list.append(student_dict.copy())

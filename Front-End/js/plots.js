@@ -1,26 +1,37 @@
 import { doRequest, makeCourseOptions, makeStudentOptions, getCourses } from "./request.js";
 
 $(document).ready(function () {
+    localStorage.setItem("past_page", "plot");
     const backButton = $(".back-button");
     const plots = $(".plots");
 
-    backButton.attr("href", localStorage.getItem("ova_link"));
+    const is_admin = JSON.parse(localStorage.getItem("is_admin"));
+    let backButtonLink;
 
-    const is_admin = localStorage.getItem("is_admin");
-    if (JSON.parse(is_admin) == true) {
+    if (is_admin == true) backButtonLink = "login.html";
+    else {
+        const ova_id = localStorage.getItem("ova_id");
+        if (ova_id == null) backButtonLink = "login.html";
+        else backButtonLink = `./ovas/${localStorage.getItem("ova_link")}`;
+    }
+    backButton.attr("href", backButtonLink);
+
+    if (is_admin == true) {
         const adminOptions = $(`
-        <div class="mb-3">
-            <label for="courses">Curso:</label>
-            <select name="" id="courses" class="form-select">
-                <option value=""></option>
-            </select>
-        </div>
-        <div class="mb-3">
-            <label for="students">Estudante:</label>
-            <select name="" id="students" class="form-select">
-                <option value=""></option>
-            </select>
-        </div>
+            <div class="mt-5">
+                <div class="mb-3">
+                    <label for="courses">Curso:</label>
+                    <select name="" id="courses" class="form-select">
+                        <option value=""></option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="students">Estudante:</label>
+                    <select name="" id="students" class="form-select">
+                        <option value=""></option>
+                    </select>
+                </div>
+            </div>
         `);
 
         const courses = adminOptions.find("#courses");
@@ -63,15 +74,6 @@ $(document).ready(function () {
         .then(response => makePlot(response, plots))
         .catch(error => console.log(error));
     }
-
-    // update.on("click", async function(e) {
-    //     e.preventDefault();
-    //     getData()
-    //     .then(response => {
-    //         
-    //     })
-    //     .catch(error => console.log(error));
-    // });
 });
 
 function getStudentPlot(data) {

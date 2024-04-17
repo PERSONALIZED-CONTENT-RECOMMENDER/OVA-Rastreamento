@@ -8,5 +8,5 @@ class Interactions(BaseModel):
     interaction_date = DateField()
     interaction_time = TimeField()
     student_action = TextField()
-    student_ra = ForeignKeyField(Students, backref="interactions", on_delete="cascade", on_update="cascade")
+    student_id = ForeignKeyField(Students, backref="interactions", on_delete="cascade", on_update="cascade")
     ova_id = ForeignKeyField(OVAs, backref="interactions", on_delete="cascade", on_update="cascade")

@@ -9,7 +9,7 @@ create table courses (
 
 create table course_subjects (
 	subject_id int primary key not null auto_increment,
-    subject_name varchar(70)
+    subject_name varchar(255)
 );
 
 create table offerings (

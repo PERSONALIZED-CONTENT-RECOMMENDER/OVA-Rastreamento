@@ -1,4 +1,4 @@
-const PORT = 8080;
+const PORT = 8000;
 const HOST = "localhost";
 const BASE_URL = `http://${HOST}:${PORT}`
 
@@ -72,7 +72,7 @@ function onPlayerReady(event) {
 
 function videoVisualization(perc_watched, type="POST") {
     const data = {
-        ra: localStorage.getItem("ra"),
+        student_id: localStorage.getItem("student_id"),
         ova_id: localStorage.getItem("ova_id"),
         action: perc_watched
     };
