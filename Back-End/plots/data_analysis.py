@@ -34,7 +34,10 @@ group by {0}
         
         result = defaultdict(lambda: defaultdict(list))
         for row in cursor.fetchall():
+            print(row)
             result[row[0]][row[1]].append(row[2])
+
+        return "Title", result
     else:
         group_columns = "o.ova_name"
         cursor = db.execute_sql(query.format(group_columns, student_id, course_id, group_columns))
@@ -42,15 +45,17 @@ group by {0}
         result = defaultdict(int)
         for row in cursor.fetchall():
             result[row[0]] += row[1]
+
+        return "Title", result
     
-        
-    print(json.dumps(result, ensure_ascii=False))
+    # print("\n\n\n\n\n")
+    # print(json.dumps(result, ensure_ascii=False))
     
-data = {
-    "student_id": 2,
-    "course_id": 1
-}
+# data = {
+#     "student_id": 2,
+#     "course_id": 1
+# }
 # _, result = ova_interactions_by_student(data)
 # print(result)
 
-ova_interactions_by_student(data, "competency")
+# ova_interactions_by_student(data, "competency")

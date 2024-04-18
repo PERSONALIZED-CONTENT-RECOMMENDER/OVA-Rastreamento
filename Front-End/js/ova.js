@@ -16,6 +16,10 @@ function generateScrollPoints(readTime, n_points) {
     return points;
 }
 
+function countOVAInteraction() {
+
+}
+
 $(document).ready(function() {
     sessionStorage.setItem("past_page", "ova");
     const read_time = localStorage.getItem("read_time");
@@ -46,6 +50,19 @@ $(document).ready(function() {
     const questions = $(".question");
     const sendText = $(".questions").find(".send-text");
     const accordionItems = $(".accordion-item");
+
+    let num_interactions = 0;
+    carrousels.each(index => {
+        const carrousel = carrousels.eq(index);
+        const parts = carrousel.find(".parts").children();
+        num_interactions += parts.length;
+    })
+    num_interactions += accordionItems.length;
+    num_interactions += questions.length;
+    num_interactions += scrollPoints.length;
+    num_interactions += sendText.length;
+    num_interactions += $(".ova-video").length * 5;
+    sessionStorage.setItem("num_interactions", num_interactions);
 
     let accordionView = [];
 

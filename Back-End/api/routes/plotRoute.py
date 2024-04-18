@@ -24,7 +24,7 @@ def get_student_plots():
     if request.method == "POST":
         student_data = request.get_json()[0]
         plots = []
-        title, data = ova_interactions_by_student(student_data, )
+        title, data = ova_interactions_by_student(student_data)
         plot = format_data("bar", data, title)
         plots.append(plot)
         return json.dumps(plots)

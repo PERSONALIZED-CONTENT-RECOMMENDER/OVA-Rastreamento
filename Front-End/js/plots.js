@@ -90,6 +90,7 @@ function getStudentsByCourse(course_id) {
 }
 
 function makePlot(response, plots) {
+    console.log(response);
     const base_layout = {
         width: plots.width(),
         font: {
@@ -105,7 +106,7 @@ function makePlot(response, plots) {
         scrollZoom: true
     };
 
-    const totalInteractions = 30;
+    const totalInteractions = sessionStorage.getItem("num_interactions");
     for (let i = 0; i < response.length; i++) {
         const plotDiv = $(`<div id="plot-${i}"></div>`);
         plots.append(plotDiv);
@@ -140,6 +141,6 @@ function makePlot(response, plots) {
 }
 
 function formatGraphLabels(num) {
-    const totalInteractions = 30;
+    const totalInteractions = sessionStorage.getItem("num_interactions");
     return `${num}/${totalInteractions}`;
 }
