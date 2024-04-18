@@ -35,7 +35,7 @@ export function makeCourseOptions(data, select) {
         const option = $(`
             <option value="${data[i]["course_id"]}">${data[i]["course_name"]}</option>
         `);
-        select.append(option);
+        option.inserBefore(select.find(".all-students"));
     }
 }
 

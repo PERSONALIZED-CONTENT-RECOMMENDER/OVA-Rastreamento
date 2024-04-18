@@ -1,19 +1,151 @@
-Cálculo A
-Metodologia da Pesquisa
-Compiladores
-Banco de Dados 1
-Controle Digital Aplicado
-Sistemas a Eventos Discretos
-Engenharia Bioquímica
-Projetos de Processos Químicos 2
-Acionamentos Elétricos
-Eletromagnetismo
-Comércio Exterior
-Tecnologias Digitais na Produção
-Estruturas de Madeira
-Obras de Terra
-Processos de Soldagem
-Trocadores de Calor
-Infraestrutura Urbana
-Design de Interiores
-Patrimônio Histórico
+1;Cálculo A;4
+==========
+Resolver problemas usando funções matemáticas.
+Analisar e interpretar dados através de representações gráficas.
+Aplicar o cálculo diferencial e integral para resolver problemas de engenharia.
+Desenvolver o pensamento crítico e a resolução de problemas.
+==========
+2;Metodologia da Pesquisa;5
+==========
+Formular perguntas e hipóteses de pesquisa.
+Realizar revisões bibliográficas e identificar fontes relevantes.
+Selecionar métodos de pesquisa adequados.
+Analisar e interpretar dados de pesquisa.
+Comunicar os resultados da pesquisa de forma eficaz.
+==========
+3;Compiladores;5
+==========
+Compreender as diversas etapas do processo de compilação.
+Projetar e implementar gramáticas utilizando linguagens formais.
+Analisar e otimizar código para eficiência.
+Aplicar a tecnologia de compiladores para o desenvolvimento de software.
+Desenvolver habilidades de resolução de problemas e análise.
+==========
+4;Banco de Dados 1;4
+==========
+Projetar e implementar bancos de dados relacionais usando SQL.
+Normalizar estruturas de dados para minimizar redundância.
+Realizar consultas para recuperação e manipulação de dados.
+Compreender conceitos de integridade e segurança de dados.
+Desenvolver habilidades em organização e gerenciamento de dados.
+==========
+5;Controle Digital Aplicado;4 
+==========
+Analisar e projetar sistemas de controle para diversas aplicações.
+Aplicar princípios de controle por feedback para alcançar o comportamento desejado do sistema.
+Compreender conceitos de análise de estabilidade para sistemas de controle.
+Projetar e simular sistemas de controle usando ferramentas de software.
+Desenvolver habilidades de resolução de problemas no contexto de sistemas automatizados.
+==========
+6;Sistemas a Eventos Discretos;4
+==========
+Modelar sistemas a eventos discretos usando máquinas de estado e redes de Petri.
+Analisar o comportamento do sistema e identificar problemas potenciais.
+Aplicar técnicas de controle para sistemas a eventos discretos.
+Utilizar ferramentas de software para modelagem e simulação.
+Desenvolver habilidades em projeto e análise de sistemas para processos discretos.
+==========
+7;Engenharia Bioquímica;5
+==========
+Aplicar princípios da química e da biologia para resolver problemas de engenharia.
+Compreender biorreatores e processos para produção de bioprodutos.
+Analisar e projetar processos de bioconversão.
+Desenvolver habilidades em técnicas de laboratório e análise de dados.
+Integrar conhecimentos de diversas disciplinas para engenharia de bioprocessos.
+==========
+8;Projetos de Processos Químicos 2;5
+==========
+Projetar e otimizar processos químicos para aplicações industriais.
+Realizar avaliações econômicas e ambientais de processos químicos.
+Aplicar software de simulação de processos para análise de processos.
+Desenvolver habilidades em gerenciamento de projetos e trabalho em equipe.
+Integrar conhecimentos de princípios de engenharia química para projeto de processos.
+==========
+9;Acionamentos Elétricos;4
+==========
+Compreender e analisar diversos tipos de motores elétricos.
+Projetar e selecionar sistemas de controle adequados para motores elétricos.
+Aplicar princípios da eletrônica de potência para controle de motores.
+Analisar e solucionar falhas em acionamentos elétricos.
+Desenvolver habilidades em projeto e implementação de sistemas de controle de motores.
+==========
+10;Eletromagnetismo;4
+==========
+Compreender os princípios fundamentais do eletromagnetismo.
+Analisar campos elétricos e magnéticos em diversas situações.
+Aplicar princípios eletromagnéticos para resolver problemas de engenharia.
+Utilizar ferramentas de software para análise de campo eletromagnético.
+Desenvolver habilidades de resolução de problemas no contexto de fenômenos eletromagnéticos.
+==========
+11;Comércio Exterior;4
+==========
+Compreender princípios e regulamentações do comércio internacional.
+Analisar mercados internacionais e identificar oportunidades de negócios.
+Gerenciar processos de importação e exportação de forma eficaz.
+Desenvolver habilidades em negociação e comunicação internacional.
+Aplicar conhecimentos de direito e finanças do comércio internacional.
+==========
+12;Tecnologias Digitais na Produção;5
+==========
+Compreender e utilizar tecnologias digitais em processos de manufatura.
+Aplicar conceitos da Indústria 4.0 para otimização da produção.
+Integrar ferramentas digitais para gerenciamento da cadeia de suprimentos.
+Desenvolver habilidades em análise e interpretação de dados para tomada de decisões na produção.
+Gerenciar e implementar transformação digital em ambientes de manufatura.
+==========
+13;Estruturas de Madeira;4
+==========
+Compreender as propriedades mecânicas da madeira e seus produtos.
+Projetar e analisar estruturas de madeira quanto à resistência e estabilidade.
+Aplicar códigos e regulamentos de construção para estruturas de madeira.
+Desenvolver habilidades em análise e projeto estrutural usando ferramentas de software.
+Selecionar materiais de madeira adequados para aplicações específicas.
+==========
+14;Obras de Terra;4
+==========
+Compreender mecânica dos solos e estabilidade de taludes.
+Projetar e analisar fundações para diferentes tipos de estruturas.
+Aplicar técnicas de drenagem e contenção de terras.
+Selecionar materiais adequados para obras de terra.
+Desenvolver habilidades em projeto e execução de obras de terra seguindo normas técnicas.
+==========
+15;Processos de Soldagem;4
+==========
+Compreender os diferentes processos de soldagem.
+Selecionar o processo de soldagem adequado para diferentes materiais e aplicações.
+Realizar soldagem de forma segura e eficiente.
+Inspeção e controle de qualidade de soldas.
+Desenvolver habilidades práticas em técnicas de soldagem.
+==========
+16;Trocadores de Calor;4
+==========
+Compreender os princípios de transferência de calor por condução, convecção e radiação.
+Analisar o desempenho de diferentes tipos de trocadores de calor.
+Selecionar o trocador de calor adequado para uma aplicação específica.
+Dimensionar e projetar trocadores de calor usando softwares específicos.
+Desenvolver habilidades em análise e projeto de trocadores de calor para processos industriais.
+==========
+17;Infraestrutura Urbana;4
+==========
+Compreender os princípios de planejamento e gestão urbana.
+Projetar e analisar sistemas de saneamento básico.
+Desenvolver soluções para mobilidade urbana e transporte público.
+Analisar o impacto ambiental de projetos de infraestrutura.
+Desenvolver habilidades em planejamento e gestão de infraestrutura urbana sustentável.
+==========
+18;Design de Interiores;5
+==========
+Compreender os princípios de design de interiores.
+Projetar e planejar layouts de interiores para diferentes funções.
+Selecionar materiais, mobiliário e acabamentos adequados para projetos de interiores.
+Desenvolver habilidades em representação gráfica e técnicas de apresentação de projetos.
+Integrar conceitos de sustentabilidade e acessibilidade em projetos de design de interiores.
+==========
+19;Patrimônio Histórico;5
+==========
+Compreender os conceitos de patrimônio cultural e histórico.
+Identificar e caracterizar bens tombados e áreas de proteção ambiental.
+Desenvolver técnicas para conservação e restauração do patrimônio histórico.
+Planejar e executar projetos de valorização e uso sustentável do patrimônio.
+Desenvolver habilidades em legislação e políticas públicas para a proteção do patrimônio.
+==========

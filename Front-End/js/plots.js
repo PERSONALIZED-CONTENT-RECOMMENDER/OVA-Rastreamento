@@ -1,7 +1,7 @@
 import { doRequest, makeCourseOptions, makeStudentOptions, getCourses } from "./request.js";
 
 $(document).ready(function () {
-    localStorage.setItem("past_page", "plot");
+    sessionStorage.setItem("past_page", "plot");
     const backButton = $(".back-button");
     const plots = $(".plots");
 
@@ -45,6 +45,9 @@ $(document).ready(function () {
             students.html(`<option value=""></option>`);
             const option = $(this).find("option:selected");
             if (option.val() != "") {
+                students.append($(
+                    `<option class="all-students" value="0">All students</option>`
+                ));
                 await getStudentsByCourse(option.val())
                 .then(response => makeStudentOptions(response, students))
                 .catch(error => console.log(error));
@@ -90,7 +93,7 @@ function makePlot(response, plots) {
     const base_layout = {
         width: plots.width(),
         font: {
-            size: 10
+            size: 12
         },
         xaxis: {
             tickangle: 20
@@ -101,6 +104,8 @@ function makePlot(response, plots) {
         displayModeBar: false,
         scrollZoom: true
     };
+
+    const totalInteractions = 30;
     for (let i = 0; i < response.length; i++) {
         const plotDiv = $(`<div id="plot-${i}"></div>`);
         plots.append(plotDiv);
@@ -109,19 +114,32 @@ function makePlot(response, plots) {
         const plot_data = plot.data
         const plot_type = plot.type
 
+        const subjects = Object.keys(plot_data);
+        const percentages = [];
+        const num_interactions = Object.values(plot_data);
+        num_interactions.forEach(value => {
+            percentages.push(value / totalInteractions);
+        });
+
         const data = [
             {
-                x: Object.keys(plot_data),
-                y: Object.values(plot_data),
-                type: plot_type
+                x: subjects,
+                y: percentages,
+                type: plot_type,
+                text: num_interactions.map(formatGraphLabels),
+                textfont: {size: 14}
             }
         ];
 
         const layout = base_layout;
-        layout.title = {
-            text: plot.title
-        }
+        layout.title = {text: plot.title};
+        layout.yaxis = {tickformat: "2%"};
 
         Plotly.newPlot(`plot-${i}`, data, layout, config);
     }
+}
+
+function formatGraphLabels(num) {
+    const totalInteractions = 30;
+    return `${num}/${totalInteractions}`;
 }

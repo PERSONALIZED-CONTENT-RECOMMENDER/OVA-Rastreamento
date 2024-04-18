@@ -5,7 +5,7 @@ $(document).ready(function() {
     const chooseOVAsTab = $("#choose-ova");
     const ovaDiv = $(".ova-div");
 
-    if (localStorage.getItem("past_page") == "plot") {
+    if (sessionStorage.getItem("past_page") == "plot") {
         loginTab.addClass("d-none");
         chooseOVAsTab.removeClass("d-none");
         makeStudentOVAs(ovaDiv);
@@ -13,7 +13,6 @@ $(document).ready(function() {
         localStorage.clear();
         localStorage.setItem("logged", false);
     }
-    
 
     const togglePassword = $(".toggle-password");
     const raInput = $("#ra-input");

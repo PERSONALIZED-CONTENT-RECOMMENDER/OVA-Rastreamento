@@ -4,28 +4,53 @@ sys.path.append(root)
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), 'data/models')))
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), 'data')))
 
-from playhouse.shortcuts import model_to_dict, fn, JOIN
 from collections import defaultdict
+from base import db
+import json
 
-from students import Students
-from ovas import OVAs
-from interactions import Interactions
-from courses import Courses
-from offerings import Offerings
-from subjects import Subjects
-from competencies import Competencies
+def ova_interactions_by_student(data, grouping_type="subject"):
+    db.connect(reuse_if_open=True)
+    # cursor = db.execute_sql()
+    student_id = data["student_id"]
+    course_id = data["course_id"]
+    
+    query = ("""select {0}, count(si.interaction_id) from 
+(
+    select interaction_id, ova_id 
+    from interactions 
+    where student_id = {1}
+) si
+right join ovas o on si.ova_id = o.ova_id
+inner join competencies c on o.competency_id = c.competency_id
+inner join course_subjects s on c.subject_id = s.subject_id
+inner join offerings offe on s.subject_id = offe.subject_id
+where offe.course_id = {2}
+group by {0}
+""")
+    
+    if (grouping_type == "competency"):
+        group_columns = "s.subject_name, c.competency_description"
+        cursor = db.execute_sql(query.format(group_columns, student_id, course_id, group_columns))
+        
+        result = defaultdict(lambda: defaultdict(list))
+        for row in cursor.fetchall():
+            result[row[0]][row[1]].append(row[2])
+    else:
+        group_columns = "o.ova_name"
+        cursor = db.execute_sql(query.format(group_columns, student_id, course_id, group_columns))
+    
+        result = defaultdict(int)
+        for row in cursor.fetchall():
+            result[row[0]] += row[1]
+    
+        
+    print(json.dumps(result, ensure_ascii=False))
+    
+data = {
+    "student_id": 2,
+    "course_id": 1
+}
+# _, result = ova_interactions_by_student(data)
+# print(result)
 
-def ova_interactions_by_student(data):
-    i = Interactions.alias()
-    o = OVAs.alias()
-    c = Competencies.alias()
-    s = Subjects.alias()
-    of = Offerings.alias()
-    
-    student_interactions = i.select(i.interaction_id, i.ova_id).where(i.student_id == data["student_id"])
-    SI = student_interactions.alias("SI")
-    
-    result = o.select(o.ova_name, fn.COUNT(SI.c.interaction_id).alias("count")).join(SI, JOIN.LEFT_OUTER, on=(SI.c.ova_id == o.ova_id)).join(c, on=(o.competency_id == c.competency_id)).join(s).join(of).group_by(o.ova_name).where(of.course_id == data["course_id"])
-    
-    
-    return "OVA interactions", {r.ova_name: r.count for r in result}
+ova_interactions_by_student(data, "competency")
