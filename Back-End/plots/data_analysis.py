@@ -44,3 +44,25 @@ data = {
     "student_id": 2,
     "course_id": 1
 }
+
+#select para desempenho geral do estudante no curso
+
+# select s.student_name, count(i.interaction_id) as count
+# from (
+# 	select *
+#     from students
+#     where course_id = 1
+# ) s
+# left join interactions i
+# on i.student_id = s.student_id
+# left join ovas o
+# on i.ova_id = o.ova_id
+# left join competencies c
+# on o.competency_id = c.competency_id
+# left join (
+# 	select *
+#     from offerings
+#     where course_id = 1
+# ) cs
+# on c.subject_id = cs.subject_id
+# group by s.student_name
