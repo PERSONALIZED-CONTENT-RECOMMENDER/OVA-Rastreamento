@@ -8,9 +8,8 @@ from collections import defaultdict
 from base import db
 import json
 
-def ova_interactions_by_student(data, grouping_type="subject"):
+def ova_interactions_by_competencies(data, grouping_type="subject"):
     db.connect(reuse_if_open=True)
-    # cursor = db.execute_sql()
     student_id = data["student_id"]
     course_id = data["course_id"]
     
@@ -28,34 +27,20 @@ where offe.course_id = {2}
 group by {0}
 """)
     
-    if (grouping_type == "competency"):
-        group_columns = "s.subject_name, c.competency_description"
-        cursor = db.execute_sql(query.format(group_columns, student_id, course_id, group_columns))
+    group_columns = "s.subject_name, c.competency_description"
+    columns = ["subject", "competency", "count"]
+    
+    full_query = query.format(group_columns, student_id, course_id, group_columns)
+    cursor = db.execute_sql(full_query)
+    data = cursor.fetchall()
+    
+    result = defaultdict(list)
+    for row in data:
+        result[row[0]].append(row[1:])
         
-        result = defaultdict(lambda: defaultdict(list))
-        for row in cursor.fetchall():
-            print(row)
-            result[row[0]][row[1]].append(row[2])
-
-        return "Title", result
-    else:
-        group_columns = "o.ova_name"
-        cursor = db.execute_sql(query.format(group_columns, student_id, course_id, group_columns))
+    return "Title", result, max(list(map(lambda x: len(x), result.values())))
     
-        result = defaultdict(int)
-        for row in cursor.fetchall():
-            result[row[0]] += row[1]
-
-        return "Title", result
-    
-    # print("\n\n\n\n\n")
-    # print(json.dumps(result, ensure_ascii=False))
-    
-# data = {
-#     "student_id": 2,
-#     "course_id": 1
-# }
-# _, result = ova_interactions_by_student(data)
-# print(result)
-
-# ova_interactions_by_student(data, "competency")
+data = {
+    "student_id": 2,
+    "course_id": 1
+}

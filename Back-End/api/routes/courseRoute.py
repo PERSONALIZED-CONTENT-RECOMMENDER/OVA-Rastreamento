@@ -18,7 +18,7 @@ app_course = Blueprint("course", __name__)
 def show_courses():
     if request.method == "GET":
         try:
-            courses = Courses.select()
+            courses = Courses.select().where(Courses.course_id < 100)
             course_list = []
             for course in courses:
                 course_dict = {

@@ -25,7 +25,7 @@ $(document).ready(function () {
                         <option value=""></option>
                     </select>
                 </div>
-                <div class="mb-3">
+                <div class="mb-3 d-none">
                     <label for="students">Estudante:</label>
                     <select name="" id="students" class="form-select">
                         <option value=""></option>
@@ -42,11 +42,14 @@ $(document).ready(function () {
         .catch(error => console.log(error));
 
         courses.on("change", async function() {
+            if (students.parent().hasClass("d-none")) {
+                students.parent().removeClass("d-none");
+            }
             students.html(`<option value=""></option>`);
             const option = $(this).find("option:selected");
             if (option.val() != "") {
                 students.append($(
-                    `<option class="all-students" value="0">All students</option>`
+                    `<option class="all-students" value="0">Todos</option>`
                 ));
                 await getStudentsByCourse(option.val())
                 .then(response => makeStudentOptions(response, students))
@@ -90,57 +93,74 @@ function getStudentsByCourse(course_id) {
 }
 
 function makePlot(response, plots) {
-    console.log(response);
-    const base_layout = {
-        width: plots.width(),
-        font: {
-            size: 12
-        },
-        xaxis: {
-            tickangle: 20
-        }
-    };
+    const plot = $(`<div id="plot-1"></div>`);
+    plots.append(plot);
+    const totalInteractions = sessionStorage.getItem("num_interactions");
+    const byCompetencies = response.data;
+    const max = response.max_num_competencies;
+    const keys = Object.keys(byCompetencies);
+
     const config = {
         responsive: true,
         displayModeBar: false,
         scrollZoom: true
     };
 
-    const totalInteractions = sessionStorage.getItem("num_interactions");
-    for (let i = 0; i < response.length; i++) {
-        const plotDiv = $(`<div id="plot-${i}"></div>`);
-        plots.append(plotDiv);
+    const layout = {
+        title: "Desempenho do aluno por competência",
+        barmode: "group",
+        width: plots.width(),
+        font: {
+            size: 12
+        },
+        xaxis: {
+            tickangle: 20
+        },
+        yaxis: {
+            tickformat: "2%"
+        }
+    };
 
-        const plot = response[i];
-        const plot_data = plot.data
-        const plot_type = plot.type
-
-        const subjects = Object.keys(plot_data);
-        const percentages = [];
-        const num_interactions = Object.values(plot_data);
-        num_interactions.forEach(value => {
-            percentages.push(value / totalInteractions);
-        });
-
-        const data = [
-            {
-                x: subjects,
-                y: percentages,
-                type: plot_type,
-                text: num_interactions.map(formatGraphLabels),
-                textfont: {size: 14}
+    const data = [];
+    const colors = [
+        'rgb(245,232,0)', 
+        'rgb(0,244,17)', 
+        'rgb(245,1,17)', 
+        'rgb(10,11,244)', 
+        'rgb(0,245,230)'];
+    for (let i = 0; i < max; i++) {
+        data[i] = {
+            type: "bar",
+            marker: {
+                color: colors[i]
+            },
+            font: {
+                size: 12
+            },
+            xaxis: {
+                tickangle: 20
+            },
+            name: `Competência ${i + 1}`,
+            hovertemplate:
+            `<b>%{customdata}</b>`
+        };
+        data[i].x = [];
+        data[i].customdata = [];
+        data[i].y = [];
+        for (let j = 0; j < keys.length; j++) {
+            if (i >= byCompetencies[keys[j]].length) {
+                data[i].x.push("");
+                data[i].customdata.push("");
+                data[i].y.push(0);
             }
-        ];
-
-        const layout = base_layout;
-        layout.title = {text: plot.title};
-        layout.yaxis = {tickformat: "2%"};
-
-        Plotly.newPlot(`plot-${i}`, data, layout, config);
+            else {
+                data[i].x.push(keys[j]);
+                data[i].customdata.push(byCompetencies[keys[j]][i][0]);
+                data[i].y.push((Math.random() * 30) / totalInteractions);
+                // data[i].y.push(byCompetencies[keys[j]][i][1]);
+            }
+        }
     }
-}
 
-function formatGraphLabels(num) {
-    const totalInteractions = sessionStorage.getItem("num_interactions");
-    return `${num}/${totalInteractions}`;
+    Plotly.newPlot(`plot-1`, data, layout);
 }

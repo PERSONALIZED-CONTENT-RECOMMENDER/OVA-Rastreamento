@@ -7,13 +7,14 @@ from flask import Blueprint, request
 from flask_cors import cross_origin
 import json
 
-from data_analysis import ova_interactions_by_student
+from data_analysis import ova_interactions_by_competencies
 
-def format_data(plot_type, data, title):
+def format_data(plot_type, title, data, max):
     return {
         "type": plot_type,
         "data": data,
-        "title": title
+        "title": title,
+        "max_num_competencies": max
     }
 
 app_plot = Blueprint("plot", __name__)
@@ -23,10 +24,10 @@ app_plot = Blueprint("plot", __name__)
 def get_student_plots():
     if request.method == "POST":
         student_data = request.get_json()[0]
-        plots = []
-        title, data = ova_interactions_by_student(student_data)
-        plot = format_data("bar", data, title)
-        plots.append(plot)
-        return json.dumps(plots)
+        
+        title, data, max = ova_interactions_by_competencies(student_data)
+        plot = format_data("bar", title, data, max)
+        
+        return json.dumps(plot)
     else:
         return "Wrong Request Methods. Only POST Allowed", 405

@@ -35,16 +35,17 @@ export function makeCourseOptions(data, select) {
         const option = $(`
             <option value="${data[i]["course_id"]}">${data[i]["course_name"]}</option>
         `);
-        option.inserBefore(select.find(".all-students"));
+        select.append(option);
     }
 }
 
 export function makeStudentOptions(data, select) {
     for (let i = 0; i < data.length; i++) {
         const option = $(`
-            <option value="${data[i]["ra"]}">${data[i]["student_name"]}</option>
+            <option value="${data[i]["student_id"]}">${data[i]["student_name"]}</option>
         `);
         select.append(option);
+        option.insertBefore(select.find(".all-students"));
     }
 }
 
