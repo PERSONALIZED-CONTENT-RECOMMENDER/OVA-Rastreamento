@@ -45,13 +45,13 @@ do
         else
 		competency_count=$((--competency_count))
 		competency_id=$((++competency_id))
-		echo "($competency_id, \"${array[0]}\", $subject_id)," >> ./competency-sql.txt
+		echo "($competency_id, '${array[0]}', $subject_id)," >> ./competency-sql.txt
 		for (( i=1; i <= ${array[1]}; i++ ))
 		do
 			ova_name="$subject_name - Competência $(($subject_num_competencies - $competency_count)) - $i"
 			arq_name="$(tr ' ' '_' <<< "${subject_name,,}")_$(($subject_num_competencies - $competency_count))_$i.html"
 		    arq_name=$(echo $arq_name | iconv -f UTF8 -t ASCII//TRANSLIT)
-			echo "($((++ova_id)), \"$ova_name\", \"$arq_name\", $competency_id)," >> ./ova-sql.txt
+			echo "($((++ova_id)), '$ova_name', '$arq_name', $competency_id)," >> ./ova-sql.txt
 
 			arq_path="$path/$arq_name"
             cp ./$template $arq_path

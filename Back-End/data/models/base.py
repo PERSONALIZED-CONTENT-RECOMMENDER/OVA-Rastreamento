@@ -1,7 +1,4 @@
-from peewee import *
+from sqlalchemy.orm import DeclarativeBase
 
-db = MySQLDatabase("ova_db", user="duca", password="Password-123", host="localhost", port=3306)
-
-class BaseModel(Model):
-    class Meta:
-        database=db
+class Base(DeclarativeBase):
+    pass
