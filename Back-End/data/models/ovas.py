@@ -1,9 +1,12 @@
-from base import BaseModel
-from competencies import Competencies
-from peewee import *
+from sqlalchemy import String, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column
+from typing import List
 
-class OVAs(BaseModel):
-    ova_id = IntegerField(primary_key=True)
-    ova_name = TextField()
-    competency_id = ForeignKeyField(Competencies, backref="ovas", on_delete="cascade", on_update="cascade")
-    link = TextField()
+from base import Base
+from competencies import Competencies
+
+class OVAs(Base):
+    ova_id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    ova_name: Mapped[str] = mapped_column(String(50))
+    competency_id: Mapped[int] = mapped_column(ForeignKey("competencies.competency_id"))
+    link: Mapped[str] = mapped_column(String(50))

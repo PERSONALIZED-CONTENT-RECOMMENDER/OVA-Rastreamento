@@ -7,7 +7,7 @@ create table courses (
 
 create table course_subjects (
 	subject_id int primary key not null,
-    subject_name varchar(255)
+    subject_name varchar(100)
 );
 
 create table offerings (
@@ -51,7 +51,7 @@ create table interactions (
     student_action varchar(255),
     correct_answer bit,
     percentage_achieved float,
-    percentage_name varchar(255),
+    percentage_name varchar(50),
     student_id int,
     ova_id int,
     foreign key (student_id) references students(student_id) on delete cascade on update cascade,

@@ -1,8 +1,12 @@
-from base import BaseModel
-from subjects import Subjects
-from peewee import *
+from sqlalchemy import String, ForeignKey
+from sqlalchemy.orm import mapped_column, Mapped
 
-class Competencies(BaseModel):
-    competency_id = IntegerField(primary_key=True)
-    competency_description = TextField()
-    subject_id = ForeignKeyField(Subjects, backref="competencies", on_delete="cascade", on_update="cascade")
+from base import Base
+from subjects import Subjects
+
+class Competencies(Base):
+    __tablename__ = "competencies"
+    
+    competency_id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    competency_description: Mapped[str] = mapped_column(String(255))
+    subject_id: Mapped[int] = mapped_column(ForeignKey("course_subjects.competency_id"))

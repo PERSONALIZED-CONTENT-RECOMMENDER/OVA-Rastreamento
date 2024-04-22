@@ -1,6 +1,10 @@
 from sqlalchemy import String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from typing import List
+
 from base import Base
+from students import Students
+from subjects import Subjects
 
 class Courses(Base):
     __tablename__ = "courses"

@@ -1,7 +1,6 @@
 insert into courses
-(course_id, course_name)
 values 
-(100, 'admin'),
+(100, null),
 (1, 'Engenharia de Computação'),
 (2, 'Engenharia de Controle e Automação'),
 (3, 'Engenharia Química'),
@@ -12,7 +11,6 @@ values
 (8, 'Arquitetura e Urbanismo');
 
 insert into course_subjects
-(subject_id, subject_name)
 values
 (1, 'Cálculo A'),
 (2, 'Metodologia da Pesquisa'),
@@ -35,7 +33,6 @@ values
 (19, 'Patrimônio Histórico');
 
 insert into offerings
-(offering_id, course_id, subject_id)
 values
 (1, 1, 1),
 (2, 1, 2),
@@ -71,9 +68,8 @@ values
 (32, 8, 19);
 
 insert into students
-(student_id, ra, student_password, student_name, course_id, is_admin)
 values
-(1, '10A.047292', 'Password-0', 'Admin', 100, 1),
+(1, '10A.047292', 'Password-0', null, 100, 1),
 (2, '20A.752355', 'Password-1', 'Eduardo Fiscina Menezes Moraes', 1, 0),
 (3, '10Q.178487', 'Password-2', 'Iago Santana Alfaya', 1, 0),
 (4, '67Z.406178', 'Password-3', 'Rodrigo de Jesus Macêdo', 1, 0),
@@ -84,7 +80,6 @@ values
 (9, '50Y.102840', 'Password-8', 'Maria Clara Barbosa', 4, 0);
 
 insert into competencies
-(competency_id, competency_description, subject_id)
 values
 (1, 'Resolver problemas usando funções matemáticas.', 1),
 (2, 'Analisar e interpretar dados através de representações gráficas.', 1),
@@ -172,7 +167,6 @@ values
 (84, 'Desenvolver habilidades em legislação e políticas públicas para a proteção do patrimônio.', 19);
 
 insert into ovas
-(ova_id, ova_name, link, competency_id)
 values
 (1, 'Cálculo A - Competência 1 - 1', 'calculo_a_1_1.html', 1),
 (2, 'Cálculo A - Competência 2 - 1', 'calculo_a_2_1.html', 2),

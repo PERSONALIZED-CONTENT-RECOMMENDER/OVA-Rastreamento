@@ -1,9 +1,13 @@
-from base import BaseModel
+from sqlalchemy import ForeignKey, String
+from sqlalchemy.orm import Mapped, mapped_column
+
+from base import Base
 from courses import Courses
 from subjects import Subjects
-from peewee import *
 
-class Offerings(BaseModel):
-    offering_id = IntegerField(primary_key=True)
-    course_id = ForeignKeyField(Courses, backref="offerings", on_delete="cascade", on_update="cascade")
-    subject_id = ForeignKeyField(Subjects, backref="offerings", on_delete="cascade", on_update="cascade")
+class Offerings(Base):
+    __tablename__ = "offerings"
+    
+    offering_id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    course_id: Mapped[int] = mapped_column(ForeignKey("courses.course_id"))
+    subject_id: Mapped[int] = mapped_column(ForeignKey("course_subjects.subject_id"))
