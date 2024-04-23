@@ -1,7 +1,5 @@
 from flask import Flask
 from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.engine import URL
 
 from routes.loginRoute import app_login
 from routes.ovaRoute import app_ova
@@ -12,12 +10,6 @@ from routes.plotRoute import app_plot
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"/*": {"origins": "http://localhost:*/*"}})
-
-connection_string = "Driver={ODBC Driver 18 for SQL Server};Server=tcp:ova-db-server.database.windows.net,1433;Database=OVA-DB;Uid=duca1;Pwd=Ducaduca-1;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;"
-connection_url = URL.create("mssql+pyodbc", query={"odbc_connect": connection_string})
-app.config["SQL_ALCHEMY_URI"] = connection_url
-db = SQLAlchemy()
-db.init_app(app)
 
 app.register_blueprint(app_login)
 app.register_blueprint(app_ova)
