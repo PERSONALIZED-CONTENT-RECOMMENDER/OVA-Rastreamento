@@ -10,10 +10,10 @@ from peewee import PeeweeException
 import json
 from collections import defaultdict
 
-from offerings import Offerings
-from subjects import Subjects
-from competencies import Competencies
-from ovas import OVAs
+from offering import Offering
+from subject import Subject
+from competency import Competency
+from ova import OVA
 
 app_ova = Blueprint("ova", __name__)
 
@@ -22,10 +22,10 @@ app_ova = Blueprint("ova", __name__)
 def show_course_OVAs(course_id):
     if request.method == "GET":
         try:
-            of = Offerings.alias()
-            s = Subjects.alias()
-            c = Competencies.alias()
-            o = OVAs.alias()
+            of = Offering.alias()
+            s = Subject.alias()
+            c = Competency.alias()
+            o = OVA.alias()
             
             query = o.select(s.subject_name, c.competency_description, o.ova_id, o.ova_name, o.link).join(c).join(s).join(of).where(of.course_id == course_id)
             
@@ -50,7 +50,7 @@ def show_course_OVAs(course_id):
 def show_all_OVAs():
     if request.method == "GET":
         try:
-            ovas = OVAs.select()
+            ovas = OVA.select()
             ova_list = []
             for ova in ovas:
                 ova_dict = {

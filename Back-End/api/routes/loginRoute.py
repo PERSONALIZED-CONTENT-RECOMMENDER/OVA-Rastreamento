@@ -4,13 +4,15 @@ sys.path.append(root)
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), 'data/models')))
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), 'data')))
 
-from flask import Blueprint, request, redirect
+from flask import Blueprint, request
 from flask_cors import cross_origin
 import json
 from peewee import PeeweeException
 
-from students import Students
-from courses import Courses
+from sqlalchemy import select
+from student import Student
+from course import Course
+from base import db
 
 app_login = Blueprint('login', __name__)
 
@@ -20,12 +22,16 @@ def login():
     if request.method == "POST":
         try:
             login_data = request.get_json()[0]
-            student = Students.select().where(Students.ra == login_data["ra"]).first()
+            student = db.session.execute(
+                select(Student.student_id, Student.course_id, Student.is_admin).where(Student.ra == login_data["ra"] and Student.student_password == login_data["password"])
+                ).first()
             
-            if (not student or login_data["ra"] == "") or login_data["password"] != student.student_password:
+            if (student == None or login_data["ra"] == ""):
                 return "Wrong RA or Password", 401
             
-            course = Courses.select().where(Courses.course_id == student.course_id).first()
+            course = db.session.execute(
+                select(Course.course_id).where(Course.course_id == student.course_id)
+                ).first()
             
             ids = {
                 "course_id": course.course_id,

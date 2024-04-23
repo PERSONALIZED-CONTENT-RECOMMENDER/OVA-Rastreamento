@@ -277,3 +277,5 @@ values
 (107, 'Patrimônio Histórico - Competência 3 - 1', 'patrimonio_historico_3_1.html', 82),
 (108, 'Patrimônio Histórico - Competência 4 - 1', 'patrimonio_historico_4_1.html', 83),
 (109, 'Patrimônio Histórico - Competência 5 - 1', 'patrimonio_historico_5_1.html', 84);
+
+set identity_insert interactions on;

@@ -9,7 +9,7 @@ from flask_cors import cross_origin
 from peewee import PeeweeException
 import json
 
-from students import Students
+from student import Student
 
 app_student = Blueprint("student", __name__)
 
@@ -18,7 +18,7 @@ app_student = Blueprint("student", __name__)
 def student_by_course(course_id):
     if request.method == "GET":
         try:
-            students = Students.select().where(Students.course_id == course_id)
+            students = Student.select().where(Student.course_id == course_id)
             student_list = []
             for student in students:
                 student_dict = {
