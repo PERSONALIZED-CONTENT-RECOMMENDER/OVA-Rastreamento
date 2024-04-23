@@ -1,7 +1,6 @@
 {
     "python.analysis.extraPaths": [
         "./data/models",
-        "./plots",
-        "./api"
+        "./plots"
     ]
 }

@@ -45,7 +45,7 @@ create table students (
 );
 
 create table interactions (
-	interaction_id int primary key not null identity,
+	interaction_id int primary key not null,
     interaction_date date,
     interaction_time time,
     student_action varchar(255),
