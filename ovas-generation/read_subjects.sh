@@ -60,4 +60,4 @@ do
             sed -i "s/----competency----/Competência $i/" $arq_path
 		done
 	fi
-done < $subjects
+done < $subjects 
