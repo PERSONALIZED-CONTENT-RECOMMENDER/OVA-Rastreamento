@@ -45,24 +45,54 @@ data = {
     "course_id": 1
 }
 
-#select para desempenho geral do estudante no curso
+def course_general_performance(course_id):
+    query = (f"""select s.student_name, sum(case when ci.partial_perc is null then 0 else ci.partial_perc end) as perc_total
+from students s
+left join (
+	select i.student_id, (count(i.interaction_id) / o.num_interactions) as partial_perc
+	from interactions i
+	inner join ovas o
+	on o.ova_id = i.ova_id
+	inner join competencies c
+	on o.competency_id = c.competency_id
+	inner join course_subjects cs
+	on c.subject_id = cs.subject_id
+	inner join offerings offe
+	on cs.subject_id = offe.subject_id
+	where offe.course_id = {course_id}
+    group by i.student_id, o.ova_id
+) ci
+on s.student_id = ci.student_id
+where s.course_id = {course_id}
+group by s.student_name""")
+    
+    cursor = db.execute_sql(query)
+    data = {"students": [], "perc": []}
+    
+    for student, perc in cursor.fetchall():
+        data["students"].append(student)
+        data["perc"].append(round(float(perc), 2))
+    
+    return data
 
-# select s.student_name, count(i.interaction_id) as count
-# from (
-# 	select *
-#     from students
-#     where course_id = 1
-# ) s
-# left join interactions i
-# on i.student_id = s.student_id
-# left join ovas o
-# on i.ova_id = o.ova_id
-# left join competencies c
-# on o.competency_id = c.competency_id
-# left join (
-# 	select *
-#     from offerings
-#     where course_id = 1
-# ) cs
-# on c.subject_id = cs.subject_id
-# group by s.student_name
+def ova_performance_by_students(ova_id):
+    query = (f"""select s.student_name, count(i.interaction_id) / (
+select num_interactions from ovas where ova_id = {ova_id}
+)
+from students s
+left join (
+	select interaction_id, student_id 
+    from interactions
+    where ova_id = {ova_id}
+) i
+on s.student_id = i.student_id
+group by s.student_name""")
+    
+    cursor = db.execute_sql(query)
+    data = {"students": [], "perc": []}
+    
+    for student, perc in cursor.fetchall():
+        data["students"].append(student)
+        data["perc"].append(round(float(perc), 2))
+    
+    return data

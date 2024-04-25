@@ -55,9 +55,7 @@ def show_all_OVAs():
             for ova in ovas:
                 ova_dict = {
                     "ova_id": ova.ova_id,
-                    "ova_name": ova.ova_name,
-                    "complexity": ova.complexity,
-                    "link": ova.link
+                    "ova_name": ova.ova_name
                 }
                 ova_list.append(ova_dict.copy())
             return json.dumps(ova_list)

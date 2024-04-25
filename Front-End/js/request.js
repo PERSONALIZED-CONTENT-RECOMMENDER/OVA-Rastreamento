@@ -49,7 +49,21 @@ export function makeStudentOptions(data, select) {
     }
 }
 
+export function makeOVAsOptions(data, select) {
+    for (let i = 0; i < data.length; i++) {
+        const option = $(`
+            <option value="${data[i]["ova_id"]}">${data[i]["ova_name"]}</option>
+        `);
+        select.append(option);
+    }
+}
+
 export function getCourses() {
     const url = "/courses";
+    return doRequest(url, {}, "GET");
+}
+
+export function getAllOVAs() {
+    const url = "/ova/all";
     return doRequest(url, {}, "GET");
 }
