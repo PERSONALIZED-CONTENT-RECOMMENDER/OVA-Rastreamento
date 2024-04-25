@@ -32,6 +32,7 @@ create table ovas (
 	ova_id int primary key not null auto_increment,
     ova_name varchar(255),
     link varchar(255),
+    num_interactions int,
     competency_id int,
     foreign key (competency_id) references competencies(competency_id) on delete cascade on update cascade
 );
