@@ -32,7 +32,8 @@ function onYouTubeIframeAPIReady() {
             player: new YT.Player(iframe.id, {
                 videoId: videoId,
                 events: {
-                    "onReady": onPlayerReady
+                    "onReady": onPlayerReady,
+                    "onStateChange": onPlayerStateChange
                 }
             }),
             id: videoId,
@@ -41,33 +42,46 @@ function onYouTubeIframeAPIReady() {
     });
 }
 
+let done = false;
+
 function onPlayerReady(event) {
     const player = event.target;
     const iframe = player.getIframe();
     const iframeId = iframe.dataset.playerlistPos;
     const playerData = players[iframeId];
-    player.seekTo(JSON.parse(localStorage.getItem(`${playerData.id}_viewed`)));
+    player.stopVideo();
     setInterval(function() {
         const ct = player.getCurrentTime();
         const d = player.getDuration();
         const perc = 100 * ct / d
-        Object.keys(playerData.points).forEach(point => {
-            if (perc >= point & !playerData.points[point]) {
-                playerData.points[point] = true;
-                localStorage.setItem(`${playerData.id}_viewed`, ct);
-                videoVisualization(`Watched ${point}% of the ${iframe.title} video`)
-                .then(response => console.log("success"))
-                .catch(error => console.log(error));
-            }
-            if (player.getPlayerState() == 0 & !playerData.points[100]) {
-                playerData.points[100] = true;
-                localStorage.setItem(`${playerData.id}_viewed`, ct);
-                videoVisualization(`Watched 100% of the ${iframe.title} video`)
-                .then(response => console.log("success"))
-                .catch(error => console.log(error));
-            }
-        });
+        if (done) {
+            Object.keys(playerData.points).forEach(point => {
+                if (perc >= point & !playerData.points[point]) {
+                    playerData.points[point] = true;
+                    localStorage.setItem(`${playerData.id}_viewed`, ct);
+                    videoVisualization(`Watched ${point}% of the ${iframe.title} video`)
+                    .then(response => console.log("success"))
+                    .catch(error => console.log(error));
+                }
+                if (player.getPlayerState() == 0 & !playerData.points[100]) {
+                    playerData.points[100] = true;
+                    localStorage.setItem(`${playerData.id}_viewed`, ct);
+                    videoVisualization(`Watched 100% of the ${iframe.title} video`)
+                    .then(response => console.log("success"))
+                    .catch(error => console.log(error));
+                }
+            });
+        } 
     }, 1000);
+}
+
+function onPlayerStateChange(event) {
+    if (event.data == YT.PlayerState.PLAYING && !done) {
+        event.target.mute();
+        event.target.seekTo(0);
+        event.target.unMute();
+        done = true;
+    }
 }
 
 function videoVisualization(perc_watched, type="POST") {
