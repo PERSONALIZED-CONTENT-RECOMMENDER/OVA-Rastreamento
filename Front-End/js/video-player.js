@@ -55,6 +55,7 @@ function onPlayerReady(event) {
         const d = player.getDuration();
         const perc = 100 * ct / d
         if (done) {
+            console.log(perc);
             Object.keys(playerData.points).forEach(point => {
                 if (perc >= point & !playerData.points[point]) {
                     playerData.points[point] = true;
