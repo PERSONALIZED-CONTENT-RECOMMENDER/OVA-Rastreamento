@@ -50,9 +50,9 @@ def get_course_plots():
 @cross_origin()
 def get_ova_plots():
     if request.method == "POST":
-        ova_id = request.get_json()[0]["ova_id"]
+        data = request.get_json()[0]
         
-        data = ova_performance_by_students(ova_id)
+        data = ova_performance_by_students(data)
         plot = format_data("bar", "Performance dos alunos no OVA", data)
         
         return json.dumps(plot)

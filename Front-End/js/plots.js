@@ -90,7 +90,8 @@ $(document).ready(function () {
             const option = $(this).find("option:selected");
             if (option.val() != "") {
                 const ova_data = {
-                    "ova_id": option.val()
+                    "ova_id": option.val(),
+                    "course_id": courses.find("option:checked").val()
                 }
                 getOVAPlot(ova_data)
                 .then(response => ovaGeneralPerformance(response, plots))
@@ -194,8 +195,7 @@ function studentCompetencyPerformance(response, plots) {
             else {
                 data[i].x.push(keys[j]);
                 data[i].customdata.push(byCompetencies[keys[j]][i][0]);
-                data[i].y.push((Math.random() * 30) / totalInteractions);
-                // data[i].y.push(byCompetencies[keys[j]][i][1]);
+                data[i].y.push(byCompetencies[keys[j]][i][1]);
             }
         }
     }

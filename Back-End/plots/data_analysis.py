@@ -14,9 +14,9 @@ def ova_interactions_by_competencies(data):
     course_id = data["course_id"]
     
     query = (f"""select s.subject_name, c.competency_description, count(si.interaction_id) / (
-	select sum(o1.num_interactions)
-	from ovas o1 where o1.competency_id = o.competency_id
-)
+	select sum(num_interactions) 
+    from ovas 
+    where competency_id = c.competency_id)
 from 
 (
     select interaction_id, ova_id 
@@ -28,7 +28,7 @@ inner join competencies c on o.competency_id = c.competency_id
 inner join course_subjects s on c.subject_id = s.subject_id
 inner join offerings offe on s.subject_id = offe.subject_id
 where offe.course_id = {course_id}
-group by s.subject_name, c.competency_description, o.ova_id
+group by s.subject_id, c.competency_id
 """)
     
     cursor = db.execute_sql(query)
@@ -55,8 +55,7 @@ def course_general_performance(course_id):
 	on c.subject_id = cs.subject_id
 	inner join offerings offe
 	on cs.subject_id = offe.subject_id
-	where offe.course_id = {course_id}
-)
+	where offe.course_id = {course_id})
 select s.student_name, (case when ci.count is null then 0 else ci.count end) / (
 	select sum(num_interactions) from course_ovas
 )
@@ -80,17 +79,20 @@ where s.course_id = {course_id}""")
     
     return data
 
-def ova_performance_by_students(ova_id):
+def ova_performance_by_students(data):
+    ova_id = data["ova_id"]
+    course_id = data["course_id"]
+    
     query = (f"""select s.student_name, count(i.interaction_id) / (
-select num_interactions from ovas where ova_id = {ova_id}
-)
+        select num_interactions from ovas where ova_id = {ova_id})
 from students s
 left join (
 	select interaction_id, student_id 
     from interactions
     where ova_id = {ova_id}
-) i
+) ova_interactions
 on s.student_id = i.student_id
+where s.course_id = {course_id}
 group by s.student_name""")
     
     cursor = db.execute_sql(query)
