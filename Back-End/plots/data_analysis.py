@@ -46,6 +46,7 @@ data = {
 }
 
 def course_general_performance(course_id):
+    db.connect(reuse_if_open=True)
     query = (f"""with course_ovas as (
 	select o.ova_id, o.num_interactions 
     from ovas o
@@ -80,6 +81,7 @@ where s.course_id = {course_id}""")
     return data
 
 def ova_performance_by_students(data):
+    db.connect(reuse_if_open=True)
     ova_id = data["ova_id"]
     course_id = data["course_id"]
     

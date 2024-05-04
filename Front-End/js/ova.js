@@ -1,26 +1,10 @@
 import { registerInteraction } from "./request.js";
 
-function generateScrollPoints(readTime, n_points) {
-    let points = [];
-    const perc = 100 / n_points;
-    const perc_time = readTime / n_points;
-    const alreadyScrolled = JSON.parse(localStorage.getItem("perc_scrolled"));
-    for (let i = 1; i <= n_points; i++) {
-        points.push({
-            perc: perc * i,
-            time: perc_time * i,
-            status: perc * i <= alreadyScrolled
-        });
-    }
+const mainIframe = $("#iframe");
+const iframeDoc = mainIframe.contents()[0];
+const contentWindow = mainIframe.get(0).contentWindow;
 
-    return points;
-}
-
-function countOVAInteraction() {
-
-}
-
-$(document).ready(function() {
+$(iframeDoc).ready(function() {
     sessionStorage.setItem("past_page", "ova");
     const read_time = localStorage.getItem("read_time");
     let timePassed;
@@ -43,13 +27,13 @@ $(document).ready(function() {
     
     let scrollPoints = generateScrollPoints(360, 5);
 
-    const dropdown = $(".dropdown");
+    const dropdown = $(iframeDoc).find(".dropdown");
     dropdown.css({"top": "-600px"});
-    const dropdownButton = $(".dropdown-button");
-    const carrousels = $("section").find(".carrousel");
-    const questions = $(".question");
-    const sendText = $(".questions").find(".send-text");
-    const accordionItems = $(".accordion-item");
+    const dropdownButton = $(iframeDoc).find(".dropdown-button");
+    const carrousels = $(iframeDoc).find("section").find(".carrousel");
+    const questions = $(iframeDoc).find(".question");
+    const sendText = $(iframeDoc).find(".questions").find(".send-text");
+    const accordionItems = $(iframeDoc).find(".accordion-item");
 
     let num_interactions = 0;
     carrousels.each(index => {
@@ -90,11 +74,11 @@ $(document).ready(function() {
         });
     });
 
-    const sections = $(".section-content");
-    $(window).on("scroll", function () {
-        const s = $(window).scrollTop(),
-            d = $(document).height(),
-            c = $(window).height();
+    const sections = $(iframeDoc).find(".section-content");
+    $(contentWindow).on("scroll", function () {
+        const s = $(contentWindow).scrollTop(),
+            d = $(iframeDoc).height(),
+            c = $(contentWindow).height();
             
         $.each(sections, function(index) {
             const section = sections.eq(index);
@@ -121,7 +105,7 @@ $(document).ready(function() {
             }
         });
         
-        $("#progressbar").attr('value', position);
+        $(iframeDoc).find("#progressbar").attr('value', position);
     });
     
     let carrouselsActualParts = {};
@@ -200,19 +184,27 @@ $(document).ready(function() {
         e.preventDefault();
         const question = questions.find("[data-number='3']");
         const action = "The user submitted the answer of question 3";
-        // let text_data = {
-        //     ra: localStorage.getItem("ra"),
-        //     ova_id: localStorage.getItem("ova_id"),
-        //     question_number: questions.find,
-        //     question: question.find("h3").html(),
-        //     text: questions.find(".q3-answer").val(),
-        //     action: "The user submitted the answer of question 3"
-        // };
         await registerInteraction(action)
         .then(response => console.log("success"))
         .catch(error => console.log(error));
     });
 });
+
+function generateScrollPoints(readTime, n_points) {
+    let points = [];
+    const perc = 100 / n_points;
+    const perc_time = readTime / n_points;
+    const alreadyScrolled = JSON.parse(localStorage.getItem("perc_scrolled"));
+    for (let i = 1; i <= n_points; i++) {
+        points.push({
+            perc: perc * i,
+            time: perc_time * i,
+            status: perc * i <= alreadyScrolled
+        });
+    }
+
+    return points;
+}
 
 function changePart(side, carrousel, carrouselsActualParts) {
     const parts = carrousel.find(".parts").children();

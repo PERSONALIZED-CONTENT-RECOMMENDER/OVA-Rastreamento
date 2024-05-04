@@ -101,7 +101,7 @@ function makeOVAOptions(response, ovaList) {
         const ova = response[i];
         const listItem = $(`
         <li class="ova-item list-group-item d-flex flex-column justify-content-between align-items-center rounded-3 shadow">
-            <a class="align-self-start" href="./ovas/${ova.link}">
+            <a class="align-self-start" href="./iframe.html">
                 <p><span class="fw-bold">Nome:</span> ${ova.ova_name}</p>
                 <p><span class="fw-bold">Competência:</span> ${ova.competency_description}</p>
             </a>
