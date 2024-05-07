@@ -50,7 +50,7 @@ def generate_interactions(n, course_id=1, ova_id=None):
     for row in result:
         students_ids[row[0]].append(row[1])
 
-    for _ in range(n):
+    for i in range(n):
         course_id = choice(list(set(ovas_ids.keys()).intersection(students_ids.keys())))
         
         ova_id = choice(ovas_ids[course_id])
@@ -68,4 +68,6 @@ def generate_interactions(n, course_id=1, ova_id=None):
             ova_id = ova
         )
         
-generate_interactions(20000)
+        print(f"Inserções: {i + 1}/{n}")
+
+generate_interactions(2_000_000)

@@ -22,13 +22,13 @@ function generatePoints(x, video_id) {
 let players = [];
 
 function onYouTubeIframeAPIReady() {
-    const iframes = document.querySelectorAll("iframe");
-    iframes.forEach(iframe => {
+    const videoIframes = document.querySelectorAll(".ova_video");
+    videoIframes.forEach(iframe => {
         const videoId = iframe.dataset.videoId
         if (localStorage.getItem(`${videoId}_viewed`) == null) {
             localStorage.setItem(`${videoId}_viewed`, 0);
         }
-        players.push({
+        const player_data = {
             player: new YT.Player(iframe.id, {
                 videoId: videoId,
                 events: {
@@ -38,7 +38,8 @@ function onYouTubeIframeAPIReady() {
             }),
             id: videoId,
             points: generatePoints(20, videoId)
-        });
+        };
+        players.push(player_data);
     });
 }
 
@@ -55,7 +56,6 @@ function onPlayerReady(event) {
         const d = player.getDuration();
         const perc = 100 * ct / d
         if (done) {
-            console.log(perc);
             Object.keys(playerData.points).forEach(point => {
                 if (perc >= point & !playerData.points[point]) {
                     playerData.points[point] = true;
