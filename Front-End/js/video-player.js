@@ -37,25 +37,28 @@ function onYouTubeIframeAPIReady() {
                 }
             }),
             id: videoId,
-            points: generatePoints(20, videoId)
+            points: generatePoints(20, videoId),
+            initial: false
         };
         players.push(player_data);
     });
 }
 
-let done = false;
-
-function onPlayerReady(event) {
+function getPlayerData(event) {
     const player = event.target;
     const iframe = player.getIframe();
-    const iframeId = iframe.dataset.playerlistPos;
-    const playerData = players[iframeId];
+    const iframeId = iframe.dataset.playerlistPos - 1;
+    return [player, players[iframeId]];
+}
+
+function onPlayerReady(event) {
+    const [player, playerData] = getPlayerData(event);
     player.stopVideo();
     setInterval(function() {
         const ct = player.getCurrentTime();
         const d = player.getDuration();
         const perc = 100 * ct / d
-        if (done) {
+        if (playerData.initial) {
             Object.keys(playerData.points).forEach(point => {
                 if (perc >= point & !playerData.points[point]) {
                     playerData.points[point] = true;
@@ -77,11 +80,12 @@ function onPlayerReady(event) {
 }
 
 function onPlayerStateChange(event) {
-    if (event.data == YT.PlayerState.PLAYING && !done) {
-        event.target.mute();
-        event.target.seekTo(0);
-        event.target.unMute();
-        done = true;
+    const [player, playerData] = getPlayerData(event);
+    if (event.data == YT.PlayerState.PLAYING && !playerData.initial) {
+        player.mute();
+        player.seekTo(0);
+        player.unMute();
+        playerData.initial = true
     }
 }
 
