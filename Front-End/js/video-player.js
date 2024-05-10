@@ -44,15 +44,11 @@ function onYouTubeIframeAPIReady() {
     });
 }
 
-function getPlayerData(event) {
+function onPlayerReady(event) {
     const player = event.target;
     const iframe = player.getIframe();
-    const iframeId = iframe.dataset.playerlistPos - 1;
-    return [player, players[iframeId]];
-}
-
-function onPlayerReady(event) {
-    const [player, playerData] = getPlayerData(event);
+    const iframeId = iframe.dataset.playerlistPos;
+    const playerData = players[iframeId];
     player.stopVideo();
     setInterval(function() {
         const ct = player.getCurrentTime();
@@ -80,7 +76,10 @@ function onPlayerReady(event) {
 }
 
 function onPlayerStateChange(event) {
-    const [player, playerData] = getPlayerData(event);
+    const player = event.target;
+    const iframe = player.getIframe();
+    const iframeId = iframe.dataset.playerlistPos - 1;
+    const playerData = players[iframeId];
     if (event.data == YT.PlayerState.PLAYING && !playerData.initial) {
         player.mute();
         player.seekTo(0);

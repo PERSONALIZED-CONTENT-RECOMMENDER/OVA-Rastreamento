@@ -70,4 +70,4 @@ def generate_interactions(n, course_id=1, ova_id=None):
         
         print(f"Inserções: {i + 1}/{n}")
 
-generate_interactions(2_000_000)
+generate_interactions(2_000, 1)

@@ -36,7 +36,7 @@ group by s.subject_id, c.competency_id
     
     result = defaultdict(list)
     for row in data:
-        result[row[0]].append(row[1:])
+        result[row[0]].append((row[1], float(row[2])))
         
     return "Title", result, max(list(map(lambda x: len(x), result.values())))
     
@@ -92,7 +92,7 @@ left join (
 	select interaction_id, student_id 
     from interactions
     where ova_id = {ova_id}
-) ova_interactions
+) i
 on s.student_id = i.student_id
 where s.course_id = {course_id}
 group by s.student_name""")

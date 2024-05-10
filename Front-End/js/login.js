@@ -4,6 +4,7 @@ $(document).ready(function() {
     const loginTab = $("#login");
     const chooseOVAsTab = $("#choose-ova");
     const ovaDiv = $(".ova-div");
+    const logoutButton = $(".logout-button");
 
     if (sessionStorage.getItem("past_page") == "plot") {
         loginTab.addClass("d-none");
@@ -66,6 +67,12 @@ $(document).ready(function() {
             statusBar.addClass("bg-danger");
             statusBarAnimation(statusBar);
         });
+    });
+
+    logoutButton.on("click", function() {
+        loginTab.removeClass("d-none");
+        chooseOVAsTab.addClass("d-none");
+        sessionStorage.setItem("past_page", "choose-ova");
     });
 });
 
