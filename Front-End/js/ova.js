@@ -1,32 +1,47 @@
 import { registerInteraction } from "./request.js";
 
+// access the html inside the iframe
 const mainIframe = $("#iframe");
 const iframeDoc = mainIframe.contents()[0];
 const contentWindow = mainIframe.get(0).contentWindow;
 
 $(iframeDoc).ready(function() {
     sessionStorage.setItem("past_page", "ova");
+    /*
+    try to get the read time of the ova. If its null, the user just started
+    the reading
+    */
     const read_time = localStorage.getItem("read_time");
     let timePassed;
     if (read_time == null) {
+        // initializes the read time count
         timePassed = 0;
         localStorage.setItem("read_time", 0);
     } else timePassed = read_time;
 
+    // tries the same with the percentual of the ova that was scrolled
     if (localStorage.getItem("perc_scrolled") == null) {
         localStorage.setItem("perc_scrolled", 0);
     }
+
+    // update the time passed counter by 1 every second
     setInterval(function() {
         timePassed++;
     }, 1000);
 
+    // if the user isn't logged, go to login page
     const logged = JSON.parse(localStorage.getItem("logged"));
     if (logged == null | logged == false) {
         window.location.href = "login.html";
     }
     
+    /*
+    divides the page scroll in n points (5) and the user needs
+    to pass by it in at least total_time / n_points (360/5) seconds
+    */
     let scrollPoints = generateScrollPoints(360, 5);
 
+    // get the DOM elements
     const dropdown = $(iframeDoc).find(".dropdown");
     dropdown.css({"top": "-600px"});
     const dropdownButton = $(iframeDoc).find(".dropdown-button");
@@ -35,6 +50,7 @@ $(iframeDoc).ready(function() {
     const sendText = $(iframeDoc).find(".questions").find(".send-text");
     const accordionItems = $(iframeDoc).find(".accordion-item");
 
+    // this lines counts the total number of interactions in the ova
     let num_interactions = 0;
     carrousels.each(index => {
         const carrousel = carrousels.eq(index);
@@ -50,6 +66,11 @@ $(iframeDoc).ready(function() {
 
     let accordionView = [];
 
+    /*
+    for each accordion item, if the student open the item, it register an
+    interaction, sendind to the api the description, with the name of the
+    item and the section it belongs to
+    */
     accordionItems.each(index => {
         const accordionItem = accordionItems.eq(index);
         accordionView.push(false);
@@ -74,6 +95,10 @@ $(iframeDoc).ready(function() {
         });
     });
 
+    /*
+    animation to show the section content to the user only when he reached
+    that point
+    */
     const sections = $(iframeDoc).find(".section-content");
     $(contentWindow).on("scroll", function () {
         const s = $(contentWindow).scrollTop(),
@@ -93,6 +118,11 @@ $(iframeDoc).ready(function() {
         const scrollPercent = (s / (d - c)) * 100;
         const position = scrollPercent;
 
+        /**
+        when the student reaches a new scroll points, the API register that 
+        the student reached that point. Also the maximum percentage scrolled
+        is updated in the localstorage
+         */
         scrollPoints.forEach(async point => {
             if (scrollPercent >= point.perc & point.status === false & timePassed >= point.time) {
                 point.status = true;
@@ -105,9 +135,11 @@ $(iframeDoc).ready(function() {
             }
         });
         
+        // update the progress bar
         $(iframeDoc).find("#progressbar").attr('value', position);
     });
     
+    // shows the first carrousel item in each carrousel
     let carrouselsActualParts = {};
     carrousels.each(index => {
         const carrousel = carrousels.eq(index);
@@ -120,6 +152,10 @@ $(iframeDoc).ready(function() {
         carrouselsActualParts[carrousel.data("carrousel-name")] = 0;
     });
 
+    /*
+    when the dropdown button is clicked, shows all the sections, the button
+    to logout and the button to the student plot page
+    */
     dropdownButton.on("click", function() {
         if (!dropdownButton.hasClass("bi-x-lg")) {
             dropdown.removeClass("z-n1").addClass("z-1");
@@ -135,6 +171,10 @@ $(iframeDoc).ready(function() {
         }
     });
 
+    /*
+    when the student passes the carrousel itens, the API register that the
+    student made an interaction with that specific carrousel
+    */
     carrousels.each(index => {
         const carrousel = carrousels.eq(index);
         let action = `The user x passed the image in the carrousel of ${carrousel.data("carrousel-name")}`;
@@ -152,6 +192,10 @@ $(iframeDoc).ready(function() {
         });
     });
 
+    /*
+    when the students mark the option in each question, the API register
+    the interaction and if he marked the correct answer or not
+    */
     questions.each(index => {
         const question = questions.eq(index);
         const options = question.find(".options").children();
@@ -180,6 +224,7 @@ $(iframeDoc).ready(function() {
         });
     });
 
+    // register the answer that the student wrote in the question
     sendText.on("click", async function(e) {
         e.preventDefault();
         const question = questions.find("[data-number='3']");
@@ -190,12 +235,20 @@ $(iframeDoc).ready(function() {
     });
 });
 
+/*
+the function to generate the scrollpoints, given a minimum read time
+and the number of the points
+*/
 function generateScrollPoints(readTime, n_points) {
     let points = [];
     const perc = 100 / n_points;
     const perc_time = readTime / n_points;
     const alreadyScrolled = JSON.parse(localStorage.getItem("perc_scrolled"));
     for (let i = 1; i <= n_points; i++) {
+        /*
+        the percentage of the point, the minimum time and 
+        if the student already achieved that point
+        */
         points.push({
             perc: perc * i,
             time: perc_time * i,
@@ -206,6 +259,7 @@ function generateScrollPoints(readTime, n_points) {
     return points;
 }
 
+// function to change the item of the carrousels
 function changePart(side, carrousel, carrouselsActualParts) {
     const parts = carrousel.find(".parts").children();
     let actualPart = carrouselsActualParts[carrousel.data("carrousel-name")];
@@ -225,6 +279,7 @@ function changePart(side, carrousel, carrouselsActualParts) {
     changeDots(carrousel, actualPart);
 }
 
+// function to change the dot of the actual item of the carrousel
 function changeDots(carrousel, part) {
     const dots = carrousel.find(".dots").children();
     dots.each(index => {

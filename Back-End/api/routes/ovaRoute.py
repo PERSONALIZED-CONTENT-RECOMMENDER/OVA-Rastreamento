@@ -54,23 +54,30 @@ def show_course_OVAs(course_id):
         except PeeweeException as err:
             return json.dumps({"Error": f"{err}"}), 501
     else:
-        return "Wrong Request Methods. Only POST Allowed", 405
+        # return this if the http method is any other than GET
+        return "Wrong Request Methods. Only GET Allowed", 405
 
+# it returns all the ovas from the database
 @app_ova.route("/ova/all", methods=["GET"])
 @cross_origin()
 def show_all_OVAs():
     if request.method == "GET":
         try:
+            # get all the ovas
             ovas = OVAs.select()
             ova_list = []
+            # for each ova, append to the list its id and its name
             for ova in ovas:
                 ova_dict = {
                     "ova_id": ova.ova_id,
                     "ova_name": ova.ova_name
                 }
                 ova_list.append(ova_dict.copy())
+            # returns the result array
             return json.dumps(ova_list)
         except PeeweeException as err:
+            # handle the error returning the description of the error
             return json.dumps({"Error": f"{err}"}), 501
     else:
-        return "Wrong Request Methods. Only POST Allowed", 405
+        # return this if the http method is any other than GET
+        return "Wrong Request Methods. Only GET Allowed", 405

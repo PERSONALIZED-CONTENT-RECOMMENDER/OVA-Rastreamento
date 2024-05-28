@@ -1,18 +1,24 @@
+# this lines below enable import from other submodules
 import sys, os
 root = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
 sys.path.append(root)
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), 'data/models')))
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), 'data')))
 
+# necessary libraries import
 from collections import defaultdict
 from base import db
 import json
 
+# returns all the interaction that a student made in the ovas, grouped by
+# competencies of each course subject
 def ova_interactions_by_competencies(data):
+    # reuse the connection if its already open
     db.connect(reuse_if_open=True)
     student_id = data["student_id"]
     course_id = data["course_id"]
     
+    # do the query
     query = (f"""select s.subject_name, c.competency_description, count(si.interaction_id) / (
 	select sum(num_interactions) 
     from ovas 
@@ -31,13 +37,17 @@ where offe.course_id = {course_id}
 group by s.subject_id, c.competency_id
 """)
     
+    # execute raw sql due to complexity
     cursor = db.execute_sql(query)
     data = cursor.fetchall()
     
+    # use the defaultdict to handle automatically the key error of a dict
     result = defaultdict(list)
     for row in data:
         result[row[0]].append((row[1], float(row[2])))
         
+    # return the result and the max of competencies that a subject have
+    # to show differents amounts of columns in the front end graphic    
     return "Title", result, max(list(map(lambda x: len(x), result.values())))
     
 data = {
@@ -45,7 +55,10 @@ data = {
     "course_id": 1
 }
 
+# given an id of a course, return the general performance of each student
+# in percentage
 def course_general_performance(course_id):
+    # reuse the connection if its already open
     db.connect(reuse_if_open=True)
     query = (f"""with course_ovas as (
 	select o.ova_id, o.num_interactions 
@@ -74,13 +87,17 @@ where s.course_id = {course_id}""")
     cursor = db.execute_sql(query)
     data = {"students": [], "perc": []}
     
+    # append the student and the percentage achieved until the
+    # moment of the request
     for student, perc in cursor.fetchall():
         data["students"].append(student)
         data["perc"].append(round(float(perc), 2))
     
     return data
 
+# given an ova id, returns the performance of each student on it
 def ova_performance_by_students(data):
+    # reuse the connection if its already open
     db.connect(reuse_if_open=True)
     ova_id = data["ova_id"]
     course_id = data["course_id"]
@@ -100,6 +117,8 @@ group by s.student_name""")
     cursor = db.execute_sql(query)
     data = {"students": [], "perc": []}
     
+    # append the student and the percentage achieved until the
+    # moment of the request
     for student, perc in cursor.fetchall():
         data["students"].append(student)
         data["perc"].append(round(float(perc), 2))

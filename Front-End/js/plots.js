@@ -5,17 +5,24 @@ $(document).ready(function () {
     const backButton = $(".back-button");
     const plots = $(".plots");
 
+    // verify if the user is admin or not
     const is_admin = JSON.parse(localStorage.getItem("is_admin"));
     let backButtonLink;
-
+    
+    // if admin, the back button goes back to login html
     if (is_admin == true) backButtonLink = "login.html";
     else {
+        // else the back button goes back to the ova that the student was reading
         const ova_id = localStorage.getItem("ova_id");
         if (ova_id == null) backButtonLink = "login.html";
         else backButtonLink = `./ovas/${localStorage.getItem("ova_link")}`;
     }
     backButton.attr("href", backButtonLink);
 
+    /*
+    if admin, show admin options at the plot page, and let the coordinator
+    see information about all the courses and all the students
+    */
     if (is_admin == true) {
         const adminOptions = $(`
             <div class="mt-5">
@@ -44,14 +51,20 @@ $(document).ready(function () {
         const students = adminOptions.find("#students");
         const ovas = adminOptions.find("#ovas");
 
+        // send a request to the API to get all the courses
         getCourses()
         .then(response => makeCourseOptions(response, courses))
         .catch(error => console.log(error));
 
+        // send a request to the API to get all the ovas
         getAllOVAs()
         .then(response => makeOVAsOptions(response, ovas))
         .catch(error => console.log(error));
 
+        /*
+        if the admin change the course select, updates the student
+        select and the course plot
+        */
         courses.on("change", function() {
             if (students.parent().hasClass("d-none")) {
                 students.parent().removeClass("d-none");
@@ -73,6 +86,9 @@ $(document).ready(function () {
             }
         });
 
+        /*
+        if the student select change, update the student plot
+        */
         students.on("change", function() {
             const option = $(this).find("option:selected");
             if (option.val() != "") {
@@ -86,6 +102,7 @@ $(document).ready(function () {
             }
         });
 
+        // if the ova select change, also changes the ova plot
         ovas.on("change", function() {
             const option = $(this).find("option:selected");
             if (option.val() != "") {
@@ -101,6 +118,7 @@ $(document).ready(function () {
 
         adminOptions.insertBefore(plots);
     } else {
+        // if not admin, the student only sees his performance
         const student_data = {
             "student_id": localStorage.getItem("student_id"),
             "course_id": localStorage.getItem("course_id")
@@ -111,26 +129,31 @@ $(document).ready(function () {
     }
 });
 
+// calls the request function with the parameters for get the student plot
 function getStudentPlot(data) {
     const url = `/plot/student`;
     return doRequest(url, data, "POST");
 }
 
+// calls the request function with the parameters for get the course plot
 function getCoursePlot(data) {
     const url = "/plot/course";
     return doRequest(url, data, "POST");
 }
 
+// calls the request function with the parameters for get the ova plot
 function getOVAPlot(data) {
     const url = "/plot/ova";
     return doRequest(url, data, "POST");
 }
 
+// // calls the request function with the parameters for get the students of a course
 function getStudentsByCourse(course_id) {
     const url = `/student/course/${course_id}`;
     return doRequest(url, {}, "GET");
 }
 
+// plot the graph of the students of the course performance grouped by competencies
 function studentCompetencyPerformance(response, plots) {
     const plot = $(`<div id="plot-1"></div>`);
     plots.append(plot);
@@ -203,6 +226,7 @@ function studentCompetencyPerformance(response, plots) {
     Plotly.newPlot(`plot-1`, data, layout, config);
 }
 
+// plot the graph of the general students performances in the course
 function courseGeneralPerformance(response, plots) {
     const plot = $(`<div id="plot-2"></div>`);
     plots.append(plot);
@@ -244,6 +268,7 @@ function courseGeneralPerformance(response, plots) {
     console.log(response);
 }
 
+// plot the graph for the performance of an ova with all the students
 function ovaGeneralPerformance(response, plots) {
     const plot = $(`<div id="plot-3"></div>`);
     plots.append(plot);
