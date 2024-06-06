@@ -1,5 +1,5 @@
 // base parameters to make the API request
-const PORT = 8000;
+const PORT = 8090;
 const HOST = "localhost";
 const BASE_URL = `http://${HOST}:${PORT}`
 

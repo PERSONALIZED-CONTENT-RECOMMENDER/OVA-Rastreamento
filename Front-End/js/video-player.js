@@ -1,5 +1,5 @@
 // basic configurations for the url
-const PORT = 8000;
+const PORT = 8090;
 const HOST = "localhost";
 const BASE_URL = `http://${HOST}:${PORT}`
 
