@@ -1,11 +1,11 @@
 import { registerInteraction } from "./request.js";
 
 // access the html inside the iframe
-const mainIframe = $("#iframe");
-const iframeDoc = mainIframe.contents()[0];
-const contentWindow = mainIframe.get(0).contentWindow;
+// const mainIframe = $("#iframe");
+// const iframeDoc = mainIframe.contents()[0];
+// const contentWindow = mainIframe.get(0).contentWindow;
 
-$(iframeDoc).ready(function() {
+$(document).ready(function() {
     sessionStorage.setItem("past_page", "ova");
     /*
     try to get the read time of the ova. If its null, the user just started
@@ -42,13 +42,13 @@ $(iframeDoc).ready(function() {
     let scrollPoints = generateScrollPoints(360, 5);
 
     // get the DOM elements
-    const dropdown = $(iframeDoc).find(".dropdown");
+    const dropdown = $(".dropdown");
     dropdown.css({"top": "-600px"});
-    const dropdownButton = $(iframeDoc).find(".dropdown-button");
-    const carrousels = $(iframeDoc).find("section").find(".carrousel");
-    const questions = $(iframeDoc).find(".question");
-    const sendText = $(iframeDoc).find(".questions").find(".send-text");
-    const accordionItems = $(iframeDoc).find(".accordion-item");
+    const dropdownButton = $(".dropdown-button");
+    const carrousels = $("section").find(".carrousel");
+    const questions = $(".question");
+    const sendText = $(".questions").find(".send-text");
+    const accordionItems = $(".accordion-item");
 
     // this lines counts the total number of interactions in the ova
     let num_interactions = 0;
@@ -99,11 +99,11 @@ $(iframeDoc).ready(function() {
     animation to show the section content to the user only when he reached
     that point
     */
-    const sections = $(iframeDoc).find(".section-content");
-    $(contentWindow).on("scroll", function () {
-        const s = $(contentWindow).scrollTop(),
-            d = $(iframeDoc).height(),
-            c = $(contentWindow).height();
+    const sections = $(".section-content");
+    $(window).on("scroll", function () {
+        const s = $(window).scrollTop(),
+            d = $(document).height(),
+            c = $(window).height();
             
         $.each(sections, function(index) {
             const section = sections.eq(index);
@@ -136,7 +136,7 @@ $(iframeDoc).ready(function() {
         });
         
         // update the progress bar
-        $(iframeDoc).find("#progressbar").attr('value', position);
+        $("#progressbar").attr('value', position);
     });
     
     // shows the first carrousel item in each carrousel
