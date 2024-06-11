@@ -61,7 +61,7 @@ $(document).ready(function() {
     num_interactions += questions.length;
     num_interactions += scrollPoints.length;
     num_interactions += sendText.length;
-    num_interactions += $(".ova-video").length * 5;
+    num_interactions += $(".ova_video").length * 5;
     sessionStorage.setItem("num_interactions", num_interactions);
 
     let accordionView = [];
