@@ -1,7 +1,3 @@
 flask
 flask_cors
-numpy
-pandas
-matplotlib
-sqlalchemy
 peewee
