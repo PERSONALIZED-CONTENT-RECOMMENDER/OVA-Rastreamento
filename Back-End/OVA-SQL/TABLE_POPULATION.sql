@@ -7,7 +7,7 @@ values
 
 insert into course_subjects
 values
-(1, "Cálculo A");
+(1, "Computação Quântica");
 
 insert into offerings
 values
@@ -23,8 +23,10 @@ values
 
 insert into competencies
 values
-(1, "Resolver problemas usando funções matemáticas.", 1);
+(1, "Compreender os conceitos fundamentais da computação quântica", 1),
+(2, "Identificar as aplicações práticas da computação quântica", 1),
+(3, "Avaliar os desafios e limitações da computação quântica", 1);
 
 insert into ovas
 values
-(1, "Cálculo A - Competência 1 - 1", "calculo_a_1_1.html", 30, 1);
+(1, "Computação Quântica", "quantum_computing.html", 30, 1);

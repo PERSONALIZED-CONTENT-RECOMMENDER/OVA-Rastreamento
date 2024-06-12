@@ -33,8 +33,18 @@ create table ovas (
     ova_name varchar(255),
     link varchar(255),
     num_interactions int,
+    subject_id int,
+    foreign key (subject_id) references course_subjects(subject_id) on delete cascade on update cascade
+);
+
+create table questions (
+	question_id int primary key not null auto_increment,
+    alternatives json not null,
+    answer varchar(1),
+    ova_id int,
     competency_id int,
-    foreign key (competency_id) references competencies(competency_id) on delete cascade on update cascade
+    foreign key (ova_id) references ovas(ova_id) on delete cascade on update cascade
+	
 );
 
 create table students (
