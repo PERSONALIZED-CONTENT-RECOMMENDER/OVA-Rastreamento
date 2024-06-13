@@ -15,7 +15,6 @@ from collections import defaultdict
 # import of the necessary orm classes
 from offerings import Offerings
 from subjects import Subjects
-from competencies import Competencies
 from ovas import OVAs
 
 # creation of a route blueprint, a reusable component
@@ -31,22 +30,20 @@ def show_course_OVAs(course_id):
             # create aliases for less writing
             of = Offerings.alias()
             s = Subjects.alias()
-            c = Competencies.alias()
             o = OVAs.alias()
             
             # query all the OVAs of the given course, joining the tables by its ids and filtering the course table
-            query = o.select(s.subject_name, c.competency_description, o.ova_id, o.ova_name, o.link).join(c).join(s).join(of).where(of.course_id == course_id)
+            query = o.select(s.subject_name, o.ova_id, o.ova_name, o.link).join(s).join(of).where(of.course_id == course_id)
             
             # make the result a defaultdict. for handle automatically the key error
             result = defaultdict(list)
             
             # for each OVA, append the id, name, description and html link to the result array
             for ova in query:
-                competency = ova.competency_id
-                result[competency.subject_id.subject_name].append({
+                subject = ova.subject_id
+                result[subject.subject_name].append({
                     "ova_id": ova.ova_id,
                     "ova_name": ova.ova_name,
-                    "competency_description": competency.competency_description,
                     "link": ova.link
             })
             return json.dumps(result)

@@ -1,6 +1,6 @@
 use ova_db;
 
-drop table interactions, ovas, students, competencies, offerings, course_subjects, courses;
+drop table interactions, ovas, students, competencies, offerings, course_subjects, courses, questions;
 
 create table courses (
 	course_id int primary key not null auto_increment,
@@ -32,19 +32,20 @@ create table ovas (
 	ova_id int primary key not null auto_increment,
     ova_name varchar(255),
     link varchar(255),
-    num_interactions int,
     subject_id int,
     foreign key (subject_id) references course_subjects(subject_id) on delete cascade on update cascade
 );
 
 create table questions (
 	question_id int primary key not null auto_increment,
+    statement varchar(255),
     alternatives json not null,
     answer varchar(1),
+    answered boolean,
     ova_id int,
     competency_id int,
-    foreign key (ova_id) references ovas(ova_id) on delete cascade on update cascade
-	
+    foreign key (ova_id) references ovas(ova_id) on delete cascade on update cascade,
+	foreign key (competency_id) references competencies(competency_id) on delete cascade on update cascade
 );
 
 create table students (

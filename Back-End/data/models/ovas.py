@@ -1,6 +1,6 @@
 # import the necessary classes
 from base import BaseModel
-from competencies import Competencies
+from subjects import Subjects
 from peewee import *
 
 class OVAs(BaseModel):
@@ -8,7 +8,7 @@ class OVAs(BaseModel):
     ova_id = IntegerField(primary_key=True)
     # name of the ova
     ova_name = TextField()
-    # competency to which it belongs
-    competency_id = ForeignKeyField(Competencies, backref="ovas", on_delete="cascade", on_update="cascade")
+    # subject to which it belongs
+    subject_id = ForeignKeyField(Subjects, backref="ovas", on_delete="cascade", on_update="cascade")
     # html link to an ova page
     link = TextField()
