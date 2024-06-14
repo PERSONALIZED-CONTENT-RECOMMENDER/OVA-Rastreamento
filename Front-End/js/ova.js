@@ -1,4 +1,4 @@
-import { registerInteraction } from "./request.js";
+import { doRequest, registerInteraction } from "./request.js";
 
 // access the html inside the iframe
 // const mainIframe = $("#iframe");
@@ -34,6 +34,10 @@ $(document).ready(function() {
     if (logged == null | logged == false) {
         window.location.href = "login.html";
     }
+
+    getQuestions(localStorage.getItem("ova_id"))
+    .then(response => makeQuestions(response))
+    .catch(error => error);
     
     /*
     divides the page scroll in n points (5) and the user needs
@@ -192,38 +196,6 @@ $(document).ready(function() {
         });
     });
 
-    /*
-    when the students mark the option in each question, the API register
-    the interaction and if he marked the correct answer or not
-    */
-    questions.each(index => {
-        const question = questions.eq(index);
-        const options = question.find(".options").children();
-        const message = question.find(".message");
-        options.on("click", function() {
-            options.find("input").prop("checked", false);
-            $(this).find("input").prop("checked", true);
-        });
-        const verifyQuestion = question.find(".verify-question");
-        verifyQuestion.on("click", async function(e) {
-            e.preventDefault();
-            const checked = question.find(".options").find("input:checked");
-            let action =`The user x clicked the button of the question ${question.data("number")}`;
-            if (checked.val() == question.data("correct")) {
-                message.addClass("bg-success");
-                message.removeClass("bg-danger");
-                message.html("Correct!");
-            } else {
-                message.addClass("bg-danger");
-                message.removeClass("bg-success");
-                message.html("Incorrect.");
-            }
-            await registerInteraction(action)
-            .then(response => console.log("success"))
-            .catch(error => console.log(error));
-        });
-    });
-
     // register the answer that the student wrote in the question
     sendText.on("click", async function(e) {
         e.preventDefault();
@@ -295,3 +267,98 @@ function changeDots(carrousel, part) {
         }
     });
 }
+
+function getQuestions(ova_id) {
+    return doRequest(`/question/ova/${ova_id}`, {}, 'GET');
+}
+
+function makeQuestions(response) {
+    const questions = $(".questions");
+    questions.html("");
+    for (let i = 0; i < response.length; i++) {
+        const question = response[i];
+        const item = $(`
+        <div class="question mb-5" data-number="${i + 1}" data-correct="${question.answer}">
+            <h3>${i + 1}. ${question.statement}</h3>
+            <form action="#">
+                <div class="alternatives my-3"></div>
+                <div class="btn btn-primary w-100 verify-question">Verificar</div>
+                <p class="message w-100 text-center mt-2 rounded"></p>
+            </form>
+        </div>
+        `);
+        makeQuestionAlternatives(item.find(".alternatives"), question.alternatives, i + 1);
+        setListener(item);
+        questions.append(item);
+    }
+}
+
+function makeQuestionAlternatives(list, alternatives, number) {
+    const letters = "abcdefghijklmnopqrstuvwxyz";
+    for (let i = 0; i < alternatives.length; i++) {
+        const alternative = alternatives[i];
+        const item = $(`
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="${letters[i]}" id="${number}${letters[i]}">
+            <label class="form-check-label" for="${number}${letters[i]}">${alternative}</label>
+        </div>    
+        `);
+        list.append(item);
+    }
+}
+
+/*
+when the students mark the option in each alternatives, the API register
+the interaction and if he marked the correct answer or not
+*/
+function setListener(question) {
+    const alternatives = question.find(".alternatives").children();
+    const message = question.find(".message");
+    alternatives.on("click", function() {
+        alternatives.find("input").prop("checked", false);
+        $(this).find("input").prop("checked", true);
+        console.log($(this).find("input").val() == question.data("correct"))
+    });
+    const verifyQuestion = question.find(".verify-question");
+    verifyQuestion.on("click", async function(e) {
+        e.preventDefault();
+        const checked = question.find(".alternatives").find("input:checked");
+        let action =`The user x clicked the button of the question ${question.data("number")}`;
+        if (checked.val() == question.data("correct")) {
+            message.addClass("bg-success");
+            message.removeClass("bg-danger");
+            message.html("Correct!");
+        } else {
+            message.addClass("bg-danger");
+            message.removeClass("bg-success");
+            message.html("Incorrect.");
+        }
+        await registerInteraction(action)
+        .then(response => console.log("success"))
+        .catch(error => console.log(error));
+    });
+}
+
+/*
+<div class="question mb-5" data-number="1" data-correct="d">
+                    
+                    <form action="#">
+                        <div class="options my-3">
+                            
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="b" id="1b">
+                                <label class="form-check-label" for="1b">Refrigeração</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="c" id="1c">
+                                <label class="form-check-label" for="1c">Decoerência</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="d" id="1d">
+                                <label class="form-check-label" for="1d">Falta de mão de obra qualificada</label>
+                            </div>
+                        </div>
+                        <div class="btn btn-primary w-100 verify-question">Verificar</div>
+                    </form>
+                </div>
+*/

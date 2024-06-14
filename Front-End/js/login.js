@@ -6,15 +6,24 @@ $(document).ready(function() {
     const ovaDiv = $(".ova-div");
     const logoutButton = $(".logout-button");
 
+    const is_admin = JSON.parse(localStorage.getItem("is_admin"));
+
     /*
     if the previous page was plot page, show the page to choose the OVA
     else go to login page, meaning that the user doesn't logged or
     made logout
     */
     if (sessionStorage.getItem("past_page") == "plot") {
-        loginTab.addClass("d-none");
-        chooseOVAsTab.removeClass("d-none");
-        makeStudentOVAs(ovaDiv);
+        if (is_admin == true) {
+            localStorage.clear();
+            localStorage.setItem("logged", false);
+            loginTab.removeClass("d-none");
+            chooseOVAsTab.addClass("d-none");
+        } else {
+            loginTab.addClass("d-none");
+            chooseOVAsTab.removeClass("d-none");
+            makeStudentOVAs(ovaDiv);
+        }
     } else {
         localStorage.clear();
         localStorage.setItem("logged", false);
@@ -138,7 +147,6 @@ function makeOVAOptions(response, ovaList) {
         <li class="ova-item list-group-item d-flex flex-column justify-content-between align-items-center rounded-3 shadow">
             <a class="align-self-start" href="./iframe.html">
                 <p><span class="fw-bold">Nome:</span> ${ova.ova_name}</p>
-                <p><span class="fw-bold">Competência:</span> ${ova.competency_description}</p>
             </a>
         </li>
         `);
