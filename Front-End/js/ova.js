@@ -35,7 +35,7 @@ $(document).ready(function() {
         window.location.href = "login.html";
     }
 
-    getQuestions(localStorage.getItem("ova_id"))
+    getQuestions()
     .then(response => makeQuestions(response))
     .catch(error => error);
     
@@ -268,12 +268,16 @@ function changeDots(carrousel, part) {
     });
 }
 
-function getQuestions(ova_id) {
-    return doRequest(`/question/ova/${ova_id}`, {}, 'GET');
+function getQuestions() {
+    const data = {
+        ova_id: localStorage.getItem("ova_id"),
+        student_id: localStorage.getItem("student_id")
+    };
+    return doRequest(`/question/ova`, data, 'POST');
 }
 
-function answerQuestion() {
-    return doRequest(`/question`)
+function answerQuestion(data) {
+    return doRequest(`/answer/add`, data, 'POST');
 }
 
 function makeQuestions(response) {
@@ -281,8 +285,9 @@ function makeQuestions(response) {
     questions.html("");
     for (let i = 0; i < response.length; i++) {
         const question = response[i];
+        console.log(question);
         const item = $(`
-        <div class="question mb-5" data-number="${i + 1}" data-correct="${question.answer}">
+        <div class="question mb-5" data-number="${i + 1}" data-correct="${question.answer}" data-id="${question.question_id}" data-answered="${question.answered}">
             <h3>${i + 1}. ${question.statement}</h3>
             <form action="#">
                 <div class="alternatives my-3"></div>
@@ -332,6 +337,12 @@ function setListener(question) {
             message.addClass("bg-success");
             message.removeClass("bg-danger");
             message.html("Correct!");
+
+            const answer_data = {
+                student_id: localStorage.getItem("student_id"),
+                question_id: question.data("id")
+            };
+            if (!question.data("answered")) answerQuestion(answer_data);
         } else {
             message.addClass("bg-danger");
             message.removeClass("bg-success");

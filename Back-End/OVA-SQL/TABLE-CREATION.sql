@@ -1,6 +1,6 @@
 use ova_db;
 
-drop table interactions, ovas, students, competencies, offerings, course_subjects, courses, questions;
+drop table interactions, answers, questions, ovas, students, competencies, offerings, course_subjects, courses;
 
 create table courses (
 	course_id int primary key not null auto_increment,
@@ -59,9 +59,10 @@ create table students (
 
 create table answers (
 	answer_id int primary key not null auto_increment,
+    student_id int,
+    question_id int,
     foreign key (student_id) references students(student_id) on delete cascade on update cascade,
     foreign key (question_id) references questions(question_id) on delete cascade on update cascade,
-    
     constraint uc_answers unique(student_id, question_id)
 );
 

@@ -13,6 +13,7 @@ from peewee import PeeweeException # ORM library
 
 # import of the necessary orm classes
 from questions import Questions
+from answers import Answers
 
 # creation of a route blueprint, a reusable component
 app_question = Blueprint("question", __name__)
@@ -47,14 +48,19 @@ def show_all_questions():
         return "Wrong Request Methods. Only GET Allowed", 405
 
 #given a ova, return all the question of this ova
-@app_question.route("/question/ova/<int:ova_id>", methods=["GET"])
+@app_question.route("/question/ova", methods=["POST"])
 # activate the cross-origin, that accepts requests from another domain
 @cross_origin()
-def show_ova_questions(ova_id):
-    if request.method == "GET":
+def show_ova_questions():
+    if request.method == "POST":
         try:
+            question_data = request.get_json()[0]
             # get all the questions of the given ova
-            questions = Questions.select().where(Questions.ova_id == ova_id)
+            questions = Questions.select().where(Questions.ova_id == question_data["ova_id"])
+            questions_ids = [question.question_id for question in questions]
+            
+            answers_ids = Answers.select(Answers.answer_id).where(Answers.student_id == question_data["student_id"] & Answers.question_id.in_(questions_ids))
+            
             question_list = []
             # for each question, append to the list its id, statement
             # alternatives, answer and the competency_id
@@ -65,7 +71,7 @@ def show_ova_questions(ova_id):
                     "statement": question.statement,
                     "alternatives": question.alternatives["alternatives"],
                     "answer": question.answer,
-                    "answered": question.answered,
+                    "answered": question.question_id in answers_ids,
                     "competency_id": question.competency_id.competency_id
                 }
                 question_list.append(question_dict.copy())
@@ -75,8 +81,8 @@ def show_ova_questions(ova_id):
             # handle the error returning the description of the error
             return json.dumps({"Error": f"{err}"}), 501
     else:
-        # return this if the http method is any other than GET
-        return "Wrong Request Methods. Only GET Allowed", 405
+        # return this if the http method is any other than POST
+        return "Wrong Request Methods. Only POST Allowed", 405
     
 @app_question.route("/question/answer", methods=['POST'])
 @cross_origin()
