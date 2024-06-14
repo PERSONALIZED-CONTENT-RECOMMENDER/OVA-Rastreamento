@@ -77,3 +77,21 @@ def show_ova_questions(ova_id):
     else:
         # return this if the http method is any other than GET
         return "Wrong Request Methods. Only GET Allowed", 405
+    
+@app_question.route("/question/answer", methods=['POST'])
+@cross_origin()
+def answer_question():
+    if request.method == 'POST':
+        try:
+            question_data = request.get_json()[0]
+            question_id = question_data["question_id"]
+            question = Questions.select().where(Questions.question_id == question_id).first()
+            
+            if (question.answer == question_data["answer"]):
+                Questions.update(answered=True).where(Questions.question_id == question_id).execute()
+        except PeeweeException as err:
+            # handle the error returning the description of the error
+            return json.dumps({"Error": f"{err}"}), 501
+    else:
+        # return this if the http method is any other than POST
+        return "Wrong Request Methods. Only POST Allowed", 405

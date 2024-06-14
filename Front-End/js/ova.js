@@ -272,6 +272,10 @@ function getQuestions(ova_id) {
     return doRequest(`/question/ova/${ova_id}`, {}, 'GET');
 }
 
+function answerQuestion() {
+    return doRequest(`/question`)
+}
+
 function makeQuestions(response) {
     const questions = $(".questions");
     questions.html("");
@@ -338,27 +342,3 @@ function setListener(question) {
         .catch(error => console.log(error));
     });
 }
-
-/*
-<div class="question mb-5" data-number="1" data-correct="d">
-                    
-                    <form action="#">
-                        <div class="options my-3">
-                            
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="b" id="1b">
-                                <label class="form-check-label" for="1b">Refrigeração</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="c" id="1c">
-                                <label class="form-check-label" for="1c">Decoerência</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="d" id="1d">
-                                <label class="form-check-label" for="1d">Falta de mão de obra qualificada</label>
-                            </div>
-                        </div>
-                        <div class="btn btn-primary w-100 verify-question">Verificar</div>
-                    </form>
-                </div>
-*/

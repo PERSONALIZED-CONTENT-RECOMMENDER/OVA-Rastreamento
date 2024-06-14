@@ -41,7 +41,6 @@ create table questions (
     statement varchar(255),
     alternatives json not null,
     answer varchar(1),
-    answered boolean,
     ova_id int,
     competency_id int,
     foreign key (ova_id) references ovas(ova_id) on delete cascade on update cascade,
@@ -56,6 +55,14 @@ create table students (
     course_id int,
     is_admin boolean,
     foreign key (course_id) references courses(course_id) on delete cascade on update cascade
+);
+
+create table answers (
+	answer_id int primary key not null auto_increment,
+    foreign key (student_id) references students(student_id) on delete cascade on update cascade,
+    foreign key (question_id) references questions(question_id) on delete cascade on update cascade,
+    
+    constraint uc_answers unique(student_id, question_id)
 );
 
 create table interactions (
