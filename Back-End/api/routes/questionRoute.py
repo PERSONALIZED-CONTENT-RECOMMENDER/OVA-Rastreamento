@@ -14,6 +14,7 @@ from peewee import PeeweeException # ORM library
 # import of the necessary orm classes
 from questions import Questions
 from answers import Answers
+from students import Students
 
 # creation of a route blueprint, a reusable component
 app_question = Blueprint("question", __name__)
@@ -59,7 +60,8 @@ def show_ova_questions():
             questions = Questions.select().where(Questions.ova_id == question_data["ova_id"])
             questions_ids = [question.question_id for question in questions]
             
-            answers_ids = Answers.select(Answers.answer_id).where(Answers.student_id == question_data["student_id"] & Answers.question_id.in_(questions_ids))
+            answers_ids = Answers.select(Answers.question_id).where(Answers.student_id == question_data["student_id"], Answers.question_id.in_(questions_ids))
+            answers_ids = [id.question_id.question_id for id in answers_ids]
             
             question_list = []
             # for each question, append to the list its id, statement
@@ -89,12 +91,21 @@ def show_ova_questions():
 def answer_question():
     if request.method == 'POST':
         try:
-            question_data = request.get_json()[0]
-            question_id = question_data["question_id"]
-            question = Questions.select().where(Questions.question_id == question_id).first()
+            answer_data = request.get_json()[0]
             
-            if (question.answer == question_data["answer"]):
-                Questions.update(answered=True).where(Questions.question_id == question_id).execute()
+            answer = Answers.select(Answers.question_id).where(Answers.question_id == answer_data["question_id"], Answers.student_id == answer_data["student_id"]).first()
+            
+            if answer_data["is_correct"] and answer is None:
+                print("new")
+                student = Students.select().where(Students.student_id == answer_data["student_id"]).first()
+                question = Questions.select().where(Questions.question_id == answer_data["question_id"]).first()
+                
+                answer = Answers.create(
+                    student_id = student,
+                    question_id = question
+                )
+            
+            return json.dumps("Question answered!"), 200
         except PeeweeException as err:
             # handle the error returning the description of the error
             return json.dumps({"Error": f"{err}"}), 501

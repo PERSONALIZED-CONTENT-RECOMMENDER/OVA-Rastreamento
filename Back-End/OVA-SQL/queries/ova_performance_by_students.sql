@@ -1,12 +1,20 @@
 use ova_db;
 
-select s.student_name, count(i.interaction_id) / (select num_interactions from ovas where ova_id = 1)
+with ova_questions as (
+	select question_id
+    from questions
+    where ova_id = 1
+)
+select s.student_name, count(sub_q.question_id) / (
+	select count(*)
+    from ova_questions
+)
 from students s
 left join (
-	select interaction_id, student_id 
-    from interactions
-    where ova_id = 1
-) ova_interactions
-on s.student_id = i.student_id
-where s.course_id = 1
-group by s.student_name
+	select q.question_id, a.student_id
+    from questions q
+	inner join answers a
+	on a.question_id = q.question_id
+) sub_q
+on s.student_id = sub_q.student_id
+group by s.student_id;

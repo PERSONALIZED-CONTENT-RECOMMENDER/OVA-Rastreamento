@@ -41,7 +41,7 @@ values
 	"Um qubit só pode ser 0 ou 1 após a medição.",
 	"Um qubit não pode mudar seu estado uma vez definido."
   ]
-}', "b", false, 1, 1),
+}', "b", 1, 1),
 (2, "O que é entrelaçamento quântico?",
 '{
   "alternatives": [
@@ -50,7 +50,7 @@ values
 	"A propriedade de um qubit mudar de estado ao ser medido.",
 	"A impossibilidade de medir o estado de um qubit."
   ]
-}', "b", false, 1, 1),
+}', "b", 1, 1),
 (3, "Como os qubits diferem dos bits tradicionais?",
 '{
   "alternatives": [
@@ -59,7 +59,7 @@ values
 	"Qubits são usados apenas em computadores pessoais.",
 	"Qubits não são afetados pelo ambiente."
   ]
-}', "a", false, 1, 1),
+}', "a", 1, 1),
 (4, "Qual das seguintes áreas é mais impactada pela computação quântica?",
 '{
   "alternatives": [
@@ -68,7 +68,7 @@ values
     "Segurança Cibernética",
     "Todas as opções acima"
   ]
-}', "d", false, 1, 2),
+}', "d", 1, 2),
 (5, "Como a computação quântica pode melhorar a criptografia?",
 '{
   "alternatives": [
@@ -77,7 +77,7 @@ values
     "Tornando os dados invisíveis para hackers.",
     "Permitindo a transmissão de dados sem necessidade de chaves."
   ]
-}', "a", false, 1, 2),
+}', "a", 1, 2),
 (6, "Em qual das seguintes aplicações a simulação quântica é mais relevante?",
 '{
   "alternatives": [
@@ -86,7 +86,7 @@ values
     "Redes sociais",
     "Edição de vídeo"
   ]
-}', "a", false, 1, 2),
+}', "a", 1, 2),
 (7,"Qual dos seguintes NÃO é um desafio da computação quântica?",
 '{
   "alternatives": [
@@ -95,7 +95,7 @@ values
     "Decoerência",
     "Falta de mão de obra qualificada"
   ]
-}', "d", false, 1, 3),
+}', "d", 1, 3),
 (8, "O que é decoerência na computação quântica?",
 '{
   "alternatives": [
@@ -104,7 +104,7 @@ values
     "A necessidade de refrigerar qubits a temperaturas altas.",
     "A medição instantânea de dois qubits entrelaçados."
   ]
-}', "b", false, 1, 3),
+}', "b", 1, 3),
 (9, "Por que a refrigeração é um desafio na computação quântica?",
 '{
   "alternatives": [
@@ -113,4 +113,4 @@ values
     "Porque os qubits precisam ser mantidos a temperaturas próximas do zero absoluto.",
     "Porque a refrigeração não afeta o estado dos qubits."
   ]
-}', "c", false, 1, 3);
+}', "c", 1, 3);

@@ -277,7 +277,7 @@ function getQuestions() {
 }
 
 function answerQuestion(data) {
-    return doRequest(`/answer/add`, data, 'POST');
+    return doRequest(`/question/answer`, data, 'POST');
 }
 
 function makeQuestions(response) {
@@ -326,21 +326,22 @@ function setListener(question) {
     alternatives.on("click", function() {
         alternatives.find("input").prop("checked", false);
         $(this).find("input").prop("checked", true);
-        console.log($(this).find("input").val() == question.data("correct"))
     });
     const verifyQuestion = question.find(".verify-question");
     verifyQuestion.on("click", async function(e) {
         e.preventDefault();
         const checked = question.find(".alternatives").find("input:checked");
         let action =`The user x clicked the button of the question ${question.data("number")}`;
-        if (checked.val() == question.data("correct")) {
+        const isCorrect = checked.val() == question.data("correct");
+        if (isCorrect) {
             message.addClass("bg-success");
             message.removeClass("bg-danger");
             message.html("Correct!");
 
             const answer_data = {
                 student_id: localStorage.getItem("student_id"),
-                question_id: question.data("id")
+                question_id: question.data("id"),
+                is_correct: isCorrect
             };
             if (!question.data("answered")) answerQuestion(answer_data);
         } else {
