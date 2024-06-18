@@ -19,23 +19,27 @@ def ova_interactions_by_competencies(data):
     course_id = data["course_id"]
     
     # do the query
-    query = (f"""select s.subject_name, c.competency_description, count(si.interaction_id) / (
-	select sum(num_interactions) 
-    from ovas 
-    where competency_id = c.competency_id)
-from 
+    query = (f"""select cs.subject_name, c.competency_description, count(sub_q.answer_id) / 
 (
-    select interaction_id, ova_id 
-    from interactions 
-    where student_id = {student_id}
-) si
-right join ovas o on si.ova_id = o.ova_id
-inner join competencies c on o.competency_id = c.competency_id
-inner join course_subjects s on c.subject_id = s.subject_id
-inner join offerings offe on s.subject_id = offe.subject_id
+	select count(*)
+    from questions
+    where competency_id = c.competency_id
+)
+from competencies c
+inner join course_subjects cs
+on c.subject_id = cs.subject_id
+inner join offerings offe
+on cs.subject_id = offe.subject_id
+left join (
+	select a.answer_id, q.competency_id
+    from answers a
+	inner join questions q
+	on q.question_id = a.question_id
+    where a.student_id = {student_id}
+) sub_q
+on sub_q.competency_id = c.competency_id
 where offe.course_id = {course_id}
-group by s.subject_id, c.competency_id
-""")
+group by cs.subject_id, c.competency_id""")
     
     # execute raw sql due to complexity
     cursor = db.execute_sql(query)
@@ -49,40 +53,31 @@ group by s.subject_id, c.competency_id
     # return the result and the max of competencies that a subject have
     # to show differents amounts of columns in the front end graphic    
     return "Title", result, max(list(map(lambda x: len(x), result.values())))
-    
-data = {
-    "student_id": 2,
-    "course_id": 1
-}
 
 # given an id of a course, return the general performance of each student
 # in percentage
 def course_general_performance(course_id):
     # reuse the connection if its already open
     db.connect(reuse_if_open=True)
-    query = (f"""with course_ovas as (
-	select o.ova_id, o.num_interactions 
-    from ovas o
-	inner join competencies c
-	on o.competency_id = c.competency_id
-	inner join course_subjects cs
-	on c.subject_id = cs.subject_id
-	inner join offerings offe
-	on cs.subject_id = offe.subject_id
-	where offe.course_id = {course_id})
-select s.student_name, (case when ci.count is null then 0 else ci.count end) / (
-	select sum(num_interactions) from course_ovas
-)
+    query = (f"""select s.student_name, count(sub_q.answer_id) / (
+	select count(q.question_id)
+    from questions q
+    inner join competencies c
+    on q.competency_id = c.competency_id
+    inner join course_subjects cs
+    on c.subject_id = cs.subject_id
+    inner join offerings offe
+    on cs.subject_id = offe.subject_id
+    where offe.course_id = {course_id}
+) as perc
 from students s
 left join (
-	select i.student_id, count(i.interaction_id) as count
-	from interactions i
-	inner join course_ovas o
-    on o.ova_id = i.ova_id
-    group by i.student_id
-) ci
-on s.student_id = ci.student_id
-where s.course_id = {course_id}""")
+	select answer_id, student_id
+    from answers a
+) sub_q
+on s.student_id = sub_q.student_id
+where s.is_admin = false
+group by s.student_id;""")
     
     cursor = db.execute_sql(query)
     data = {"students": [], "perc": []}
@@ -100,19 +95,22 @@ def ova_performance_by_students(data):
     # reuse the connection if its already open
     db.connect(reuse_if_open=True)
     ova_id = data["ova_id"]
-    course_id = data["course_id"]
     
-    query = (f"""select s.student_name, count(i.interaction_id) / (
-        select num_interactions from ovas where ova_id = {ova_id})
+    query = (f"""select s.student_name, count(sub_q.question_id) / (
+	select count(*)
+    from questions
+    where ova_id = {ova_id}
+)
 from students s
 left join (
-	select interaction_id, student_id 
-    from interactions
-    where ova_id = {ova_id}
-) i
-on s.student_id = i.student_id
-where s.course_id = {course_id}
-group by s.student_name""")
+	select q.question_id, a.student_id
+    from questions q
+	inner join answers a
+	on a.question_id = q.question_id
+) sub_q
+on s.student_id = sub_q.student_id
+where s.is_admin = false
+group by s.student_id""")
     
     cursor = db.execute_sql(query)
     data = {"students": [], "perc": []}

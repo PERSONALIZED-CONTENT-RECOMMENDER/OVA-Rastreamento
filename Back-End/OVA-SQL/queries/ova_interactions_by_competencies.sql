@@ -9,6 +9,8 @@ select cs.subject_name, c.competency_description, count(sub_q.answer_id) /
 from competencies c
 inner join course_subjects cs
 on c.subject_id = cs.subject_id
+inner join offerings offe
+on cs.subject_id = offe.subject_id
 left join (
 	select a.answer_id, q.competency_id
     from answers a
@@ -17,4 +19,5 @@ left join (
     where a.student_id = 1
 ) sub_q
 on sub_q.competency_id = c.competency_id
+where offe.course_id = 1
 group by cs.subject_id, c.competency_id;
