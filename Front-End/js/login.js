@@ -117,6 +117,7 @@ function login(user_data) {
 async function makeStudentOVAs(ovaDiv) {
     await getOVAs(localStorage.getItem("course_id"))
     .then(response => {
+        console.log(response);
         for (let subject in response) {
             // create the html dinamically for the subject div
             const subjectDiv = $(`
