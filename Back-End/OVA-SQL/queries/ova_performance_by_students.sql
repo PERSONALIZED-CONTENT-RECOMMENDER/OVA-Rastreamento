@@ -11,6 +11,7 @@ left join (
     from questions q
 	inner join answers a
 	on a.question_id = q.question_id
+    where ova_id = 1
 ) sub_q
 on s.student_id = sub_q.student_id
 where s.is_admin = false

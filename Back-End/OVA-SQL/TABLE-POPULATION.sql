@@ -12,7 +12,7 @@ values
 insert into offerings
 values
 (1, 1, 1),
-(1, 1, 2);
+(2, 1, 2);
 
 insert into students
 values
