@@ -6,11 +6,13 @@ values
 
 insert into course_subjects
 values
-(1, "Computação Quântica");
+(1, "Computação Quântica"),
+(2, "Cálculo");
 
 insert into offerings
 values
-(1, 1, 1);
+(1, 1, 1),
+(1, 1, 2);
 
 insert into students
 values
@@ -23,11 +25,16 @@ insert into competencies
 values
 (1, "Compreender os conceitos fundamentais da computação quântica", 1),
 (2, "Identificar as aplicações práticas da computação quântica", 1),
-(3, "Avaliar os desafios e limitações da computação quântica", 1);
+(3, "Avaliar os desafios e limitações da computação quântica", 1),
+(4, "Derivadas", 2),
+(5, "Integrais", 2),
+(6, "Limites", 2),
+(7, "Aplicações de derivadas", 2);
 
 insert into ovas
 values
-(1, "Computação Quântica", "quantum_computing.html", 1);
+(1, "Computação Quântica", "quantum_computing.html", 1),
+(2, "Cálculo", "calculus.html", 2);
 
 insert into questions
 values
@@ -111,4 +118,76 @@ values
     "Porque os qubits precisam ser mantidos a temperaturas próximas do zero absoluto.",
     "Porque a refrigeração não afeta o estado dos qubits."
   ]
-}', "c", 1, 3);
+}', "c", 1, 3),
+(10, "Calcule a derivada da função  f(x)=3x²+2x+1.",
+'{
+  "alternatives": [
+    "3x²+2",
+    "6x+2",
+    "6x²+2",
+    "6x+1"
+  ]
+}', "b", 2, 4),
+(11, "Qual é a derivada da função g(x)=e^x?",
+'{
+  "alternatives": [
+	"e^x",
+    "x.e^x",
+    "e^(x-1)",
+    "x.e^(x-1)"
+  ]
+}', "a", 2, 4),
+(12, "Calcule a integral indefinida de f(x)=4x³",
+'{
+  "alternatives": [
+	"x⁴+C",
+    "x⁴",
+    "(x⁴/4)+C",
+    "(x⁴/2)+C"
+  ]
+}', "a", 2, 5),
+(13, "Qual a integral indefinida de g(x)=cos(x)?",
+'{
+  "alternatives": [
+	"sin(x)+C",
+    "-sin(x)+C",
+    "cos(x)+C",
+    "-cos(x)+C"
+  ]
+}', "a", 2, 5),
+(14, "Calcule o limite lim(x->2)(3x-4)",
+'{
+  "alternatives": [
+	"6",
+    "4",
+    "2",
+    "8"
+  ]
+}', "c", 2, 6),
+(15, "Qual o limite lim(x->infinito)(1/x)?",
+'{
+  "alternatives": [
+	"1",
+    "0",
+    "Infinito",
+    "-1"
+  ]
+}', "b", 2, 6),
+(16, "A função f(x)=x² tem um ponto de mínimo em:",
+'{
+  "alternatives": [
+	"x=0",
+    "x=1",
+    "x=-1",
+    "x=2"
+  ]
+}', "a", 2, 7),
+(17, "Para a função h(x)=-2x²+4x, o ponto de máximo é:",
+'{
+  "alternatives": [
+	"x=0",
+    "x=-1",
+    "x=2",
+    "x=1"
+  ]
+}', "d", 2, 7);
