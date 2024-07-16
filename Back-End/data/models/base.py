@@ -4,8 +4,8 @@ from peewee import * # ORM
 db = MySQLDatabase(
     "ova_db",
     user="remote",
-    password="Password-123",
-    host="ec2-54-162-164-125.compute-1.amazonaws.com",
+    password="OvaIa2024cimatec-mysql",
+    host="ec2-54-236-209-79.compute-1.amazonaws.com",
     port=3306
 )
 
