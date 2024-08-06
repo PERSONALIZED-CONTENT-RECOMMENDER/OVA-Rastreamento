@@ -155,6 +155,7 @@ function makeOVAOptions(response, ovaList) {
             // put the id and the link of the ova that was clicked
             localStorage.setItem("ova_id", ova.ova_id);
             localStorage.setItem("ova_link", `${ova.link}`);
+            window.location.href = "iframe.html";
         });
         ovaList.append(listItem);
     }

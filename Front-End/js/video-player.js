@@ -36,6 +36,7 @@ function onYouTubeIframeAPIReady() {
         if (localStorage.getItem(`${videoId}_viewed`) == null) {
             localStorage.setItem(`${videoId}_viewed`, 0);
         }
+        // set the data for each player
         const player_data = {
             player: new YT.Player(iframe.id, {
                 videoId: videoId,

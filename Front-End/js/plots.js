@@ -157,17 +157,18 @@ function getStudentsByCourse(course_id) {
 function studentCompetencyPerformance(response, plots) {
     const plot = $(`<div id="plot-1"></div>`);
     plots.append(plot);
-    const totalInteractions = 30;
     const byCompetencies = response.data;
     const max = response.max_num_competencies;
     const keys = Object.keys(byCompetencies);
 
+    // set the configurations of the plot
     const config = {
         responsive: true,
         displayModeBar: false,
         scrollZoom: true
     };
 
+    // set the plot layout
     const layout = {
         title: "Desempenho do aluno por competência",
         barmode: "group",
@@ -183,6 +184,7 @@ function studentCompetencyPerformance(response, plots) {
         }
     };
 
+    // set the data for the plot and its plot options
     const data = [];
     const colors = [
         'rgb(245,232,0)', 
@@ -231,12 +233,14 @@ function courseGeneralPerformance(response, plots) {
     const plot = $(`<div id="plot-2"></div>`);
     plots.append(plot);
 
+    // set the configurations of the plot
     const config = {
         responsive: true,
         displayModeBar: false,
         scrollZoom: true
     };
 
+    // set the plot layout
     const layout = {
         title: response.title,
         barmode: "group",
@@ -252,6 +256,7 @@ function courseGeneralPerformance(response, plots) {
         }
     };
 
+    // set the data for the plot and its plot options
     const data = [{
         x: response.data.students,
         y: response.data.perc,
@@ -273,12 +278,14 @@ function ovaGeneralPerformance(response, plots) {
     const plot = $(`<div id="plot-3"></div>`);
     plots.append(plot);
 
+    // set the configurations of the plot
     const config = {
         responsive: true,
         displayModeBar: false,
         scrollZoom: true
     };
 
+    // set the plot layout
     const layout = {
         title: response.title,
         barmode: "group",
@@ -294,6 +301,7 @@ function ovaGeneralPerformance(response, plots) {
         }
     };
 
+    // set the data for the plot and its plot options
     const data = [{
         x: response.data.students,
         y: response.data.perc,
@@ -306,6 +314,7 @@ function ovaGeneralPerformance(response, plots) {
         }
     }];
 
+    // set the plot with the properties
     Plotly.newPlot(`plot-3`, data, layout, config);
     console.log(response);
 }

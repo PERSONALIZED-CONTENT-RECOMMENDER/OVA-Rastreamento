@@ -268,6 +268,10 @@ function changeDots(carrousel, part) {
     });
 }
 
+/* 
+calls the request function with the parameters for get all the questions of an ova
+and if each of them was answered or not by the student
+*/
 function getQuestions() {
     const data = {
         ova_id: localStorage.getItem("ova_id"),
@@ -276,10 +280,15 @@ function getQuestions() {
     return doRequest(`/question/ova`, data, 'POST');
 }
 
+/*
+calls the request function with the parameters for get all the questions 
+of an ova with the answers given by the student
+*/
 function answerQuestion(data) {
     return doRequest(`/question/answer`, data, 'POST');
 }
 
+// make the questions html
 function makeQuestions(response) {
     const questions = $(".questions");
     questions.html("");
@@ -302,6 +311,7 @@ function makeQuestions(response) {
     }
 }
 
+// make the html for each alternatives of each questions
 function makeQuestionAlternatives(list, alternatives, number) {
     const letters = "abcdefghijklmnopqrstuvwxyz";
     for (let i = 0; i < alternatives.length; i++) {
