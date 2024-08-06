@@ -3,6 +3,7 @@ from base import BaseModel
 from subjects import Subjects
 from peewee import *
 
+# class for the ovas table
 class OVAs(BaseModel):
     # id of the ova
     ova_id = IntegerField(primary_key=True)

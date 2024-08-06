@@ -3,6 +3,7 @@ from base import BaseModel
 from subjects import Subjects
 from peewee import *
 
+# class for the competencies table
 class Competencies(BaseModel):
     # id of the competency
     competency_id = IntegerField(primary_key=True)

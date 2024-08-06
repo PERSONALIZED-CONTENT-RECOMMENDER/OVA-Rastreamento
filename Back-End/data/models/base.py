@@ -9,6 +9,7 @@ db = MySQLDatabase(
     port=3306
 )
 
+# base class for the others classes
 class BaseModel(Model):
     class Meta:
         database=db

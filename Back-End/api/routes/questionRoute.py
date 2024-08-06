@@ -48,7 +48,7 @@ def show_all_questions():
         # return this if the http method is any other than GET
         return "Wrong Request Methods. Only GET Allowed", 405
 
-#given a ova, return all the question of this ova
+#given an ova, return all the question of this ova
 @app_question.route("/question/ova", methods=["POST"])
 # activate the cross-origin, that accepts requests from another domain
 @cross_origin()
@@ -85,7 +85,8 @@ def show_ova_questions():
     else:
         # return this if the http method is any other than POST
         return "Wrong Request Methods. Only POST Allowed", 405
-    
+ 
+# given a student's id, this function inserts a new answer of a question
 @app_question.route("/question/answer", methods=['POST'])
 @cross_origin()
 def answer_question():
@@ -93,13 +94,18 @@ def answer_question():
         try:
             answer_data = request.get_json()[0]
             
+            # get the answer of a student for a given question
             answer = Answers.select(Answers.question_id).where(Answers.question_id == answer_data["question_id"], Answers.student_id == answer_data["student_id"]).first()
             
+            # verifies if the answer is correct and if it doesn't
+            # exists in database. If both of conditions are correct,
+            # insert a new answer in database
             if answer_data["is_correct"] and answer is None:
                 print("new")
                 student = Students.select().where(Students.student_id == answer_data["student_id"]).first()
                 question = Questions.select().where(Questions.question_id == answer_data["question_id"]).first()
                 
+                # inserts a new answer in database
                 answer = Answers.create(
                     student_id = student,
                     question_id = question

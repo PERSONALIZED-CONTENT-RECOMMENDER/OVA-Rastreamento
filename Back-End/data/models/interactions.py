@@ -4,6 +4,7 @@ from students import Students
 from ovas import OVAs
 from peewee import *
 
+# class for the interactions table
 class Interactions(BaseModel):
     # id of the interaction
     interaction_id = AutoField()

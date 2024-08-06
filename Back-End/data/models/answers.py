@@ -4,6 +4,7 @@ from students import Students
 from questions import Questions
 from peewee import  *
 
+# class for the answers table
 class Answers(BaseModel):
     # id of the answer
     answer_id = IntegerField(primary_key=True)

@@ -79,6 +79,7 @@ on s.student_id = sub_q.student_id
 where s.is_admin = false
 group by s.student_id;""")
     
+    # execute raw sql due to complexity
     cursor = db.execute_sql(query)
     data = {"students": [], "perc": []}
     
@@ -113,6 +114,7 @@ on s.student_id = sub_q.student_id
 where s.is_admin = false
 group by s.student_id""")
     
+    # execute raw sql due to complexity
     cursor = db.execute_sql(query)
     data = {"students": [], "perc": []}
     

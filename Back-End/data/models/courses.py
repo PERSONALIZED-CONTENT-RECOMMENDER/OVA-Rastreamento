@@ -2,6 +2,7 @@
 from base import BaseModel
 from peewee import * # ORM
 
+# class for the courses table
 class Courses(BaseModel):
     # id of the course
     course_id = IntegerField(primary_key=True)

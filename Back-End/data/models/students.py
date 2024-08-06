@@ -3,6 +3,7 @@ from base import BaseModel
 from courses import Courses
 from peewee import *
 
+# class for the students table
 class Students(BaseModel):
     # id of the student
     student_id = IntegerField(primary_key=True)

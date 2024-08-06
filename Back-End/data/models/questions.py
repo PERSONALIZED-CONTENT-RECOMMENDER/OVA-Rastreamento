@@ -5,6 +5,7 @@ from ovas import OVAs
 from peewee import *
 from playhouse.mysql_ext import JSONField
 
+# class for the questions table
 class Questions(BaseModel):
     # id of the question
     question_id = IntegerField(primary_key=True)
