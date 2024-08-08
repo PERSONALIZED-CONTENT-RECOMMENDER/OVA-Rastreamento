@@ -187,11 +187,11 @@ function studentCompetencyPerformance(response, plots) {
     // set the data for the plot and its plot options
     const data = [];
     const colors = [
-        'rgb(245,232,0)', 
+        'rgb(0,245,230)', 
         'rgb(0,244,17)', 
         'rgb(245,1,17)', 
         'rgb(10,11,244)', 
-        'rgb(0,245,230)'];
+        'rgb(245,100,200)'];
     for (let i = 0; i < max; i++) {
         data[i] = {
             type: "bar",
@@ -219,7 +219,7 @@ function studentCompetencyPerformance(response, plots) {
             }
             else {
                 data[i].x.push(keys[j]);
-                data[i].customdata.push(byCompetencies[keys[j]][i][0]);
+                data[i].customdata.push(`${keys[j]} - ${byCompetencies[keys[j]][i][0]}`);
                 data[i].y.push(byCompetencies[keys[j]][i][1]);
             }
         }
