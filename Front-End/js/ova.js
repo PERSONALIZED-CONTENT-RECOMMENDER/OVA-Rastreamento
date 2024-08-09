@@ -294,7 +294,6 @@ function makeQuestions(response) {
     questions.html("");
     for (let i = 0; i < response.length; i++) {
         const question = response[i];
-        console.log(question);
         const item = $(`
         <div class="question mb-5" data-number="${i + 1}" data-correct="${question.answer}" data-id="${question.question_id}" data-answered="${question.answered}">
             <h3>${i + 1}. ${question.statement}</h3>

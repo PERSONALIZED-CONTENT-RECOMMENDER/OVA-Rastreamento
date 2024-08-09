@@ -270,7 +270,6 @@ function courseGeneralPerformance(response, plots) {
     }];
 
     Plotly.newPlot(`plot-2`, data, layout, config);
-    console.log(response);
 }
 
 // plot the graph for the performance of an ova with all the students
@@ -316,5 +315,4 @@ function ovaGeneralPerformance(response, plots) {
 
     // set the plot with the properties
     Plotly.newPlot(`plot-3`, data, layout, config);
-    console.log(response);
 }

@@ -27,12 +27,10 @@ let players = [];
 // the function is called when the API is ready
 function onYouTubeIframeAPIReady() {
     const videoIframes = document.querySelectorAll(".ova_video");
-    console.log(videoIframes);
     videoIframes.forEach(iframe => {
         // for each video in the OVA, a player is created with an id
         // an API object and the checkpoints
         const videoId = iframe.dataset.videoId;
-        console.log(videoId);
         if (localStorage.getItem(`${videoId}_viewed`) == null) {
             localStorage.setItem(`${videoId}_viewed`, 0);
         }
