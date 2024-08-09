@@ -9,6 +9,15 @@ db = MySQLDatabase(
     port=3306
 )
 
+# option to local development
+# db = MySQLDatabase(
+#     "ova_db",
+#     user="root",
+#     password="Password-123",
+#     host="localhost",
+#     port=3306
+# )
+
 # base class for the others classes
 class BaseModel(Model):
     class Meta:
