@@ -14,7 +14,8 @@ db = MySQLDatabase(
     "ova_db",
     user="root",
     host="localhost",
-    port=3306
+    port=3306,
+    password="guarana"
 )
 
 # base class for the others classes

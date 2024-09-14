@@ -19,7 +19,28 @@ values
 (1, "1", "1", "Eduardo", 1, false),
 (2, "2", "2", "Gabriel", 1, false),
 (3, "3", "3", "Yasmin", 1, false),
-(4, "4", "4", "Sanval", 1, true);
+(4, "4", "4", "Sanval", 1, true),
+(5, "5", "5", "Pedro", 1, false),
+(6, "6", "6", "Thiago", 1, false),
+(7, "7", "7", "Manuel", 1, false),
+(8, "8", "8", "Angela", 1, false),
+(9, "9", "9", "Ana", 1, false),
+(10, "10", "10", "Ricardo", 1, false),
+(11, "11", "11", "Cezar", 1, false),
+(12, "12", "12", "Camilla", 1, false),
+(13, "13", "13", "Rodrigo", 1, false),
+(14, "14", "14", "Jaqueline", 1, false),
+(15, "15", "15", "Gabriela", 1, false),
+(16, "16", "16", "Sara", 1, false),
+(17, "17", "17", "Paulo", 1, false),
+(18, "18", "18", "Lucas", 1, false),
+(19, "19", "19", "Roberto", 1, false),
+(20, "20", "20", "Liz", 1, false),
+(21, "21", "21", "Rafael", 1, false),
+(22, "22", "22", "Neilton", 1, false),
+(23, "23", "23", "Caio", 1, false),
+(24, "24", "24", "Leonardo", 1, false);
+
 
 insert into competencies
 values
