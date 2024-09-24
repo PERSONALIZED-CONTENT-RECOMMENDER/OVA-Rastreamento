@@ -44,13 +44,12 @@ values
 
 insert into competencies
 values
-(1, "Compreender os conceitos fundamentais da computação quântica", 1),
-(2, "Identificar as aplicações práticas da computação quântica", 1),
-(3, "Avaliar os desafios e limitações da computação quântica", 1),
-(4, "Derivadas", 2),
-(5, "Integrais", 2),
-(6, "Limites", 2),
-(7, "Aplicações de derivadas", 2);
+(1, "Compreender os princípios fundamentais da computação quântica", 1),
+(2, "Analisar as aplicações da computação quântica", 1),
+(3, "Reconhecer os desafios e limitações técnicos da computação quântica", 1),
+(4, "Calcular derivadas e integrais de funções polinomiais e trigonométricas", 2),
+(5, "Aplicar os conceitos de limites em funções simples, incluindo a identificação de comportamentos em infinitos", 2),
+(6, "Identificar pontos de máximo e mínimo em funções, utilizando o cálculo diferencial para a análise de curvas", 2);
 
 insert into ovas
 values
@@ -167,16 +166,7 @@ values
     "(x⁴/2)+C"
   ]
 }', "a", 2, 5),
-(13, "Qual a integral indefinida de g(x)=cos(x)?",
-'{
-  "alternatives": [
-	"sin(x)+C",
-    "-sin(x)+C",
-    "cos(x)+C",
-    "-cos(x)+C"
-  ]
-}', "a", 2, 5),
-(14, "Calcule o limite lim(x->2)(3x-4)",
+(13, "Calcule o limite lim(x->2)(3x-4)",
 '{
   "alternatives": [
 	"6",
@@ -185,7 +175,7 @@ values
     "8"
   ]
 }', "c", 2, 6),
-(15, "Qual o limite lim(x->infinito)(1/x)?",
+(14, "Qual o limite lim(x->infinito)(1/x)?",
 '{
   "alternatives": [
 	"1",
@@ -194,6 +184,16 @@ values
     "-1"
   ]
 }', "b", 2, 6),
+(15, "Calcule o limite da função (3x²-2x+1)/(x-1) quando x tende a 1",
+'{
+  "alternatives": [
+    "Infinito",
+    "1",
+    "4",
+    "2",
+    "Não existe"
+  ]
+}', "c", 2, 6),
 (16, "A função f(x)=x² tem um ponto de mínimo em:",
 '{
   "alternatives": [
@@ -211,4 +211,13 @@ values
     "x=2",
     "x=1"
   ]
-}', "d", 2, 7);
+}', "d", 2, 7),
+(18, "Considere a função f(x)=-2x²+4x+1. Determine se o ponto crítico da função é um ponto máximo ou mínimo.",
+'{
+  "alternatives": [
+    "Ponto máximo",
+    "Ponto mínimo",
+    "Não há ponto crítico",
+    "Nenhum dos anteriores"
+  ]
+}', "a", 2, 7);

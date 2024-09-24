@@ -1,6 +1,6 @@
 use ova_db;
 
-#drop table interactions, answers, questions, ovas, students, competencies, offerings, course_subjects, courses;
+drop table interactions, answers, questions, ovas, students, competencies, offerings, course_subjects, courses;
 
 create table courses (
 	course_id int primary key not null auto_increment,
