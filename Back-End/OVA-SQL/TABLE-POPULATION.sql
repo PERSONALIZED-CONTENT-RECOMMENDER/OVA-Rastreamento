@@ -165,7 +165,7 @@ values
     "(x⁴/4)+C",
     "(x⁴/2)+C"
   ]
-}', "a", 2, 5),
+}', "a", 2, 4),
 (13, "Calcule o limite lim(x->2)(3x-4)",
 '{
   "alternatives": [
@@ -174,7 +174,7 @@ values
     "2",
     "8"
   ]
-}', "c", 2, 6),
+}', "c", 2, 5),
 (14, "Qual o limite lim(x->infinito)(1/x)?",
 '{
   "alternatives": [
@@ -183,7 +183,7 @@ values
     "Infinito",
     "-1"
   ]
-}', "b", 2, 6),
+}', "b", 2, 5),
 (15, "Calcule o limite da função (3x²-2x+1)/(x-1) quando x tende a 1",
 '{
   "alternatives": [
@@ -193,7 +193,7 @@ values
     "2",
     "Não existe"
   ]
-}', "c", 2, 6),
+}', "c", 2, 5),
 (16, "A função f(x)=x² tem um ponto de mínimo em:",
 '{
   "alternatives": [
@@ -202,7 +202,7 @@ values
     "x=-1",
     "x=2"
   ]
-}', "a", 2, 7),
+}', "a", 2, 6),
 (17, "Para a função h(x)=-2x²+4x, o ponto de máximo é:",
 '{
   "alternatives": [
@@ -211,7 +211,7 @@ values
     "x=2",
     "x=1"
   ]
-}', "d", 2, 7),
+}', "d", 2, 6),
 (18, "Considere a função f(x)=-2x²+4x+1. Determine se o ponto crítico da função é um ponto máximo ou mínimo.",
 '{
   "alternatives": [
@@ -220,4 +220,4 @@ values
     "Não há ponto crítico",
     "Nenhum dos anteriores"
   ]
-}', "a", 2, 7);
+}', "a", 2, 6);
