@@ -11,6 +11,7 @@ import json
 
 # import the data_analysis module
 from data_analysis import ova_interactions_by_competencies, course_general_performance, ova_performance_by_students
+#from data_analysis import competency_performance_by_students, ova_interactions_by_competencies, course_general_performance, ova_performance_by_students
 
 # format the data to send to front-end, with the type of plot
 # the data and the title of the plot
@@ -76,3 +77,20 @@ def get_ova_plots():
     else:
         # return this if the http method is any other than POST
         return "Wrong Request Methods. Only POST Allowed", 405
+    
+# get all the plots referent to an competency
+# @app_plot.route("/plot/competency", methods=["POST"])
+# @cross_origin()
+# def get_competency_plots():
+#     if request.method == "POST":
+#         competency_id = request.get_json()[0]["competency_id"]
+        
+#         # call the plot function for the plot module
+#         data = competency_performance_by_students(competency_id)
+#         #get the formatted data
+#         plot = format_data("bar", "Performance dos alunos na competência", data)
+        
+#         return json.dumps(plot)
+#     else:
+#         # return this if the http method is any other than POST
+#         return "Wrong Request Methods. Only POST Allowed", 405

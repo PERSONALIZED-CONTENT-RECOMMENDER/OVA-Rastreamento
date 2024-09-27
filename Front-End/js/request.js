@@ -9,6 +9,7 @@ export function registerInteraction(interaction) {
     const data = {
         student_id: localStorage.getItem("student_id"),
         ova_id: localStorage.getItem("ova_id"),
+        //competency_id: localStorage.getItem("competency_id"),
         action: interaction
     }
     return doRequest(url, data);
@@ -64,6 +65,18 @@ export function makeOVAsOptions(data, select) {
     }
 }
 
+// make the options for the competency select
+/*
+export function makeCompetenciesOptions(data, select) {
+    for (let i = 0; i < data.length; i++) {
+        const option = $(`
+            <option value="${data[i]["competency_id"]}">${data[i]["competency_description"]}</option>
+        `);
+        select.append(option);
+    }
+}
+*/
+
 // calls the request function with the parameters for get all courses
 export function getCourses() {
     const url = "/courses";
@@ -75,3 +88,11 @@ export function getAllOVAs() {
     const url = "/ova/all";
     return doRequest(url, {}, "GET");
 }
+
+// calls the request function with the parameters for get all the Competencies
+/*
+export function getAllCompetencies() {
+    const url = "/competency";
+    return doRequest(url, {}, "GET");
+}
+*/

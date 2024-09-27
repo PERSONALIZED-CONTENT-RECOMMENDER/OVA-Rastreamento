@@ -125,3 +125,36 @@ group by s.student_id""")
         data["perc"].append(round(float(perc), 2))
     
     return data
+
+# given an competency id, returns the performance of each student on it
+# def competency_performance_by_students(competency_id):
+#     # reuse the connection if its already open
+#     db.connect(reuse_if_open=True)
+#     query = (f"""select s.student_name, count(sub_q.question_id) / (
+# 	select count(q.question_id)
+#     from questions q
+#     where q.competency_id = {competency_id}
+# ) as perc
+# from students s
+# left join (
+# 	select q.question_id, a.student_id
+#     from questions q
+# 	inner join answers a
+# 	on a.question_id = q.question_id
+#     where q.competency_id = {competency_id}
+# ) sub_q
+# on s.student_id = sub_q.student_id
+# where s.is_admin = false
+# group by s.student_id;""")
+    
+#     # execute raw sql due to complexity
+#     cursor = db.execute_sql(query)
+#     data = {"students": [], "perc": []}
+    
+#     # append the student and the percentage achieved until the
+#     # moment of the request
+#     for student, perc in cursor.fetchall():
+#         data["students"].append(student)
+#         data["perc"].append(round(float(perc), 2))
+    
+#     return data

@@ -1,4 +1,5 @@
 import { doRequest, makeCourseOptions, makeStudentOptions, getCourses, getAllOVAs, makeOVAsOptions } from "./request.js";
+//import { doRequest, makeCourseOptions, makeStudentOptions, getCourses, getAllOVAs, makeOVAsOptions, makeCompetenciesOptions, getAllCompetencies } from "./request.js";
 
 $(document).ready(function () {
     sessionStorage.setItem("past_page", "plot");
@@ -44,12 +45,19 @@ $(document).ready(function () {
                         <option value=""></option>
                     </select>
                 </div>
+                // <div class="mb-3 d-none">
+                //     <label for="ovas">Competência:</label>
+                //     <select name="" id="competencies" class="form-select">
+                //         <option value=""></option>
+                //     </select>
+                // </div>
             </div>
         `);
 
         const courses = adminOptions.find("#courses");
         const students = adminOptions.find("#students");
         const ovas = adminOptions.find("#ovas");
+        //const competencies = adminOptions.find("#competencies");
 
         // send a request to the API to get all the courses
         getCourses()
@@ -60,6 +68,13 @@ $(document).ready(function () {
         getAllOVAs()
         .then(response => makeOVAsOptions(response, ovas))
         .catch(error => console.log(error));
+
+        // send a request to the API to get all the competencies 
+        /*
+        getAllCompetencies()
+        .then(response => makeCompetenciesOptions(response, competencies))
+        .catch(error => console.log(error));
+        */
 
         /*
         if the admin change the course select, updates the student
@@ -116,6 +131,22 @@ $(document).ready(function () {
             }
         });
 
+        // if the competency select change, also changes the ova plot
+        /*
+        competencies.on("change", function() {
+            const option = $(this).find("option:selected");
+            if (option.val() != "") {
+                const competency_data = {
+                    "competency_id": option.val(),
+                    "course_id": courses.find("option:checked").val()
+                }
+                getCompetencyPlot(competency_data)
+                .then(response => competencyGeneralPerformance(response, plots))
+                .catch(error => console.log(error));
+            }
+        });
+        */
+
         adminOptions.insertBefore(plots);
     } else {
         // if not admin, the student only sees his performance
@@ -152,6 +183,14 @@ function getStudentsByCourse(course_id) {
     const url = `/student/course/${course_id}`;
     return doRequest(url, {}, "GET");
 }
+
+/*
+// calls the request function with the parameters for get the competency plot
+function getCompetencyPlot(data) {
+    const url = "/plot/competency";
+    return doRequest(url, data, "POST");
+}
+*/
 
 // plot the graph of the students of the course performance grouped by competencies
 function studentCompetencyPerformance(response, plots) {
@@ -316,3 +355,50 @@ function ovaGeneralPerformance(response, plots) {
     // set the plot with the properties
     Plotly.newPlot(`plot-3`, data, layout, config);
 }
+
+/*
+// plot the graph for the performance of a competency with all the students
+function competencyGeneralPerformance(response, plots) {
+    const plot = $(`<div id="plot-4"></div>`);
+    plots.append(plot);
+
+    // set the configurations of the plot
+    const config = {
+        responsive: true,
+        displayModeBar: false,
+        scrollZoom: true
+    };
+
+    // set the plot layout
+    const layout = {
+        title: response.title,
+        barmode: "group",
+        width: plots.width(),
+        font: {
+            size: 12
+        },
+        xaxis: {
+            tickangle: 20
+        },
+        yaxis: {
+            tickformat: "2%"
+        }
+    };
+
+    // set the data for the plot and its plot options
+    const data = [{
+        x: response.data.students,
+        y: response.data.perc,
+        type: response.type,
+        font: {
+            size: 12
+        },
+        xaxis: {
+            tickangle: 20
+        }
+    }];
+
+    // set the plot with the properties
+    Plotly.newPlot(`plot-4`, data, layout, config);
+}
+*/
