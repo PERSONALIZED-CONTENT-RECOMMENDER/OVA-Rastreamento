@@ -45,12 +45,12 @@ $(document).ready(function () {
                         <option value=""></option>
                     </select>
                 </div>
-                // <div class="mb-3 d-none">
-                //     <label for="ovas">Competência:</label>
-                //     <select name="" id="competencies" class="form-select">
-                //         <option value=""></option>
-                //     </select>
-                // </div>
+                <div class="mb-3 d-none">
+                    <label for="ovas">Competência:</label>
+                    <select name="" id="competencies" class="form-select">
+                        <option value=""></option>
+                    </select>
+                </div>
             </div>
         `);
 
@@ -152,10 +152,20 @@ $(document).ready(function () {
         // if not admin, the student only sees his performance
         const student_data = {
             "student_id": localStorage.getItem("student_id"),
-            "course_id": localStorage.getItem("course_id")
+            "course_id": localStorage.getItem("course_id"),
+            "ova_id": localStorage.getItem("ova_id")
         }
+
         getStudentPlot(student_data)
-        .then(response => studentCompetencyPerformance(response, plots))
+        .then(response => {
+            studentCompetencyPerformance(response, plots);
+        })
+        .catch(error => console.log(error));
+
+        getStudentInteractionsNum(student_data)
+        .then(response => {
+            studentInteractionsOva(response, plots);
+        })
         .catch(error => console.log(error));
     }
 });
@@ -184,6 +194,11 @@ function getStudentsByCourse(course_id) {
     return doRequest(url, {}, "GET");
 }
 
+function getStudentInteractionsNum(data) {
+    const url = "/interaction/ova"
+    return doRequest(url, data, "POST")
+}
+
 /*
 // calls the request function with the parameters for get the competency plot
 function getCompetencyPlot(data) {
@@ -210,32 +225,55 @@ function studentCompetencyPerformance(response, plots) {
     // set the plot layout
     const layout = {
         title: "Desempenho do aluno por competência",
+        showlegend: false,
         barmode: "group",
         width: plots.width(),
         font: {
             size: 12
         },
         xaxis: {
-            tickangle: 20
+            tickangle: 20,
+            title: "Competências por disciplina"
         },
         yaxis: {
-            tickformat: "2%"
-        }
+            tickformat: "2%",
+            title: "% de respostas certas"
+        },
+        bargroupgap: 0.08
     };
 
     // set the data for the plot and its plot options
     const data = [];
-    const colors = [
-        'rgb(0,245,230)', 
-        'rgb(0,244,17)', 
-        'rgb(245,1,17)', 
-        'rgb(10,11,244)', 
-        'rgb(245,100,200)'];
+    const colors = {
+        0.0: "rgb(173, 254, 255)",
+        0.1: "rgb(156, 229, 241)",
+        0.2: "rgb(138, 206, 226)",
+        0.3: "rgb(121, 179, 212)",
+        0.4: "rgb(104, 154, 198)",
+        0.5: "rgb(87, 129, 184)",
+        0.6: "rgb(69, 104, 169)",
+        0.7: "rgb(52, 79, 155)",
+        0.8: "rgb(35, 54, 141)",
+        0.9: "rgb(17, 29, 126)",
+        1.0: "rgb(0, 4, 112)"
+    };
+
+    const getPercColor = (perc) => {
+        const step = 2;
+        let idx = 0.0;
+        for (let i = 0.0; i <= 1.0; i += 0.1 * step) {
+            if (perc < i) break;
+            idx = i;
+        }
+
+        return colors[Math.round(10 * idx) / 10];
+    };
+    
     for (let i = 0; i < max; i++) {
         data[i] = {
             type: "bar",
             marker: {
-                color: colors[i]
+                color: []
             },
             font: {
                 size: 12
@@ -243,14 +281,19 @@ function studentCompetencyPerformance(response, plots) {
             xaxis: {
                 tickangle: 20
             },
-            name: `Competência ${i + 1}`,
+            textposition: "outside",
             hovertemplate:
             `<b>%{customdata}</b>`
         };
         data[i].x = [];
         data[i].customdata = [];
         data[i].y = [];
+        data[i].text = [];
         for (let j = 0; j < keys.length; j++) {
+            let answers = byCompetencies[keys[j]][i][1];
+            let num_questions = byCompetencies[keys[j]][i][2];
+            let perc = answers / num_questions;
+
             if (i >= byCompetencies[keys[j]].length) {
                 data[i].x.push("");
                 data[i].customdata.push("");
@@ -259,9 +302,13 @@ function studentCompetencyPerformance(response, plots) {
             else {
                 data[i].x.push(keys[j]);
                 data[i].customdata.push(`${keys[j]} - ${byCompetencies[keys[j]][i][0]}`);
-                data[i].y.push(byCompetencies[keys[j]][i][1]);
+                data[i].y.push(perc);
+                data[i].text.push(`${answers}/${num_questions} - Comp.${i + 1}`);
+                let rgb = getPercColor(perc);
+                data[i].marker.color.push(rgb);
             }
         }
+        console.log(data[i]);
     }
 
     Plotly.newPlot(`plot-1`, data, layout, config);
@@ -354,6 +401,47 @@ function ovaGeneralPerformance(response, plots) {
 
     // set the plot with the properties
     Plotly.newPlot(`plot-3`, data, layout, config);
+}
+
+function studentInteractionsOva(response, plots) {
+    const plot = $(`<div id="plot-4"></div>`);
+    plots.append(plot);
+
+    // set the configurations of the plot
+    const config = {
+        responsive: true,
+        displayModeBar: false,
+        scrollZoom: true
+    };
+
+    // set the plot layout
+    const layout = {
+        width: plots.width(),
+        font: {
+            size: 12
+        },
+        xaxis: {
+            tickangle: 20
+        },
+        yaxis: {
+            tickformat: "2%"
+        }
+    };
+
+    // set the data for the plot and its plot options
+    const data = [{
+        x: "Interactions",
+        y: response.num_interactions / sessionStorage.getItem("num_interactions"),
+        font: {
+            size: 12
+        },
+        xaxis: {
+            tickangle: 20
+        }
+    }];
+
+    // set the plot with the properties
+    Plotly.newPlot(`plot-4`, data, layout, config);
 }
 
 /*

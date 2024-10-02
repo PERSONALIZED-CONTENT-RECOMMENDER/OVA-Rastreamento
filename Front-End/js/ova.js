@@ -295,7 +295,7 @@ function makeQuestions(response) {
     for (let i = 0; i < response.length; i++) {
         const question = response[i];
         const item = $(`
-        <div class="question mb-5" data-number="${i + 1}" data-correct="${question.answer}" data-id="${question.question_id}" data-answered="${question.answered}">
+        <div class="question mb-5" data-number="${i + 1}" data-correct="${question.answer}" data-id="${question.question_id}" data-answered="${question.answered}" data-competency-id="${question.competency_id}">
             <h3>${i + 1}. ${question.statement}</h3>
             <form action="#">
                 <div class="alternatives my-3"></div>
