@@ -9,8 +9,6 @@ from flask import Blueprint, request
 from flask_cors import cross_origin
 import json
 
-from interactions import Interactions
-
 # import the data_analysis module
 from data_analysis import ova_interactions_by_competencies, course_general_performance, ova_performance_by_students
 #from data_analysis import competency_performance_by_students, ova_interactions_by_competencies, course_general_performance, ova_performance_by_students
@@ -68,28 +66,14 @@ def get_course_plots():
 @cross_origin()
 def get_ova_plots():
     if request.method == "POST":
-        ova_data = request.get_json()[0]
+        data = request.get_json()[0]
         
         # call the plot function for the plot module
-        data = ova_performance_by_students(ova_data)
+        data = ova_performance_by_students(data)
         #get the formatted data
         plot = format_data("bar", "Performance dos alunos no OVA", data)
         
         return json.dumps(plot)
-    else:
-        # return this if the http method is any other than POST
-        return "Wrong Request Methods. Only POST Allowed", 405
-    
-# get all the plots referent to an OVA
-@app_plot.route("/plot/interaction/ova", methods=["POST"])
-@cross_origin()
-def get_interaction_plots():
-    if request.method == "POST":
-        interaction_data = request.get_json()[0]
-        
-        data = Interactions.select(Interactions.student_id == interaction_data["student_id"] and Interactions.ova_id == interaction_data["ova_id"]).count()
-        
-        return json.dumps({"num_interactions": data})
     else:
         # return this if the http method is any other than POST
         return "Wrong Request Methods. Only POST Allowed", 405
