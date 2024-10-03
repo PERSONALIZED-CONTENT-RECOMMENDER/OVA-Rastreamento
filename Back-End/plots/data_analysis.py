@@ -19,7 +19,7 @@ def ova_interactions_by_competencies(data):
     course_id = data["course_id"]
     
     # do the query
-    query = (f"""select cs.subject_name, c.competency_description, count(sub_q.answer_id) / 
+    query = (f"""select cs.subject_name, c.competency_description, count(sub_q.answer_id), 
 (
 	select count(*)
     from questions
@@ -48,7 +48,7 @@ group by cs.subject_id, c.competency_id""")
     # use the defaultdict to handle automatically the key error of a dict
     result = defaultdict(list)
     for row in data:
-        result[row[0]].append((row[1], float(row[2])))
+        result[row[0]].append((row[1], int(row[2]), int(row[3])))
         
     # return the result and the max of competencies that a subject have
     # to show differents amounts of columns in the front end graphic    

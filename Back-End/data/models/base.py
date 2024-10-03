@@ -15,7 +15,7 @@ db = MySQLDatabase(
     user="root",
     host="localhost",
     port=3306,
-    password="guarana"
+    password="Password-123"
 )
 
 # base class for the others classes
