@@ -164,6 +164,7 @@ $(document).ready(function () {
 
         getStudentInteractionsNum(student_data)
         .then(response => {
+            console.log(response)
             studentInteractionsOva(response, plots);
         })
         .catch(error => console.log(error));
@@ -171,9 +172,9 @@ $(document).ready(function () {
 });
 
 // calls the request function with the parameters for get the student plot
-function getStudentPlot(data) {
+async function getStudentPlot(data) {
     const url = `/plot/student`;
-    return doRequest(url, data, "POST");
+    return await doRequest(url, data, "POST");
 }
 
 // calls the request function with the parameters for get the course plot
@@ -194,9 +195,9 @@ function getStudentsByCourse(course_id) {
     return doRequest(url, {}, "GET");
 }
 
-function getStudentInteractionsNum(data) {
-    const url = "/interaction/ova"
-    return doRequest(url, data, "POST")
+async function getStudentInteractionsNum(data) {
+    const url = "/plot/interaction/ova"
+    return await doRequest(url, data, "POST")
 }
 
 /*
@@ -227,6 +228,7 @@ function studentCompetencyPerformance(response, plots) {
         title: "Desempenho do aluno por competência",
         showlegend: false,
         barmode: "group",
+        range: [0, 1],
         width: plots.width(),
         font: {
             size: 12
@@ -303,12 +305,15 @@ function studentCompetencyPerformance(response, plots) {
                 data[i].x.push(keys[j]);
                 data[i].customdata.push(`${keys[j]} - ${byCompetencies[keys[j]][i][0]}`);
                 data[i].y.push(perc);
-                data[i].text.push(`${answers}/${num_questions} - Comp.${i + 1}`);
+                if (perc > 0) {
+                    data[i].text.push(`${answers}/${num_questions} - Comp.${i + 1}`);
+                } else {
+                    data[i].text.push("");
+                }
                 let rgb = getPercColor(perc);
                 data[i].marker.color.push(rgb);
             }
         }
-        console.log(data[i]);
     }
 
     Plotly.newPlot(`plot-1`, data, layout, config);
@@ -330,6 +335,7 @@ function courseGeneralPerformance(response, plots) {
     const layout = {
         title: response.title,
         barmode: "group",
+        range: [0, 1],
         width: plots.width(),
         font: {
             size: 12
@@ -372,6 +378,7 @@ function ovaGeneralPerformance(response, plots) {
 
     // set the plot layout
     const layout = {
+        range: [0, 1],
         title: response.title,
         barmode: "group",
         width: plots.width(),
@@ -407,6 +414,9 @@ function studentInteractionsOva(response, plots) {
     const plot = $(`<div id="plot-4"></div>`);
     plots.append(plot);
 
+    const num_interactions = response.num_interactions;
+    const total_interactions = parseInt(sessionStorage.getItem("total_interactions"))
+
     // set the configurations of the plot
     const config = {
         responsive: true,
@@ -424,14 +434,17 @@ function studentInteractionsOva(response, plots) {
             tickangle: 20
         },
         yaxis: {
-            tickformat: "2%"
+            tickformat: "2%",
+            range: [0, 1]
         }
     };
 
     // set the data for the plot and its plot options
     const data = [{
+        type: "bar",
         x: "Interactions",
-        y: response.num_interactions / sessionStorage.getItem("num_interactions"),
+        y: [num_interactions / total_interactions],
+        text: [`${num_interactions}/${total_interactions}`],
         font: {
             size: 12
         },

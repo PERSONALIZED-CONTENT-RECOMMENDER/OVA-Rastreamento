@@ -50,23 +50,22 @@ $(document).ready(function() {
     dropdown.css({"top": "-600px"});
     const dropdownButton = $(".dropdown-button");
     const carrousels = $("section").find(".carrousel");
-    const questions = $(".question");
-    const sendText = $(".questions").find(".send-text");
     const accordionItems = $(".accordion-item");
+    const questions = $(".question");
+    let total_interactions = 0;
 
     // this lines counts the total number of interactions in the ova
-    let num_interactions = 0;
     carrousels.each(index => {
         const carrousel = carrousels.eq(index);
         const parts = carrousel.find(".parts").children();
-        num_interactions += parts.length;
+        total_interactions += parts.length;
     })
-    num_interactions += accordionItems.length;
-    num_interactions += questions.length;
-    num_interactions += scrollPoints.length;
-    num_interactions += sendText.length;
-    num_interactions += $(".ova_video").length * 5;
-    sessionStorage.setItem("num_interactions", num_interactions);
+    total_interactions += accordionItems.length;
+    total_interactions += questions.length;
+    total_interactions += scrollPoints.length;
+    total_interactions += $(".ova_video").length;
+    
+    sessionStorage.setItem("total_interactions", total_interactions);
 
     let accordionView = [];
 
@@ -195,16 +194,6 @@ $(document).ready(function() {
             .catch(error => console.log(error));
         });
     });
-
-    // register the answer that the student wrote in the question
-    sendText.on("click", async function(e) {
-        e.preventDefault();
-        const question = questions.find("[data-number='3']");
-        const action = "The user submitted the answer of question 3";
-        await registerInteraction(action)
-        .then(response => console.log("success"))
-        .catch(error => console.log(error));
-    });
 });
 
 /*
@@ -291,6 +280,8 @@ function answerQuestion(data) {
 // make the questions html
 function makeQuestions(response) {
     const questions = $(".questions");
+    const total_interactions = parseInt(sessionStorage.getItem("total_interactions"));
+    sessionStorage.setItem("total_interactions", total_interactions + response.length);
     questions.html("");
     for (let i = 0; i < response.length; i++) {
         const question = response[i];
