@@ -1,5 +1,7 @@
 # this lines below enable import from other submodules
 import sys, os
+
+from interactions import Interactions
 root = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
 sys.path.append(root)
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), 'plots')))
@@ -74,6 +76,20 @@ def get_ova_plots():
         plot = format_data("bar", "Performance dos alunos no OVA", data)
         
         return json.dumps(plot)
+    else:
+        # return this if the http method is any other than POST
+        return "Wrong Request Methods. Only POST Allowed", 405
+    
+# get the number of interactions in an OVA
+@app_plot.route("/plot/interaction/ova", methods=["POST"])
+@cross_origin()
+def get_interaction_plots():
+    if request.method == "POST":
+        interaction_data = request.get_json()[0]
+        
+        data = Interactions.select(Interactions.student_id == interaction_data["student_id"] and Interactions.ova_id == interaction_data["ova_id"]).count()
+        
+        return json.dumps({"num_interactions": data})
     else:
         # return this if the http method is any other than POST
         return "Wrong Request Methods. Only POST Allowed", 405

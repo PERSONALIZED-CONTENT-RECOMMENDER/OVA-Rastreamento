@@ -195,7 +195,7 @@ function getStudentsByCourse(course_id) {
 }
 
 function getStudentInteractionsNum(data) {
-    const url = "/interaction/ova"
+    const url = "/plot/interaction/ova"
     return doRequest(url, data, "POST")
 }
 
@@ -303,7 +303,8 @@ function studentCompetencyPerformance(response, plots) {
                 data[i].x.push(keys[j]);
                 data[i].customdata.push(`${keys[j]} - ${byCompetencies[keys[j]][i][0]}`);
                 data[i].y.push(perc);
-                data[i].text.push(`${answers}/${num_questions} - Comp.${i + 1}`);
+                if (perc == 0) data[i].text.push("");
+                else data[i].text.push(`${answers}/${num_questions} - Comp.${i + 1}`);
                 let rgb = getPercColor(perc);
                 data[i].marker.color.push(rgb);
             }
@@ -404,6 +405,7 @@ function ovaGeneralPerformance(response, plots) {
 }
 
 function studentInteractionsOva(response, plots) {
+    console.log(response)
     const plot = $(`<div id="plot-4"></div>`);
     plots.append(plot);
 
@@ -424,14 +426,21 @@ function studentInteractionsOva(response, plots) {
             tickangle: 20
         },
         yaxis: {
-            tickformat: "2%"
+            tickformat: "2%",
+            range: [0, 1]
         }
     };
 
+    const num_interactions = response.num_interactions;
+    const total_interactions = sessionStorage.getItem("total_interactions");
+
     // set the data for the plot and its plot options
     const data = [{
-        x: "Interactions",
-        y: response.num_interactions / sessionStorage.getItem("num_interactions"),
+        type:"bar",
+        x: ["Interactions"],
+        y: [num_interactions / total_interactions],
+        text: [`${num_interactions} / ${total_interactions}`],
+        textposition: "outside",
         font: {
             size: 12
         },

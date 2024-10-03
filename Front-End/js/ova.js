@@ -35,10 +35,6 @@ $(document).ready(function() {
         window.location.href = "login.html";
     }
 
-    getQuestions()
-    .then(response => makeQuestions(response))
-    .catch(error => error);
-    
     /*
     divides the page scroll in n points (5) and the user needs
     to pass by it in at least total_time / n_points (360/5) seconds
@@ -51,22 +47,30 @@ $(document).ready(function() {
     const dropdownButton = $(".dropdown-button");
     const carrousels = $("section").find(".carrousel");
     const questions = $(".question");
-    const sendText = $(".questions").find(".send-text");
     const accordionItems = $(".accordion-item");
 
-    // this lines counts the total number of interactions in the ova
-    let num_interactions = 0;
-    carrousels.each(index => {
-        const carrousel = carrousels.eq(index);
-        const parts = carrousel.find(".parts").children();
-        num_interactions += parts.length;
+    getQuestions()
+    .then(response => {
+        makeQuestions(response);
+
+        let total_interactions = 0;
+
+        carrousels.each(index => {
+            const carrousel = carrousels.eq(index);
+            const parts = carrousel.find(".parts").children();
+            total_interactions += parts.length;
+        });
+        total_interactions += accordionItems.length;
+        total_interactions += scrollPoints.length;
+        total_interactions += $(".ova_video").length;
+        total_interactions += response.length;
+        
+        sessionStorage.setItem("total_interactions", total_interactions);
     })
-    num_interactions += accordionItems.length;
-    num_interactions += questions.length;
-    num_interactions += scrollPoints.length;
-    num_interactions += sendText.length;
-    num_interactions += $(".ova_video").length * 5;
-    sessionStorage.setItem("num_interactions", num_interactions);
+    .catch(error => console.log(error));
+    
+
+    // this lines counts the total number of interactions in the ova
 
     let accordionView = [];
 
@@ -195,17 +199,17 @@ $(document).ready(function() {
             .catch(error => console.log(error));
         });
     });
-
-    // register the answer that the student wrote in the question
-    sendText.on("click", async function(e) {
-        e.preventDefault();
-        const question = questions.find("[data-number='3']");
-        const action = "The user submitted the answer of question 3";
-        await registerInteraction(action)
-        .then(response => console.log("success"))
-        .catch(error => console.log(error));
-    });
 });
+
+function countInteractions(scrollPoints) {
+    return new Promise((resolve, reject) => {
+        
+    });
+}
+
+async function setTotalInteractions(scrollPoints) {
+    return countInteractions(scrollPoints);
+}
 
 /*
 the function to generate the scrollpoints, given a minimum read time

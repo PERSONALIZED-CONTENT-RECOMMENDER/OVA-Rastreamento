@@ -13,9 +13,11 @@ $(document).ready(function () {
             dinamically adds the script of the detection of the interactions
             at the bottom of the iframe script 
         */
-        const ovaScript = $(`<script type="module"></script>`);
-        ovaScript.attr("src", "../js/ova.js");
-        ovaScript.insertAfter(firstScript);
+        if ($("#ova-script") == undefined) {
+            const ovaScript = $(`<script id="ova-script" type="module"></script>`);
+            ovaScript.attr("src", "../js/ova.js");
+            ovaScript.insertAfter(firstScript);
+        }
 
         // const videoScript = $("<script></script>");
         // videoScript.attr("src", "../js/video-player.js");
@@ -27,12 +29,16 @@ $(document).ready(function () {
         const iframeDoc = iframe.contents()[0];
         const frag = iframeDoc.createDocumentFragment();
 
-        const videoScript = iframeDoc.createElement("script");
-        videoScript.src = "../../js/video-player.js";
-        videoScript.type = "text/javascript"
-        frag.appendChild(videoScript);
+        const body = iframeDoc.body;
 
-        const element = iframeDoc.body;
-        element.appendChild(frag)
+        if (body.querySelector("#video-script") == undefined) {
+            const videoScript = iframeDoc.createElement("script");
+            videoScript.src = "../../js/video-player.js";
+            videoScript.id = "video-script";
+            videoScript.type = "text/javascript";
+            frag.appendChild(videoScript);
+
+            body.appendChild(frag);
+        }
     });
 });
