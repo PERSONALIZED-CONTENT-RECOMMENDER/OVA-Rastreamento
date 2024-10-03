@@ -16,7 +16,7 @@ export function registerInteraction(interaction) {
 }
 
 // send the request to the API using a Promise, due to the async funcionality
-export async function doRequest(url, data, type="POST", is_login=0) {
+export function doRequest(url, data, type="POST", is_login=0) {
     return new Promise((resolve, reject) => {
         $.ajax({
             type: type,
