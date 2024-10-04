@@ -140,9 +140,10 @@ function getOVAs(course_id) {
 
 // make the html for each OVA dinamically and append to the course div
 function makeOVAOptions(response, ovaList) {
+    const ovas = response.ovas;
     ovaList.html("");
-    for (let i = 0; i < response.length; i++) {
-        const ova = response[i];
+    for (let i = 0; i < ovas.length; i++) {
+        const ova = ovas[i];
         const listItem = $(`
         <li class="ova-item list-group-item d-flex flex-column justify-content-between align-items-center rounded-3 shadow">
             <a class="align-self-start" href="./iframe.html">
@@ -155,6 +156,7 @@ function makeOVAOptions(response, ovaList) {
             localStorage.setItem("ova_id", ova.ova_id);
             localStorage.setItem("ova_link", `${ova.link}`);
             window.location.href = "iframe.html";
+            localStorage.setItem("subject_id", response.subject_id);
         });
         ovaList.append(listItem);
     }

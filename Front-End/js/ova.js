@@ -46,7 +46,6 @@ $(document).ready(function() {
     dropdown.css({"top": "-600px"});
     const dropdownButton = $(".dropdown-button");
     const carrousels = $("section").find(".carrousel");
-    const questions = $(".question");
     const accordionItems = $(".accordion-item");
 
     getQuestions()

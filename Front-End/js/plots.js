@@ -20,53 +20,62 @@ $(document).ready(function () {
     }
     backButton.attr("href", backButtonLink);
 
+
+    const options = $(`
+        <div class="options mt-5">
+            <div id="choose-ova" class="mb-3">
+                <label for="ovas">OVA:</label>
+                <select name="" id="ovas" class="form-select">
+                    <option value=""></option>
+                </select>
+            </div>
+        </div>
+    `);
+
+    const ovas = options.find("#ovas");
+
+    // send a request to the API to get all the ovas
+    getAllOVAs()
+    .then(response => makeOVAsOptions(response, ovas))
+    .catch(error => console.log(error));
+
+    let ovaListener;
+
     /*
     if admin, show admin options at the plot page, and let the coordinator
     see information about all the courses and all the students
     */
     if (is_admin == true) {
+        options.find("#choose-ova").addClass("d-none");
+
         const adminOptions = $(`
-            <div class="mt-5">
-                <div class="mb-3">
-                    <label for="courses">Curso:</label>
-                    <select name="" id="courses" class="form-select">
-                        <option value=""></option>
-                    </select>
-                </div>
-                <div class="mb-3 d-none">
-                    <label for="students">Estudante:</label>
-                    <select name="" id="students" class="form-select">
-                        <option value=""></option>
-                    </select>
-                </div>
-                <div class="mb-3 d-none">
-                    <label for="ovas">OVA:</label>
-                    <select name="" id="ovas" class="form-select">
-                        <option value=""></option>
-                    </select>
-                </div>
-                <div class="mb-3 d-none">
-                    <label for="ovas">Competência:</label>
-                    <select name="" id="competencies" class="form-select">
-                        <option value=""></option>
-                    </select>
-                </div>
+            <div id="choose-course" class="mb-3">
+                <label for="courses">Curso:</label>
+                <select name="" id="courses" class="form-select">
+                    <option value=""></option>
+                </select>
+            </div>
+            <div id="choose-student" class="students-select mb-3 d-none">
+                <label for="students">Estudante:</label>
+                <select name="" id="students" class="form-select">
+                    <option value=""></option>
+                </select>
             </div>
         `);
+        // <div id="choose-competency" class="mb-3 d-none">
+        //     <label for="ovas">Competência:</label>
+        //     <select name="" id="competencies" class="form-select">
+        //         <option value=""></option>
+        //     </select>
+        // </div>
 
         const courses = adminOptions.find("#courses");
         const students = adminOptions.find("#students");
-        const ovas = adminOptions.find("#ovas");
         //const competencies = adminOptions.find("#competencies");
 
         // send a request to the API to get all the courses
         getCourses()
         .then(response => makeCourseOptions(response, courses))
-        .catch(error => console.log(error));
-
-        // send a request to the API to get all the ovas
-        getAllOVAs()
-        .then(response => makeOVAsOptions(response, ovas))
         .catch(error => console.log(error));
 
         // send a request to the API to get all the competencies 
@@ -117,19 +126,14 @@ $(document).ready(function () {
             }
         });
 
-        // if the ova select change, also changes the ova plot
-        ovas.on("change", function() {
-            const option = $(this).find("option:selected");
-            if (option.val() != "") {
-                const ova_data = {
-                    "ova_id": option.val(),
-                    "course_id": courses.find("option:checked").val()
-                }
-                getOVAPlot(ova_data)
-                .then(response => ovaGeneralPerformance(response, plots))
-                .catch(error => console.log(error));
-            }
-        });
+        ovaListener = (option) => {
+            getOVAPlot({
+                "ova_id": option.val(),
+                "course_id": courses.find("option:checked").val()
+            })
+            .then(response => ovaGeneralPerformance(response, plots))
+            .catch(error => console.log(error));
+        };
 
         // if the competency select change, also changes the ova plot
         /*
@@ -147,27 +151,36 @@ $(document).ready(function () {
         });
         */
 
-        adminOptions.insertBefore(plots);
+        adminOptions.before(options.find("#choose-ova"));
     } else {
         // if not admin, the student only sees his performance
         const student_data = {
             "student_id": localStorage.getItem("student_id"),
             "course_id": localStorage.getItem("course_id"),
+            "subject_id": localStorage.getItem("subject_id"),
             "ova_id": localStorage.getItem("ova_id")
-        }
+        };
 
-        getStudentPlot(student_data)
-        .then(response => {
-            studentCompetencyPerformance(response, plots);
-        })
-        .catch(error => console.log(error));
+        ovaListener = (option) => {
+            getStudentPlot(student_data)
+            .then(response => {
+                studentCompetencyPerformance(response, plots);
+            })
+            .catch(error => console.log(error));
 
-        getStudentInteractionsNum(student_data)
-        .then(response => {
-            studentInteractionsOva(response, plots);
-        })
-        .catch(error => console.log(error));
+            getStudentInteractionsNum(student_data)
+            .then(response => {
+                studentInteractionsOva(response, plots);
+            })
+            .catch(error => console.log(error));
+        };
+        options.insertBefore(plots);
     }
+    // if the ova select change, also changes the ova plot
+    ovas.on("change", () => {
+        const option = $(this).find("option:selected");
+        if (option.val() != "") ovaListener(option);
+    });
 });
 
 // calls the request function with the parameters for get the student plot
@@ -212,7 +225,6 @@ function studentCompetencyPerformance(response, plots) {
     const plot = $(`<div id="plot-1"></div>`);
     plots.append(plot);
     const byCompetencies = response.data;
-    const max = response.max_num_competencies;
     const keys = Object.keys(byCompetencies);
 
     // set the configurations of the plot
@@ -226,7 +238,6 @@ function studentCompetencyPerformance(response, plots) {
     const layout = {
         title: "Desempenho do aluno por competência",
         showlegend: false,
-        barmode: "group",
         width: plots.width(),
         font: {
             size: 12
@@ -239,26 +250,25 @@ function studentCompetencyPerformance(response, plots) {
             tickformat: "2%",
             title: "% de respostas certas"
         },
-        bargroupgap: 0.08
     };
 
     // set the data for the plot and its plot options
-    const data = [];
-    const colors = {
-        0.0: "rgb(173, 254, 255)",
-        0.1: "rgb(156, 229, 241)",
-        0.2: "rgb(138, 206, 226)",
-        0.3: "rgb(121, 179, 212)",
-        0.4: "rgb(104, 154, 198)",
-        0.5: "rgb(87, 129, 184)",
-        0.6: "rgb(69, 104, 169)",
-        0.7: "rgb(52, 79, 155)",
-        0.8: "rgb(35, 54, 141)",
-        0.9: "rgb(17, 29, 126)",
-        1.0: "rgb(0, 4, 112)"
-    };
 
     const getPercColor = (perc) => {
+        const colors = {
+            0.0: "rgb(173, 254, 255)",
+            0.1: "rgb(156, 229, 241)",
+            0.2: "rgb(138, 206, 226)",
+            0.3: "rgb(121, 179, 212)",
+            0.4: "rgb(104, 154, 198)",
+            0.5: "rgb(87, 129, 184)",
+            0.6: "rgb(69, 104, 169)",
+            0.7: "rgb(52, 79, 155)",
+            0.8: "rgb(35, 54, 141)",
+            0.9: "rgb(17, 29, 126)",
+            1.0: "rgb(0, 4, 112)"
+        };
+
         const step = 2;
         let idx = 0.0;
         for (let i = 0.0; i <= 1.0; i += 0.1 * step) {
@@ -269,50 +279,44 @@ function studentCompetencyPerformance(response, plots) {
         return colors[Math.round(10 * idx) / 10];
     };
     
-    for (let i = 0; i < max; i++) {
-        data[i] = {
-            type: "bar",
-            marker: {
-                color: []
-            },
-            font: {
-                size: 12
-            },
-            xaxis: {
-                tickangle: 20
-            },
-            textposition: "outside",
-            hovertemplate:
-            `<b>%{customdata}</b>`
-        };
-        data[i].x = [];
-        data[i].customdata = [];
-        data[i].y = [];
-        data[i].text = [];
-        for (let j = 0; j < keys.length; j++) {
-            let answers = byCompetencies[keys[j]][i][1];
-            let num_questions = byCompetencies[keys[j]][i][2];
-            let perc = answers / num_questions;
+    const data = {
+        type: "bar",
+        x: [],
+        y: [],
+        marker: {
+            color: []
+        },
+        font: {
+            size: 12
+        },
+        xaxis: {
+            tickangle: 20
+        },
+        text: [],
+        customdata: [],
+        textposition: "outside",
+        hovertemplate:
+        `<b>%{customdata}</b>`
+    };
 
-            if (i >= byCompetencies[keys[j]].length) {
-                data[i].x.push("");
-                data[i].customdata.push("");
-                data[i].y.push(0);
-            }
-            else {
-                data[i].x.push(keys[j]);
-                data[i].customdata.push(`${keys[j]} - ${byCompetencies[keys[j]][i][0]}`);
-                data[i].y.push(perc);
-                if (perc == 0) data[i].text.push("");
-                else data[i].text.push(`${answers}/${num_questions} - Comp.${i + 1}`);
-                let rgb = getPercColor(perc);
-                data[i].marker.color.push(rgb);
-            }
-        }
-        console.log(data[i]);
+    for (let j = 0; j < byCompetencies.length; j++) {
+        let answers = byCompetencies[j][1];
+        let num_questions = byCompetencies[j][2];
+        let perc = answers / num_questions;
+        console.log(answers, num_questions, perc)
+
+        data.x.push(`Competência ${j + 1}`);
+        data.customdata.push(byCompetencies[j][0]);
+        data.y.push(perc);
+        if (perc == 0) data.text.push("");
+        else data.text.push(`${answers}/${num_questions} - Comp.${j + 1}`);
+        let rgb = getPercColor(perc);
+        data.marker.color.push(rgb);
     }
 
-    Plotly.newPlot(`plot-1`, data, layout, config);
+    console.log(data)
+
+    Plotly.newPlot(`plot-1`, [data], layout, config);
 }
 
 // plot the graph of the general students performances in the course
@@ -405,7 +409,6 @@ function ovaGeneralPerformance(response, plots) {
 }
 
 function studentInteractionsOva(response, plots) {
-    console.log(response)
     const plot = $(`<div id="plot-4"></div>`);
     plots.append(plot);
 
