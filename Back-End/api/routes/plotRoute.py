@@ -17,13 +17,11 @@ from data_analysis import ova_interactions_by_competencies, course_general_perfo
 
 # format the data to send to front-end, with the type of plot
 # the data and the title of the plot
-def format_data(plot_type, title, data, max=None):
+def format_data(plot_type, title, data):
     d = {"type": plot_type,
         "data": data,
         "title": title,
     }
-    if max is not None:
-        d["max_num_competencies"] = max
     return d
 
 # creation of a route blueprint, a reusable component
@@ -37,9 +35,9 @@ def get_student_plots():
         student_data = request.get_json()[0]
         
         # call the plot function for the plot module
-        title, data, max = ova_interactions_by_competencies(student_data)
+        title, data = ova_interactions_by_competencies(student_data)
         #get the formatted data
-        plot = format_data("bar", title, data, max)
+        plot = format_data("bar", title, data)
         
         return json.dumps(plot)
     else:
@@ -86,8 +84,9 @@ def get_ova_plots():
 def get_interaction_plots():
     if request.method == "POST":
         interaction_data = request.get_json()[0]
+        print(interaction_data)
         
-        data = Interactions.select(Interactions.student_id == interaction_data["student_id"] and Interactions.ova_id == interaction_data["ova_id"]).count()
+        data = Interactions.select().where(Interactions.student_id == interaction_data["student_id"] and Interactions.ova_id == interaction_data["ova_id"]).count()
         
         return json.dumps({"num_interactions": data})
     else:

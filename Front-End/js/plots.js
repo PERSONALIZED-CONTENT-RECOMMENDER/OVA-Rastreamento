@@ -1,4 +1,4 @@
-import { doRequest, makeCourseOptions, makeStudentOptions, getCourses, getAllOVAs, makeOVAsOptions } from "./request.js";
+import { doRequest, makeCourseOptions, makeStudentOptions, getCourses, makeOVAsOptions, getCourseSubjects, makeSubjectsOptions, getCourseOVAs } from "./request.js";
 //import { doRequest, makeCourseOptions, makeStudentOptions, getCourses, getAllOVAs, makeOVAsOptions, makeCompetenciesOptions, getAllCompetencies } from "./request.js";
 
 $(document).ready(function () {
@@ -20,11 +20,16 @@ $(document).ready(function () {
     }
     backButton.attr("href", backButtonLink);
 
-
     const options = $(`
         <div class="options mt-5">
-            <div id="choose-ova" class="mb-3">
-                <label for="ovas">OVA:</label>
+            <div id="choose-subject" class="mb-3">
+                <label for="subjects">Subjects:</label>
+                <select name="" id="subjects" class="form-select">
+                    <option value=""></option>
+                </select>
+            </div>
+            <div id="choose-ova" class="mb-3 d-none">
+                <label for="ovas">Ovas:</label>
                 <select name="" id="ovas" class="form-select">
                     <option value=""></option>
                 </select>
@@ -32,29 +37,32 @@ $(document).ready(function () {
         </div>
     `);
 
+    const subjects = options.find("#subjects");
     const ovas = options.find("#ovas");
 
-    // send a request to the API to get all the ovas
-    getAllOVAs()
-    .then(response => makeOVAsOptions(response, ovas))
+    getCourseSubjects(localStorage.getItem("course_id"))
+    .then(response => makeSubjectsOptions(response, subjects))
     .catch(error => console.log(error));
 
-    let ovaListener;
+    let subjectListener;
 
     /*
     if admin, show admin options at the plot page, and let the coordinator
     see information about all the courses and all the students
     */
     if (is_admin == true) {
+        options.find("#choose-subject").addClass("d-none");
         options.find("#choose-ova").addClass("d-none");
 
-        const adminOptions = $(`
+        const courseOption = $(`
             <div id="choose-course" class="mb-3">
                 <label for="courses">Curso:</label>
                 <select name="" id="courses" class="form-select">
                     <option value=""></option>
                 </select>
             </div>
+        `);
+        const studentOption = $(`
             <div id="choose-student" class="students-select mb-3 d-none">
                 <label for="students">Estudante:</label>
                 <select name="" id="students" class="form-select">
@@ -69,8 +77,8 @@ $(document).ready(function () {
         //     </select>
         // </div>
 
-        const courses = adminOptions.find("#courses");
-        const students = adminOptions.find("#students");
+        const courses = courseOption.find("#courses");
+        const students = studentOption.find("#students");
         //const competencies = adminOptions.find("#competencies");
 
         // send a request to the API to get all the courses
@@ -90,12 +98,11 @@ $(document).ready(function () {
         select and the course plot
         */
         courses.on("change", function() {
-            if (students.parent().hasClass("d-none")) {
-                students.parent().removeClass("d-none");
-                ovas.parent().removeClass("d-none");
+            if (subjects.parent().hasClass("d-none")) {
+                subjects.parent().removeClass("d-none");
             }
             students.html(`<option value=""></option>`);
-            const option = $(this).find("option:selected");
+            const option = courses.find("option:selected");
             if (option.val() != "") {
                 students.append($(
                     `<option class="all-students" value="0">Todos</option>`
@@ -114,25 +121,30 @@ $(document).ready(function () {
         if the student select change, update the student plot
         */
         students.on("change", function() {
-            const option = $(this).find("option:selected");
-            if (option.val() != "") {
-                const student_data = {
-                    "student_id": option.val(),
-                    "course_id": courses.find("option:checked").val()
-                }
-                getStudentPlot(student_data)
-                .then(response => studentCompetencyPerformance(response, plots))
-                .catch(error => console.log(error));
+            if (ovas.parent().hasClass("d-none")) {
+                ovas.parent().removeClass("d-none");
             }
+
+            const data = {
+                // "ova_id": option.val(),
+                "course_id": courses.find("option:selected").val(),
+                "student_id": students.find("option:selected").val(),
+                "subject_id": subjects.find("option:selected").val()
+            };
+
+            getStudentPlot(data)
+            .then(response => studentCompetencyPerformance(response, plots))
+            .catch(error => console.log(error));
         });
 
-        ovaListener = (option) => {
-            getOVAPlot({
-                "ova_id": option.val(),
-                "course_id": courses.find("option:checked").val()
-            })
-            .then(response => ovaGeneralPerformance(response, plots))
-            .catch(error => console.log(error));
+        subjectListener = (option) => {
+            if (students.parent().hasClass("d-none")) {
+                students.parent().removeClass("d-none");
+            }
+
+            // getOVAPlot(data)
+            // .then(response => ovaGeneralPerformance(response, plots))
+            // .catch(error => console.log(error));
         };
 
         // if the competency select change, also changes the ova plot
@@ -151,35 +163,68 @@ $(document).ready(function () {
         });
         */
 
-        adminOptions.before(options.find("#choose-ova"));
+        courseOption.insertBefore(options.find("#choose-subject"));
+        studentOption.insertBefore(options.find("#choose-ova"));
     } else {
         // if not admin, the student only sees his performance
         const student_data = {
             "student_id": localStorage.getItem("student_id"),
-            "course_id": localStorage.getItem("course_id"),
-            "subject_id": localStorage.getItem("subject_id"),
-            "ova_id": localStorage.getItem("ova_id")
+            "course_id": localStorage.getItem("course_id")
         };
 
-        ovaListener = (option) => {
+        subjectListener = (option) => {
+            student_data["subject_id"] = option.val();
             getStudentPlot(student_data)
             .then(response => {
                 studentCompetencyPerformance(response, plots);
             })
             .catch(error => console.log(error));
-
-            getStudentInteractionsNum(student_data)
-            .then(response => {
-                studentInteractionsOva(response, plots);
-            })
-            .catch(error => console.log(error));
         };
-        options.insertBefore(plots);
     }
+    options.insertBefore(plots);
     // if the ova select change, also changes the ova plot
+    subjects.on("change", () => {
+        const option = subjects.find("option:selected");
+        console.log(option)
+        if (option.val() != "") subjectListener(option);
+
+        if (is_admin == true) {
+            const students = options.find("#choose-student");
+            if (students.parent().hasClass("d-none")) {
+                students.parent().removeClass("d-none");
+            }
+        } else {
+            if (ovas.parent().hasClass("d-none")) {
+                ovas.parent().removeClass("d-none");
+            }
+        }
+
+        ovas.html(`<option value=""></option>`);
+
+        getCourseOVAs(option.val())
+        .then(response => makeOVAsOptions(response, ovas))
+        .catch(error => console.log(error));
+    });
+
     ovas.on("change", () => {
-        const option = $(this).find("option:selected");
-        if (option.val() != "") ovaListener(option);
+        const option = ovas.find("option:selected");
+
+        const ova_data = {
+            "ova_id": option.val(),
+            "student_id": localStorage.getItem("student_id")
+        };
+
+        if (is_admin == true) {
+            getOVAPlot(ova_data)
+            .then(response => ovaGeneralPerformance(response, plots))
+            .catch(error => console.log(error));
+        }
+
+        getStudentInteractionsNum(ova_data)
+        .then(response => {
+            studentInteractionsOva(response, plots);
+        })
+        .catch(error => console.log(error));
     });
 });
 
@@ -366,7 +411,7 @@ function courseGeneralPerformance(response, plots) {
 // plot the graph for the performance of an ova with all the students
 function ovaGeneralPerformance(response, plots) {
     const plot = $(`<div id="plot-3"></div>`);
-    plots.append(plot);
+    plot.insertBefore(plots.find("#plot-1"));
 
     // set the configurations of the plot
     const config = {
@@ -409,6 +454,7 @@ function ovaGeneralPerformance(response, plots) {
 }
 
 function studentInteractionsOva(response, plots) {
+    console.log(response)
     const plot = $(`<div id="plot-4"></div>`);
     plots.append(plot);
 
@@ -436,13 +482,13 @@ function studentInteractionsOva(response, plots) {
 
     const num_interactions = response.num_interactions;
     const total_interactions = sessionStorage.getItem("total_interactions");
+    const perc = num_interactions / total_interactions
 
     // set the data for the plot and its plot options
     const data = [{
         type:"bar",
         x: ["Interactions"],
-        y: [num_interactions / total_interactions],
-        text: [`${num_interactions} / ${total_interactions}`],
+        y: [perc],
         textposition: "outside",
         font: {
             size: 12
@@ -451,6 +497,9 @@ function studentInteractionsOva(response, plots) {
             tickangle: 20
         }
     }];
+
+    if (perc > 0) data[0].text = [`${num_interactions} / ${total_interactions}`];
+    
 
     // set the plot with the properties
     Plotly.newPlot(`plot-4`, data, layout, config);

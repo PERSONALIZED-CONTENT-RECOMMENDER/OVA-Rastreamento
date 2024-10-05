@@ -65,6 +65,16 @@ export function makeOVAsOptions(data, select) {
     }
 }
 
+// make the options for the OVA select
+export function makeSubjectsOptions(data, select) {
+    for (let i = 0; i < data.length; i++) {
+        const option = $(`
+            <option value="${data[i]["subject_id"]}">${data[i]["subject_name"]}</option>
+        `);
+        select.append(option);
+    }
+}
+
 // make the options for the competency select
 /*
 export function makeCompetenciesOptions(data, select) {
@@ -84,8 +94,13 @@ export function getCourses() {
 }
 
 // calls the request function with the parameters for get all the OVAs
-export function getAllOVAs() {
-    const url = "/ova/all";
+export function getCourseOVAs(subject_id) {
+    const url = `/ova/subject/${subject_id}`;
+    return doRequest(url, {}, "GET");
+}
+
+export function getCourseSubjects(course_id) {
+    const url = `/course/${course_id}/subjects`;
     return doRequest(url, {}, "GET");
 }
 

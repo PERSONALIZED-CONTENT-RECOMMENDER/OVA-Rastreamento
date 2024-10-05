@@ -1,5 +1,8 @@
 # this lines below enable import from other submodules
 import sys, os
+
+from offerings import Offerings
+from subjects import Subjects
 root = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
 sys.path.append(root)
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), 'data/models')))
@@ -39,6 +42,33 @@ def show_courses():
                 course_list.append(course_dict.copy())
             # retrieves to the front-end an array with the courses' id and name
             return json.dumps(course_list)
+        # handle the error returning the description of the error
+        except PeeweeException as err:
+            return json.dumps({"Error": f"{err}"}), 501
+    else:
+        # return this if the http method is any other than GET
+        return "Wrong Request Methods. Only GET Allowed", 405
+    
+@app_course.route("/course/<int:course_id>/subjects", methods=["GET"])
+# activate the cross-origin, that accepts requests from another domain
+@cross_origin()
+def get_course_subjects(course_id):
+    if request.method == "GET":
+        try:
+            s = Subjects.alias()
+            of = Offerings.alias()
+            print(f"Course id {course_id}")
+            subjects =  s.select(s.subject_id, s.subject_name).join(of).where(of.course_id == course_id)
+            subject_list = []
+            
+            for subject in subjects:
+                subject_dict = {
+                    "subject_id": subject.subject_id,
+                    "subject_name": subject.subject_name
+                }
+                subject_list.append(subject_dict.copy())
+            # retrieves to the front-end an array with the courses' id and name
+            return json.dumps(subject_list)
         # handle the error returning the description of the error
         except PeeweeException as err:
             return json.dumps({"Error": f"{err}"}), 501

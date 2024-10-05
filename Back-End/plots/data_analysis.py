@@ -17,9 +17,11 @@ def ova_interactions_by_competencies(data):
     db.connect(reuse_if_open=True)
     student_id = data["student_id"]
     course_id = data["course_id"]
+    subject_id = data["subject_id"]
+    print(data)
     
     # do the query
-    query = (f"""select cs.subject_name, c.competency_description, count(sub_q.answer_id), 
+    query = (f"""select c.competency_description, count(sub_q.answer_id), 
 (
 	select count(*)
     from questions
@@ -38,21 +40,21 @@ left join (
     where a.student_id = {student_id}
 ) sub_q
 on sub_q.competency_id = c.competency_id
-where offe.course_id = {course_id}
-group by cs.subject_id, c.competency_id""")
+where offe.course_id = {course_id} and cs.subject_id = {subject_id}
+group by c.competency_id""")
     
     # execute raw sql due to complexity
     cursor = db.execute_sql(query)
     data = cursor.fetchall()
     
     # use the defaultdict to handle automatically the key error of a dict
-    result = defaultdict(list)
+    result = []
     for row in data:
-        result[row[0]].append((row[1], int(row[2]), int(row[3])))
+        result.append((row[0], int(row[1]), int(row[2])))
         
     # return the result and the max of competencies that a subject have
     # to show differents amounts of columns in the front end graphic    
-    return "Title", result, max(list(map(lambda x: len(x), result.values())))
+    return "Title", result
 
 # given an id of a course, return the general performance of each student
 # in percentage
