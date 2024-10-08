@@ -54,7 +54,8 @@ values
 insert into ovas
 values
 (1, "Computação Quântica", "quantum_computing.html", 1),
-(2, "Cálculo", "calculus.html", 2);
+(2, "Cálculo", "calculus.html", 2),
+(3, "Cálculo 2", "calculus2.html", 2);
 
 insert into questions
 values
@@ -220,4 +221,76 @@ values
     "Não há ponto crítico",
     "Nenhum dos anteriores"
   ]
-}', "a", 2, 6);
+}', "a", 2, 6),
+(19, "Qual é a derivada da função f(x) = sin(x)?",
+'{
+  "alternatives": [
+    "cos(x)",
+    "-cos(x)",
+    "sin(x)",
+    "-sin(x)"
+  ]
+}', "a", 3, 4),
+(20, "Calcule a integral indefinida da função f(x) = cos(x).",
+'{
+  "alternatives": [
+    "sin(x) + C",
+    "-sin(x) + C",
+    "x.cos(x)",
+    "-x.sin(x)"
+  ]
+}', "a", 3, 4),
+(21, "Qual o valor do limite lim(x->0)(sin(x)/x)?",
+'{
+  "alternatives": [
+    "0",
+    "1",
+    "Infinito",
+    "-1"
+  ]
+}', "b", 3, 5),
+(22, "Determine o limite lim(x->1)(x^2 - 1)/(x - 1).",
+'{
+  "alternatives": [
+    "0",
+    "1",
+    "2",
+    "Não existe"
+  ]
+}', "c", 3, 5),
+(23, "Calcule o limite lim(x->0)(e^x - 1)/x.",
+'{
+  "alternatives": [
+    "1",
+    "0",
+    "Infinito",
+    "-1"
+  ]
+}', "a", 3, 5),
+(24, "Para a função f(x) = x^2 - 4x + 3, o ponto de mínimo ocorre em:",
+'{
+  "alternatives": [
+    "x=1",
+    "x=2",
+    "x=3",
+    "x=4"
+  ]
+}', "b", 3, 6),
+(25, "Em que ponto x a função f(x) = -x^2 + 6x - 9 possui um ponto de máximo?",
+'{
+  "alternatives": [
+    "x=1",
+    "x=2",
+    "x=3",
+    "x=4"
+  ]
+}', "c", 3, 6),
+(26, "Para a função f(x) = x^3 - 3x^2 + 2, determine se x=2 é um ponto de máximo ou mínimo.",
+'{
+  "alternatives": [
+    "Ponto máximo",
+    "Ponto mínimo",
+    "Nenhum dos anteriores",
+    "Não é um ponto crítico"
+  ]
+}', "b", 3, 6);
