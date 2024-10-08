@@ -11,6 +11,7 @@ from flask_cors import cross_origin
 from peewee import PeeweeException # ORM library
 import json
 from collections import defaultdict
+from playhouse.shortcuts import model_to_dict
 
 # import of the necessary orm classes
 from offerings import Offerings

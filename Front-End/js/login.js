@@ -117,6 +117,7 @@ function login(user_data) {
 async function makeStudentOVAs(ovaDiv) {
     await getOVAs(localStorage.getItem("course_id"))
     .then(response => {
+        console.log(response)
         for (let key in response) {
             const subject = response[key];
             // create the html dinamically for the subject div
@@ -141,7 +142,6 @@ function getOVAs(course_id) {
 
 // make the html for each OVA dinamically and append to the course div
 function makeOVAOptions(response, ovaList) {
-    console.log(response)
     const ovas = response.ovas
     ovaList.html("");
     for (let i = 0; i < ovas.length; i++) {
