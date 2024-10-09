@@ -25,7 +25,7 @@ $(document).ready(function() {
     }
 
     // update the time passed counter by 1 every second
-    setInterval(function() {
+    setInterval(function () {
         timePassed++;
     }, 1000);
 
@@ -137,9 +137,6 @@ $(document).ready(function() {
                 .catch(error => console.log(error));
             }
         });
-        
-        // update the progress bar
-        $("#progressbar").attr('value', position);
     });
     
     // shows the first carrousel item in each carrousel

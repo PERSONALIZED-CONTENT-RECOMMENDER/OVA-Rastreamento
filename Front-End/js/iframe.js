@@ -1,39 +1,34 @@
 $(document).ready(function () {
     // get dinamically the iframe object from the DOM
     const iframe = $("#iframe");
-    const iframeWindow = iframe[0].contentWindow;
     // get the link of the ova selected by the user
     const ova_link = localStorage.getItem("ova_link");
     // define the source of the iframe
     iframe.attr("src", `./ovas/${ova_link}`);
     // this function excecutes when the iframe load is complete
-
-    let iframeDoc = null;
     iframe.on("load", function() {
-        const firstScript = $("#first-script");
+        const contentWindow = iframe.get(0).contentWindow;
+        const iframeDoc = iframe.contents()[0];
+        const frag = iframeDoc.createDocumentFragment();
+
+        const body = iframeDoc.body;
         
         /*
             dinamically adds the script of the detection of the interactions
-            at the bottom of the iframe script 
+            at the bottom of the ova html
         */
-        if ($("#ova-script") == undefined) {
-            const ovaScript = $(`<script id="ova-script" type="module"></script>`);
-            ovaScript.attr("src", "../js/ova.js");
-            ovaScript.insertAfter(firstScript);
+        if (body.querySelector("#ova-script") == undefined) {
+            const ovaScript = iframeDoc.createElement("script");
+            ovaScript.src = "../../js/ova.js";
+            ovaScript.id = "ova-script";
+            ovaScript.type = "module";
+            frag.appendChild(ovaScript);
         }
-
-        // const videoScript = $("<script></script>");
-        // videoScript.attr("src", "../js/video-player.js");
     
         /*
             the lines below add dinamically the script of the Youtube embed API
             inside the iframe content to detect the interactions made with the videos
         */
-        iframeDoc = iframe.contents()[0];
-        console.log(iframeDoc)
-        const frag = iframeDoc.createDocumentFragment();
-
-        const body = iframeDoc.body;
 
         if (body.querySelector("#video-script") == undefined) {
             const videoScript = iframeDoc.createElement("script");
@@ -44,6 +39,18 @@ $(document).ready(function () {
 
             body.appendChild(frag);
         }
+
+        $(contentWindow).on("scroll", function () {
+            const s = $(contentWindow).scrollTop(),
+                d = $(iframeDoc).height(),
+                c = $(contentWindow).height();
+    
+            const scrollPercent = (s / (d - c)) * 100;    
+            
+            $("#progressbar").attr('value', scrollPercent);
+            // update the progress bar
+           
+        });
     });
 
     // get the DOM elements
