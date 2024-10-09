@@ -1,11 +1,14 @@
 $(document).ready(function () {
     // get dinamically the iframe object from the DOM
     const iframe = $("#iframe");
+    const iframeWindow = iframe[0].contentWindow;
     // get the link of the ova selected by the user
     const ova_link = localStorage.getItem("ova_link");
     // define the source of the iframe
     iframe.attr("src", `./ovas/${ova_link}`);
     // this function excecutes when the iframe load is complete
+
+    let iframeDoc = null;
     iframe.on("load", function() {
         const firstScript = $("#first-script");
         
@@ -26,7 +29,8 @@ $(document).ready(function () {
             the lines below add dinamically the script of the Youtube embed API
             inside the iframe content to detect the interactions made with the videos
         */
-        const iframeDoc = iframe.contents()[0];
+        iframeDoc = iframe.contents()[0];
+        console.log(iframeDoc)
         const frag = iframeDoc.createDocumentFragment();
 
         const body = iframeDoc.body;
@@ -41,4 +45,52 @@ $(document).ready(function () {
             body.appendChild(frag);
         }
     });
+
+    // get the DOM elements
+    const dropdown = $(".dropdown");
+    dropdown.css({"top": "-600px"});
+    const dropdownButton = $(".dropdown-button");
+
+    /*
+    when the dropdown button is clicked, shows all the sections, the button
+    to logout and the button to the student plot page
+    */
+    dropdownButton.on("click", function() {
+        if (!dropdownButton.hasClass("bi-x-lg")) {
+            dropdown.removeClass("z-n1").addClass("z-1");
+            dropdown.animate({
+                top: "50px"
+            }, 250);
+            dropdownButton.addClass("bi-x-lg");
+        } else {
+            dropdown.animate({
+                top: "-600px"
+            }, 250);
+            dropdownButton.removeClass("bi-x-lg");
+        }
+    });
 });
+
+/*
+the function to generate the scrollpoints, given a minimum read time
+and the number of the points
+*/
+function generateScrollPoints(readTime, n_points) {
+    let points = [];
+    const perc = 100 / n_points;
+    const perc_time = readTime / n_points;
+    const alreadyScrolled = JSON.parse(localStorage.getItem("perc_scrolled"));
+    for (let i = 1; i <= n_points; i++) {
+        /*
+        the percentage of the point, the minimum time and 
+        if the student already achieved that point
+        */
+        points.push({
+            perc: perc * i,
+            time: perc_time * i,
+            status: perc * i <= alreadyScrolled
+        });
+    }
+
+    return points;
+}

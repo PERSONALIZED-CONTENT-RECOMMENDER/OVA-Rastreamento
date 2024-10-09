@@ -16,7 +16,7 @@ $(document).ready(function () {
         // else the back button goes back to the ova that the student was reading
         const ova_id = localStorage.getItem("ova_id");
         if (ova_id == null) backButtonLink = "login.html";
-        else backButtonLink = `./ovas/${localStorage.getItem("ova_link")}`;
+        else backButtonLink = `./iframe.html`;
     }
     backButton.attr("href", backButtonLink);
 
@@ -175,9 +175,7 @@ $(document).ready(function () {
         subjectListener = (option) => {
             student_data["subject_id"] = option.val();
             getStudentPlot(student_data)
-            .then(response => {
-                studentCompetencyPerformance(response, plots);
-            })
+            .then(response => studentCompetencyPerformance(response, plots))
             .catch(error => console.log(error));
         };
     }
@@ -185,7 +183,7 @@ $(document).ready(function () {
     // if the ova select change, also changes the ova plot
     subjects.on("change", () => {
         const option = subjects.find("option:selected");
-        console.log(option)
+        localStorage.setItem("subject_id", option.val());
         if (option.val() != "") subjectListener(option);
 
         if (is_admin == true) {
@@ -206,30 +204,34 @@ $(document).ready(function () {
         .catch(error => console.log(error));
     });
 
-    ovas.on("change", () => {
+    ovas.on("change", async () => {
         const option = ovas.find("option:selected");
 
         const ova_data = {
             "ova_id": option.val(),
-            "student_id": localStorage.getItem("student_id")
+            "student_id": localStorage.getItem("student_id"),
+            "course_id": localStorage.getItem("course_id"),
+            "subject_id": localStorage.getItem("subject_id")
         };
 
+        await getStudentPlot(ova_data)
+        .then(response => studentCompetencyPerformance(response, plots, true))
+        .catch(error => console.log(error));
+
         if (is_admin == true) {
-            getOVAPlot(ova_data)
+            await getOVAPlot(ova_data)
             .then(response => ovaGeneralPerformance(response, plots))
             .catch(error => console.log(error));
         }
 
-        getStudentInteractionsNum(ova_data)
-        .then(response => {
-            studentInteractionsOva(response, plots);
-        })
+        await getStudentInteractionsNum(ova_data)
+        .then(response => studentInteractionsOva(response, plots))
         .catch(error => console.log(error));
     });
 });
 
 // calls the request function with the parameters for get the student plot
-function getStudentPlot(data) {
+function getStudentPlot(data, single_ova=false) {
     const url = `/plot/student`;
     return doRequest(url, data, "POST");
 }
@@ -266,11 +268,17 @@ function getCompetencyPlot(data) {
 */
 
 // plot the graph of the students of the course performance grouped by competencies
-function studentCompetencyPerformance(response, plots) {
-    const plot = $(`<div id="plot-1"></div>`);
+function studentCompetencyPerformance(response, plots, single_ova=false) {
+    console.log(response)
+    let plot;
+
+    if (single_ova) {
+        plot = $(`<div id="plot-5"></div>`);
+        plot.insertAfter(plots.find("#plot-1"));
+    } else plot = $(`<div id="plot-1"></div>`);
+
     plots.append(plot);
     const byCompetencies = response.data;
-    const keys = Object.keys(byCompetencies);
 
     // set the configurations of the plot
     const config = {
@@ -281,7 +289,7 @@ function studentCompetencyPerformance(response, plots) {
 
     // set the plot layout
     const layout = {
-        title: "Desempenho do aluno por competência",
+        title: "Desempenho do aluno por competência" + ((single_ova) ? " em 1 OVA" : ""),
         showlegend: false,
         width: plots.width(),
         font: {
@@ -293,7 +301,8 @@ function studentCompetencyPerformance(response, plots) {
         },
         yaxis: {
             tickformat: "2%",
-            title: "% de respostas certas"
+            title: "% de respostas certas",
+            range: [0, 1]
         },
     };
 
@@ -348,7 +357,6 @@ function studentCompetencyPerformance(response, plots) {
         let answers = byCompetencies[j][1];
         let num_questions = byCompetencies[j][2];
         let perc = answers / num_questions;
-        console.log(answers, num_questions, perc)
 
         data.x.push(`Competência ${j + 1}`);
         data.customdata.push(byCompetencies[j][0]);
@@ -361,7 +369,7 @@ function studentCompetencyPerformance(response, plots) {
 
     console.log(data)
 
-    Plotly.newPlot(`plot-1`, [data], layout, config);
+    Plotly.newPlot(`plot-${single_ova ? 5 : 1}`, [data], layout, config);
 }
 
 // plot the graph of the general students performances in the course
@@ -388,7 +396,8 @@ function courseGeneralPerformance(response, plots) {
             tickangle: 20
         },
         yaxis: {
-            tickformat: "2%"
+            tickformat: "2%",
+            range: [0, 1]
         }
     };
 
@@ -432,7 +441,8 @@ function ovaGeneralPerformance(response, plots) {
             tickangle: 20
         },
         yaxis: {
-            tickformat: "2%"
+            tickformat: "2%",
+            range: [0, 1]
         }
     };
 
@@ -467,6 +477,7 @@ function studentInteractionsOva(response, plots) {
 
     // set the plot layout
     const layout = {
+        title: "Interações feitas no OVA",
         width: plots.width(),
         font: {
             size: 12

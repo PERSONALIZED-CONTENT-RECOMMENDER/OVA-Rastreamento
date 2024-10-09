@@ -6,7 +6,7 @@ import { doRequest, registerInteraction } from "./request.js";
 // const contentWindow = mainIframe.get(0).contentWindow;
 
 $(document).ready(function() {
-    sessionStorage.setItem("past_page", "ova");
+    sessionStorage.setItem("past_page", "iframe");
     /*
     try to get the read time of the ova. If its null, the user just started
     the reading
@@ -41,10 +41,6 @@ $(document).ready(function() {
     */
     let scrollPoints = generateScrollPoints(360, 5);
 
-    // get the DOM elements
-    const dropdown = $(".dropdown");
-    dropdown.css({"top": "-600px"});
-    const dropdownButton = $(".dropdown-button");
     const carrousels = $("section").find(".carrousel");
     const accordionItems = $(".accordion-item");
 
@@ -160,25 +156,6 @@ $(document).ready(function() {
     });
 
     /*
-    when the dropdown button is clicked, shows all the sections, the button
-    to logout and the button to the student plot page
-    */
-    dropdownButton.on("click", function() {
-        if (!dropdownButton.hasClass("bi-x-lg")) {
-            dropdown.removeClass("z-n1").addClass("z-1");
-            dropdown.animate({
-                top: "50px"
-            }, 250);
-            dropdownButton.addClass("bi-x-lg");
-        } else {
-            dropdown.animate({
-                top: "-600px"
-            }, 250);
-            dropdownButton.removeClass("bi-x-lg");
-        }
-    });
-
-    /*
     when the student passes the carrousel itens, the API register that the
     student made an interaction with that specific carrousel
     */
@@ -199,16 +176,6 @@ $(document).ready(function() {
         });
     });
 });
-
-function countInteractions(scrollPoints) {
-    return new Promise((resolve, reject) => {
-        
-    });
-}
-
-async function setTotalInteractions(scrollPoints) {
-    return countInteractions(scrollPoints);
-}
 
 /*
 the function to generate the scrollpoints, given a minimum read time

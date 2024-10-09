@@ -18,14 +18,19 @@ def ova_interactions_by_competencies(data):
     student_id = data["student_id"]
     course_id = data["course_id"]
     subject_id = data["subject_id"]
+    has_ova_id = data.get("ova_id") is not None
+    ova_where = ""
+    if has_ova_id:
+        ova_id = data["ova_id"]
+        ova_where = f" and q.ova_id = {ova_id}"
     print(data)
     
     # do the query
     query = (f"""select c.competency_description, count(sub_q.answer_id), 
 (
 	select count(*)
-    from questions
-    where competency_id = c.competency_id
+    from questions q
+    where q.competency_id = c.competency_id {ova_where if has_ova_id else ""}
 )
 from competencies c
 inner join course_subjects cs
@@ -37,11 +42,12 @@ left join (
     from answers a
 	inner join questions q
 	on q.question_id = a.question_id
-    where a.student_id = {student_id}
+    where a.student_id = {student_id} {ova_where if has_ova_id else ""}
 ) sub_q
 on sub_q.competency_id = c.competency_id
 where offe.course_id = {course_id} and cs.subject_id = {subject_id}
 group by c.competency_id""")
+    print(query)
     
     # execute raw sql due to complexity
     cursor = db.execute_sql(query)
