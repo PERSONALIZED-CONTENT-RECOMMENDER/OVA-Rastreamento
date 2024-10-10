@@ -1,21 +1,21 @@
-// base parameters to make the API request
+// Base parameters to make the API request
 const PORT = 8090;
 const HOST = "localhost";
-const BASE_URL = `http://${HOST}:${PORT}`
+const BASE_URL = `http://${HOST}:${PORT}`;
 
-// base function to register any interaction in the OVA
+// Base function to register any interaction in the OVA
 export function registerInteraction(interaction) {
     const url = "/interaction/register";
     const data = {
         student_id: localStorage.getItem("student_id"),
         ova_id: localStorage.getItem("ova_id"),
-        //competency_id: localStorage.getItem("competency_id"),
+        // competency_id: localStorage.getItem("competency_id"),
         action: interaction
     }
     return doRequest(url, data);
 }
 
-// send the request to the API using a Promise, due to the async funcionality
+// Send the request to the API using a Promise, due to the async functionality
 export function doRequest(url, data, type="POST", is_login=0) {
     return new Promise((resolve, reject) => {
         $.ajax({
@@ -26,7 +26,7 @@ export function doRequest(url, data, type="POST", is_login=0) {
             crossDomain: true,
             contentType: "application/json",
             headers: {
-                "Access-Control-Allow-Origin":"http:"
+                "Access-Control-Allow-Origin": "http:"
             },
             success: (response) => resolve(response),
             error: (response) => reject(response)
@@ -34,7 +34,7 @@ export function doRequest(url, data, type="POST", is_login=0) {
     });
 }
 
-// make the options for the course select
+// Create the options for the course select dropdown
 export function makeCourseOptions(data, select) {
     for (let i = 0; i < data.length; i++) {
         const option = $(`
@@ -44,7 +44,7 @@ export function makeCourseOptions(data, select) {
     }
 }
 
-// make the options for the student select
+// Create the options for the student select dropdown
 export function makeStudentOptions(data, select) {
     for (let i = 0; i < data.length; i++) {
         const option = $(`
@@ -55,7 +55,7 @@ export function makeStudentOptions(data, select) {
     }
 }
 
-// make the options for the OVA select
+// Create the options for the OVA select dropdown
 export function makeOVAsOptions(data, select) {
     for (let i = 0; i < data.length; i++) {
         const option = $(`
@@ -65,7 +65,7 @@ export function makeOVAsOptions(data, select) {
     }
 }
 
-// make the options for the OVA select
+// Create the options for the subjects select dropdown
 export function makeSubjectsOptions(data, select) {
     for (let i = 0; i < data.length; i++) {
         const option = $(`
@@ -75,7 +75,7 @@ export function makeSubjectsOptions(data, select) {
     }
 }
 
-// make the options for the competency select
+// Create the options for the competency select dropdown
 /*
 export function makeCompetenciesOptions(data, select) {
     for (let i = 0; i < data.length; i++) {
@@ -87,13 +87,13 @@ export function makeCompetenciesOptions(data, select) {
 }
 */
 
-// calls the request function with the parameters for get all courses
+// Calls the request function with the parameters to get all courses
 export function getCourses() {
     const url = "/courses";
     return doRequest(url, {}, "GET");
 }
 
-// calls the request function with the parameters for get all the OVAs
+// Calls the request function with the parameters to get all the OVAs
 export function getCourseOVAs(subject_id) {
     const url = `/ova/subject/${subject_id}`;
     return doRequest(url, {}, "GET");
@@ -104,7 +104,7 @@ export function getCourseSubjects(course_id) {
     return doRequest(url, {}, "GET");
 }
 
-// calls the request function with the parameters for get all the Competencies
+// Calls the request function with the parameters to get all the competencies
 /*
 export function getAllCompetencies() {
     const url = "/competency";

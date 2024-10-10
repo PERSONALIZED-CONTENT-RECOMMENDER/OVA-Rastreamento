@@ -1,178 +1,175 @@
 import { doRequest, makeCourseOptions, getCourses } from "./request.js";
 
 $(document).ready(function() {
-    const loginTab = $("#login");
-    const chooseOVAsTab = $("#choose-ova");
-    const ovaDiv = $(".ova-div");
-    const logoutButton = $(".logout-button");
+    const loginTab = $("#login"); // Select the login tab element
+    const chooseOVAsTab = $("#choose-ova"); // Select the OVA selection tab element
+    const ovaDiv = $(".ova-div"); // Select the OVA div element
+    const logoutButton = $(".logout-button"); // Select the logout button element
 
-    const is_admin = JSON.parse(localStorage.getItem("is_admin"));
+    const is_admin = JSON.parse(localStorage.getItem("is_admin")); // Retrieve admin status from local storage
 
     /*
-    if the previous page was plot page, show the page to choose the OVA
-    else go to login page, meaning that the user doesn't logged or
-    made logout
+    If the previous page was the plot page, show the page to choose the OVA
+    Otherwise, go to the login page, indicating that the user is not logged in or has logged out
     */
     if (sessionStorage.getItem("past_page") == "plot") {
         if (is_admin == true) {
-            localStorage.clear();
-            localStorage.setItem("logged", false);
-            loginTab.removeClass("d-none");
-            chooseOVAsTab.addClass("d-none");
+            localStorage.clear(); // Clear local storage for admin
+            localStorage.setItem("logged", false); // Set logged status to false
+            loginTab.removeClass("d-none"); // Show login tab
+            chooseOVAsTab.addClass("d-none"); // Hide OVA selection tab
         } else {
-            loginTab.addClass("d-none");
-            chooseOVAsTab.removeClass("d-none");
-            makeStudentOVAs(ovaDiv);
+            loginTab.addClass("d-none"); // Hide login tab
+            chooseOVAsTab.removeClass("d-none"); // Show OVA selection tab
+            makeStudentOVAs(ovaDiv); // Load the OVAs for the student
         }
     } else {
-        localStorage.clear();
-        localStorage.setItem("logged", false);
+        localStorage.clear(); // Clear local storage if not returning from the plot page
+        localStorage.setItem("logged", false); // Set logged status to false
     }
 
-    // define the variables
-    const togglePassword = $(".toggle-password");
-    const raInput = $("#ra-input");
-    const passwordInput = $("#password-input");
-    const loginButton = $(".login-button");
+    // Define the variables for input elements and buttons
+    const togglePassword = $(".toggle-password"); // Select the toggle password button
+    const raInput = $("#ra-input"); // Select the RA input field
+    const passwordInput = $("#password-input"); // Select the password input field
+    const loginButton = $(".login-button"); // Select the login button
 
-    // this function toggle the password visibility
+    // This function toggles the visibility of the password
     togglePassword.on("click", function() {
         if (!togglePassword.hasClass("bi-eye-slash-fill")) {
-            passwordInput.attr("type", "text");
-            togglePassword.addClass("bi-eye-slash-fill");
+            passwordInput.attr("type", "text"); // Show password
+            togglePassword.addClass("bi-eye-slash-fill"); // Change icon to 'visible'
         } else {
-            passwordInput.attr("type", "password");
-            togglePassword.removeClass("bi-eye-slash-fill");
+            passwordInput.attr("type", "password"); // Hide password
+            togglePassword.removeClass("bi-eye-slash-fill"); // Change icon to 'hidden'
         }
     });
 
     loginButton.on("click", async function(e) {
-        const statusBar = $(".login-form").find(".status-bar");
-        e.preventDefault();
-        // get the form data for the request
+        const statusBar = $(".login-form").find(".status-bar"); // Select the status bar
+        e.preventDefault(); // Prevent default form submission
+        // Get the form data for the request
         const user_data = {
-            ra: raInput.val(),
-            password: passwordInput.val()
+            ra: raInput.val(), // Retrieve RA input value
+            password: passwordInput.val() // Retrieve password input value
         };
-        // send the login data to the API to validation
+        // Send the login data to the API for validation
         await login(user_data)
         .then(response => {
             /*
-            if it goes well, goes to the next page
+            If the request is successful, proceed to the next page
             */
-            statusBar.html(response.Message);
-            statusBar.removeClass("bg-danger");
-            statusBarAnimation(statusBar);
-            // clear the inputs
+            statusBar.html(response.Message); // Display response message
+            statusBar.removeClass("bg-danger"); // Remove error styling
+            statusBarAnimation(statusBar); // Animate the status bar
+            // Clear the input fields
             raInput.val("");
             passwordInput.val("");
-            // put the information received in the localstorage
-            localStorage.setItem("logged", true);
-            localStorage.setItem("is_admin", response.is_admin);
-            localStorage.setItem("course_id", response.ids.course_id);
-            localStorage.setItem("student_id", response.ids.student_id);
+            // Store the received information in local storage
+            localStorage.setItem("logged", true); // Set logged status to true
+            localStorage.setItem("is_admin", response.is_admin); // Store admin status
+            localStorage.setItem("course_id", response.ids.course_id); // Store course ID
+            localStorage.setItem("student_id", response.ids.student_id); // Store student ID
 
-            // do this if the user logged succesfully
-            const isAdmin = JSON.parse(localStorage.getItem("is_admin"));
+            // If the user logged in successfully
+            const isAdmin = JSON.parse(localStorage.getItem("is_admin")); // Get admin status
             if (JSON.parse(localStorage.getItem("logged")) === true) {
                 setTimeout(async function() {
                     
-                    // if the user is admin, go to the administrator's plot page
-                                        // define the windows html link
-                    if (isAdmin == true) window.location.href = "plots.html";
+                    // If the user is admin, redirect to the administrator's plot page
+                    // Define the window's HTML link
+                    if (isAdmin == true) window.location.href = "plots.html"; // Redirect to admin plots
                     else {
-                        // else, go to choose the ova page
-                        loginTab.addClass("d-none");
-                        chooseOVAsTab.removeClass("d-none");
+                        // Otherwise, redirect to the OVA selection page
+                        loginTab.addClass("d-none"); // Hide login tab
+                        chooseOVAsTab.removeClass("d-none"); // Show OVA selection tab
 
-                        // get the OVAs of the student's course to the choice
+                        // Get the OVAs of the student's course for selection
                         await makeStudentOVAs(ovaDiv);
                     }
-                }, 500);
+                }, 500); // Delay before redirecting
             }
         }).catch(error => {
-            // if the request return an error, shows it in a red bar
-            statusBar.html(error.responseText);
-            statusBar.addClass("bg-danger");
-            statusBarAnimation(statusBar);
+            // If the request returns an error, display it in a red status bar
+            statusBar.html(error.responseText); // Show error message
+            statusBar.addClass("bg-danger"); // Add error styling
+            statusBarAnimation(statusBar); // Animate the status bar
         });
     });
 
-    // make logout and goes back to the login page
+    // Logout the user and return to the login page
     logoutButton.on("click", function() {
-        loginTab.removeClass("d-none");
-        chooseOVAsTab.addClass("d-none");
-        // defines the past page as the choose ova page
+        loginTab.removeClass("d-none"); // Show login tab
+        chooseOVAsTab.addClass("d-none"); // Hide OVA selection tab
+        // Define the past page as the OVA selection page
         sessionStorage.setItem("past_page", "choose-ova");
     });
 });
 
-// calls the request function with the parameters for login
+// Calls the request function with the parameters for login
 function login(user_data) {
-    const url = "/login";
-    return doRequest(url, user_data, "POST", true);
+    const url = "/login"; // Define the login URL
+    return doRequest(url, user_data, "POST", true); // Send the login request
 }
 
-// do the request of the student's OVAs and renders the items grouped by subject
+// Request the student's OVAs and render the items grouped by subject
 async function makeStudentOVAs(ovaDiv) {
-    await getOVAs(localStorage.getItem("course_id"))
+    await getOVAs(localStorage.getItem("course_id")) // Retrieve OVAs for the course
     .then(response => {
-        console.log(response)
         for (let key in response) {
-            const subject = response[key];
-            // create the html dinamically for the subject div
+            const subject = response[key]; // Get the subject
+            // Create the HTML dynamically for the subject div
             const subjectDiv = $(`
                 <div class="py-3 border-top">
                     <h2 id="${subject.subject_id}" class="subject text-center">${key}</h2>
                     <ul class="list-group list-group-horizontal-md d-flex flex-wrap w-100 ova-list p-3"></ul>
                 </div>
             `);
-            // calls the function to render the OVAs of each subject
+            // Call the function to render the OVAs of each subject
             makeOVAOptions(subject, subjectDiv.find(".ova-list"));
-            ovaDiv.append(subjectDiv);
+            ovaDiv.append(subjectDiv); // Append the subject div to the OVA div
         }
     })
-    .catch(error => console.log(error));
+    .catch(error => console.log(error)); // Log any errors
 }
 
-// calls the request function with the parameters for get the OVAs of a course
+// Calls the request function with the parameters to get the OVAs of a course
 function getOVAs(course_id) {
-    return doRequest(`/ova/course/${course_id}`, {}, "GET");
+    return doRequest(`/ova/course/${course_id}`, {}, "GET"); // Send request to get OVAs
 }
 
-// make the html for each OVA dinamically and append to the course div
+// Dynamically create the HTML for each OVA and append to the course div
 function makeOVAOptions(response, ovaList) {
-    const ovas = response.ovas
-    ovaList.html("");
+    const ovas = response.ovas; // Get the list of OVAs
+    ovaList.html(""); // Clear existing list
     for (let i = 0; i < ovas.length; i++) {
-        const ova = ovas[i];
+        const ova = ovas[i]; // Get the current OVA
         const listItem = $(`
-        <li class="ova-item list-group-item d-flex flex-column justify-content-between align-items-center rounded-3 shadow">
+        <li class="ova-item list-group-item d-flex flex-column justify-content-between align-items-center rounded-3 shadow m-2">
             <a class="align-self-start" href="./iframe.html">
-                <p><span class="fw-bold">Nome:</span> ${ova.ova_name}</p>
+                <p><span class="fw-bold">Nome:</span> ${ova.ova_name}</p> <!-- Display OVA name -->
             </a>
         </li>
         `);
         listItem.on("click", function() {
-            // put the id and the link of the ova that was clicked
-            localStorage.setItem("ova_id", ova.ova_id);
-            localStorage.setItem("ova_link", `${ova.link}`);
-            window.location.href = "iframe.html";
-            localStorage.setItem("subject_id", response.subject_id);
+            // Store the ID and the link of the clicked OVA
+            localStorage.setItem("ova_id", ova.ova_id); // Store OVA ID
+            localStorage.setItem("ova_link", `${ova.link}`); // Store OVA link
+            window.location.href = "iframe.html"; // Redirect to iframe page
+            localStorage.setItem("subject_id", response.subject_id); // Store subject ID
         });
-        ovaList.append(listItem);
+        ovaList.append(listItem); // Append the list item to the OVA list
     }
 }
 
-// animation of the error/success bar
+// Animation for the error/success status bar
 function statusBarAnimation(statusBar) {
     statusBar.animate({
-        top: "37px"
+        top: "37px" // Animate the status bar to show
     }, 100);
     setTimeout(function() {
         statusBar.animate({
-            top: "5px"
+            top: "5px" // Animate the status bar back to the top
         }, 100);
-    }, 1000);
-    
+    }, 1000); // Delay before resetting the position
 }

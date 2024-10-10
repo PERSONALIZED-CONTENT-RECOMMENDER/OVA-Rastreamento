@@ -1,10 +1,10 @@
-# import the necessary classes
+# Import the necessary classes
 from base import BaseModel
-from peewee import * # ORM
+from peewee import *  # ORM
 
-# class for the courses table
+# Class representing the courses table
 class Courses(BaseModel):
-    # id of the course
+    # Unique identifier for the course
     course_id = IntegerField(primary_key=True)
-    # name of the course
+    # Name of the course as a text field
     course_name = TextField()

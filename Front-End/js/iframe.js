@@ -1,11 +1,11 @@
 $(document).ready(function () {
-    // get dinamically the iframe object from the DOM
+    // Dynamically retrieve the iframe object from the DOM
     const iframe = $("#iframe");
-    // get the link of the ova selected by the user
+    // Get the link of the OVA selected by the user
     const ova_link = localStorage.getItem("ova_link");
-    // define the source of the iframe
+    // Set the source of the iframe
     iframe.attr("src", `./ovas/${ova_link}`);
-    // this function excecutes when the iframe load is complete
+    // This function executes when the iframe load is complete
     iframe.on("load", function() {
         const contentWindow = iframe.get(0).contentWindow;
         const iframeDoc = iframe.contents()[0];
@@ -14,8 +14,8 @@ $(document).ready(function () {
         const body = iframeDoc.body;
         
         /*
-            dinamically adds the script of the detection of the interactions
-            at the bottom of the ova html
+            Dynamically adds the script for detecting interactions
+            at the bottom of the OVA HTML
         */
         if (body.querySelector("#ova-script") == undefined) {
             const ovaScript = iframeDoc.createElement("script");
@@ -26,7 +26,7 @@ $(document).ready(function () {
         }
     
         /*
-            the lines below add dinamically the script of the Youtube embed API
+            The lines below dynamically add the script for the YouTube embed API
             inside the iframe content to detect the interactions made with the videos
         */
 
@@ -40,27 +40,28 @@ $(document).ready(function () {
             body.appendChild(frag);
         }
 
+        // Attach a scroll event listener to the content window
         $(contentWindow).on("scroll", function () {
             const s = $(contentWindow).scrollTop(),
                 d = $(iframeDoc).height(),
                 c = $(contentWindow).height();
     
+            // Calculate scroll percentage
             const scrollPercent = (s / (d - c)) * 100;    
             
+            // Update the progress bar
             $("#progressbar").attr('value', scrollPercent);
-            // update the progress bar
-           
         });
     });
 
-    // get the DOM elements
+    // Get the DOM elements for the dropdown
     const dropdown = $(".dropdown");
     dropdown.css({"top": "-600px"});
     const dropdownButton = $(".dropdown-button");
 
     /*
-    when the dropdown button is clicked, shows all the sections, the button
-    to logout and the button to the student plot page
+    When the dropdown button is clicked, shows the logout button
+    and the button to the student plot page
     */
     dropdownButton.on("click", function() {
         if (!dropdownButton.hasClass("bi-x-lg")) {
@@ -79,18 +80,19 @@ $(document).ready(function () {
 });
 
 /*
-the function to generate the scrollpoints, given a minimum read time
-and the number of the points
+The function to generate the scroll points, given a minimum read time
+and the number of points
 */
 function generateScrollPoints(readTime, n_points) {
     let points = [];
-    const perc = 100 / n_points;
-    const perc_time = readTime / n_points;
-    const alreadyScrolled = JSON.parse(localStorage.getItem("perc_scrolled"));
+    const perc = 100 / n_points; // Percentage for each point
+    const perc_time = readTime / n_points; // Time for each point
+    const alreadyScrolled = JSON.parse(localStorage.getItem("perc_scrolled")); // Get already scrolled percentage
+
     for (let i = 1; i <= n_points; i++) {
         /*
-        the percentage of the point, the minimum time and 
-        if the student already achieved that point
+        The percentage of the point, the minimum time, and 
+        whether the student has already achieved that point
         */
         points.push({
             perc: perc * i,
@@ -99,5 +101,5 @@ function generateScrollPoints(readTime, n_points) {
         });
     }
 
-    return points;
+    return points; // Return the generated points
 }

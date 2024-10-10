@@ -1,77 +1,79 @@
-# this lines below enable import from other submodules
+# Add parent directories to the path to enable imports from submodules
 import sys, os
 
-from offerings import Offerings
-from subjects import Subjects
 root = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
 sys.path.append(root)
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), 'data/models')))
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), 'data')))
 
-# necessary libraries import
+# Import necessary libraries
 from flask import Blueprint, request
 from flask_cors import cross_origin
 from peewee import PeeweeException # ORM library
 import json
 
-# import of the necessary orm classes
+# Import ORM classes used in the routes
 from courses import Courses
+from offerings import Offerings
+from subjects import Subjects
 
-# creation of a route blueprint, a reusable component
+# Create a route blueprint as a reusable component
 app_course = Blueprint("course", __name__)
 
-# this function retrieves all the courses
+# Define a route to return all courses
 @app_course.route("/courses", methods=["GET"])
-# activate the cross-origin, that accepts requests from another domain
+# Enable cross-origin requests from other domains
 @cross_origin()
-def show_courses():
+def get_courses():
     if request.method == "GET":
         try:
-            # do a request to the database using the ORM (Peewee) to get,
-            # all the courses, except the one to the administrators
+            # Retrieve all courses except those restricted to administrators
             courses = Courses.select().where(Courses.course_id < 100)
             course_list = []
-            # iterate over the result of the request
+            # Iterate over the retrieved courses
             for course in courses:
-                # for each of it, creates a dictionary containing the id and
-                # the name of the course
+                # For each course, create a dictionary with course ID and name
                 course_dict = {
                     "course_id": course.course_id,
                     "course_name": course.course_name
                 }
                 course_list.append(course_dict.copy())
-            # retrieves to the front-end an array with the courses' id and name
+            # Return a list of courses as a JSON array
             return json.dumps(course_list)
-        # handle the error returning the description of the error
+        # Handle errors and return the error description
         except PeeweeException as err:
             return json.dumps({"Error": f"{err}"}), 501
     else:
-        # return this if the http method is any other than GET
+        # Return a message if the HTTP method is not GET
         return "Wrong Request Methods. Only GET Allowed", 405
-    
+
+# Define a route to return all subjects for a specific course ID
 @app_course.route("/course/<int:course_id>/subjects", methods=["GET"])
-# activate the cross-origin, that accepts requests from another domain
+# Enable cross-origin requests from other domains
 @cross_origin()
 def get_course_subjects(course_id):
     if request.method == "GET":
         try:
+            # Aliases for convenience in the query
             s = Subjects.alias()
             of = Offerings.alias()
-            print(f"Course id {course_id}")
+            
+            # Retrieve all subjects associated with the specified course ID
             subjects =  s.select(s.subject_id, s.subject_name).join(of).where(of.course_id == course_id)
             subject_list = []
             
             for subject in subjects:
+                # For each subject, create a dictionary with subject ID and name
                 subject_dict = {
                     "subject_id": subject.subject_id,
                     "subject_name": subject.subject_name
                 }
                 subject_list.append(subject_dict.copy())
-            # retrieves to the front-end an array with the courses' id and name
+            # Return a list of subjects as a JSON array
             return json.dumps(subject_list)
-        # handle the error returning the description of the error
+        # Handle errors and return the error description
         except PeeweeException as err:
             return json.dumps({"Error": f"{err}"}), 501
     else:
-        # return this if the http method is any other than GET
+        # Return a message if the HTTP method is not GET
         return "Wrong Request Methods. Only GET Allowed", 405

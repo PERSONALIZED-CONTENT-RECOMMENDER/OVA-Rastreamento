@@ -1,17 +1,17 @@
-# import the necessary classes
+# Import the necessary classes
 from base import BaseModel
 from courses import Courses
 from subjects import Subjects
 from peewee import *
 
-# association table of course with subjects
+# Association table that links courses with subjects
 
-# this table allows a course to have multiple subjects
-# and a subject to be taught in many courses
+# This table allows a course to include multiple subjects
+# and a subject to be offered in multiple courses
 class Offerings(BaseModel):
-    # id of the association table
+    # Unique identifier for the association table
     offering_id = IntegerField(primary_key=True)
-    # id of the course
+    # Foreign key referencing the course
     course_id = ForeignKeyField(Courses, backref="offerings", on_delete="cascade", on_update="cascade")
-    # id of the subject
+    # Foreign key referencing the subject
     subject_id = ForeignKeyField(Subjects, backref="offerings", on_delete="cascade", on_update="cascade")

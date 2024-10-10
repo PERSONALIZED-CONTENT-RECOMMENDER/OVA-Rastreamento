@@ -1,6 +1,7 @@
-from peewee import * # ORM
+from peewee import *  # ORM
 
-# estabilishment of the database connection
+# Establishing the database connection
+# Uncomment for production or remote database connection
 # db = MySQLDatabase(
 #     "ova_db",
 #     user="remote",
@@ -9,7 +10,7 @@ from peewee import * # ORM
 #     port=3306
 # )
 
-# option to local development
+# Configuration for local development
 db = MySQLDatabase(
     "ova_db",
     user="root",
@@ -18,7 +19,7 @@ db = MySQLDatabase(
     password="Password-123"
 )
 
-# base class for the others classes
+# Base class for other models
 class BaseModel(Model):
     class Meta:
-        database=db
+        database = db  # Define the database to be used for the model

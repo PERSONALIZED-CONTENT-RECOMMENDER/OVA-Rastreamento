@@ -1,15 +1,15 @@
-# import the necessary classes
+# Import the necessary classes
 from base import BaseModel
 from courses import Courses
 from peewee import *
 
-# class for the subjects table
+# Class representing the subjects table
 class Subjects(BaseModel):
-    # id of the subject
+    # Unique identifier for the subject
     subject_id = IntegerField(primary_key=True)
-    # name of the subject
+    # Name of the subject
     subject_name = TextField()
     
     class Meta:
-        # table name in database
+        # Specifies the table name in the database
         table_name = "course_subjects"

@@ -1,21 +1,21 @@
-# import the necessary classes
+# Import the necessary classes
 from base import BaseModel
 from competencies import Competencies
 from ovas import OVAs
 from peewee import *
 from playhouse.mysql_ext import JSONField
 
-# class for the questions table
+# Class representing the questions table
 class Questions(BaseModel):
-    # id of the question
+    # Unique identifier for the question
     question_id = IntegerField(primary_key=True)
-    # statement of the question
+    # Text of the question
     statement = TextField()
-    # alternatives of the question
+    # Possible answers for the question
     alternatives = JSONField()
-    # answer of the question
+    # Correct answer for the question
     answer = TextField()
-    # id of the ova to which it belongs to
+    # Foreign key referencing the OVA to which the question belongs
     ova_id = ForeignKeyField(OVAs, backref="questions", on_delete="cascade", on_update="cascade")
-    # id of the competency to which he belongs to
+    # Foreign key referencing the competency to which the question belongs
     competency_id = ForeignKeyField(Competencies, backref="questions", on_delete="cascade", on_update="cascade")

@@ -1,19 +1,19 @@
-# import the necessary classes
+# Import the necessary classes
 from base import BaseModel
 from courses import Courses
 from peewee import *
 
-# class for the students table
+# Class representing the students table
 class Students(BaseModel):
-    # id of the student
+    # Unique identifier for the student
     student_id = IntegerField(primary_key=True)
-    # ra of the student
+    # Registration number of the student (RA)
     ra = TextField()
-    # password of the student
+    # Password for the student's account
     student_password = TextField()
-    # name of the student
+    # Name of the student
     student_name = TextField()
-    # id of the course to which he belongs to
+    # Foreign key referencing the course to which the student belongs
     course_id = ForeignKeyField(Courses, backref="students", on_delete="cascade", on_update="cascade")
-    # if he is a coordinator or a student
+    # Indicates if the student is an administrator (coordinator) or a regular student
     is_admin = BooleanField()

@@ -1,6 +1,6 @@
 import { doRequest, registerInteraction } from "./request.js";
 
-// access the html inside the iframe
+// Access the HTML inside the iframe
 // const mainIframe = $("#iframe");
 // const iframeDoc = mainIframe.contents()[0];
 // const contentWindow = mainIframe.get(0).contentWindow;
@@ -8,36 +8,36 @@ import { doRequest, registerInteraction } from "./request.js";
 $(document).ready(function() {
     sessionStorage.setItem("past_page", "iframe");
     /*
-    try to get the read time of the ova. If its null, the user just started
-    the reading
+    Attempt to retrieve the read time of the OVA. If it's null, it indicates
+    that the user just started reading.
     */
     const read_time = localStorage.getItem("read_time");
     let timePassed;
     if (read_time == null) {
-        // initializes the read time count
+        // Initialize the read time counter
         timePassed = 0;
         localStorage.setItem("read_time", 0);
     } else timePassed = read_time;
 
-    // tries the same with the percentual of the ova that was scrolled
+    // Similarly, attempt to get the percentage of the OVA that has been scrolled
     if (localStorage.getItem("perc_scrolled") == null) {
         localStorage.setItem("perc_scrolled", 0);
     }
 
-    // update the time passed counter by 1 every second
+    // Update the time passed counter by 1 every second
     setInterval(function () {
         timePassed++;
     }, 1000);
 
-    // if the user isn't logged, go to login page
+    // Redirect to the login page if the user is not logged in
     const logged = JSON.parse(localStorage.getItem("logged"));
-    if (logged == null | logged == false) {
+    if (logged == null || logged === false) {
         window.location.href = "login.html";
     }
 
     /*
-    divides the page scroll in n points (5) and the user needs
-    to pass by it in at least total_time / n_points (360/5) seconds
+    Divide the page scroll into n points (5), and the user needs to 
+    pass each point within at least total_time / n_points (360/5) seconds
     */
     let scrollPoints = generateScrollPoints(360, 5);
 
@@ -65,14 +65,14 @@ $(document).ready(function() {
     .catch(error => console.log(error));
     
 
-    // this lines counts the total number of interactions in the ova
+    // This section counts the total number of interactions in the OVA
 
     let accordionView = [];
 
     /*
-    for each accordion item, if the student open the item, it register an
-    interaction, sendind to the api the description, with the name of the
-    item and the section it belongs to
+    For each accordion item, if the student opens the item, 
+    it registers an interaction, sending to the API the description, 
+    along with the name of the item and the section it belongs to
     */
     accordionItems.each(index => {
         const accordionItem = accordionItems.eq(index);
@@ -99,8 +99,8 @@ $(document).ready(function() {
     });
 
     /*
-    animation to show the section content to the user only when he reached
-    that point
+    Animation to display the section content to the user only when 
+    they reach that point
     */
     const sections = $(".section-content");
     $(window).on("scroll", function () {
@@ -122,12 +122,12 @@ $(document).ready(function() {
         const position = scrollPercent;
 
         /**
-        when the student reaches a new scroll points, the API register that 
-        the student reached that point. Also the maximum percentage scrolled
-        is updated in the localstorage
-         */
+        When the student reaches a new scroll point, the API registers 
+        that the student reached that point. Additionally, the maximum 
+        percentage scrolled is updated in local storage.
+        */
         scrollPoints.forEach(async point => {
-            if (scrollPercent >= point.perc & point.status === false & timePassed >= point.time) {
+            if (scrollPercent >= point.perc && point.status === false && timePassed >= point.time) {
                 point.status = true;
                 localStorage.setItem("perc_scrolled", point.perc);
                 localStorage.setItem("read_time", point.time);
@@ -139,7 +139,7 @@ $(document).ready(function() {
         });
     });
     
-    // shows the first carrousel item in each carrousel
+    // Displays the first carrousel item in each carrousel
     let carrouselsActualParts = {};
     carrousels.each(index => {
         const carrousel = carrousels.eq(index);
@@ -153,8 +153,8 @@ $(document).ready(function() {
     });
 
     /*
-    when the student passes the carrousel itens, the API register that the
-    student made an interaction with that specific carrousel
+    When the student navigates through the carrousel items, the API 
+    registers that the student made an interaction with that specific carrousel
     */
     carrousels.each(index => {
         const carrousel = carrousels.eq(index);
@@ -175,8 +175,8 @@ $(document).ready(function() {
 });
 
 /*
-the function to generate the scrollpoints, given a minimum read time
-and the number of the points
+The function to generate the scroll points, given a minimum read time
+and the number of points.
 */
 function generateScrollPoints(readTime, n_points) {
     let points = [];
@@ -185,8 +185,8 @@ function generateScrollPoints(readTime, n_points) {
     const alreadyScrolled = JSON.parse(localStorage.getItem("perc_scrolled"));
     for (let i = 1; i <= n_points; i++) {
         /*
-        the percentage of the point, the minimum time and 
-        if the student already achieved that point
+        The percentage of the point, the minimum time, and 
+        whether the student has already achieved that point.
         */
         points.push({
             perc: perc * i,
@@ -198,14 +198,14 @@ function generateScrollPoints(readTime, n_points) {
     return points;
 }
 
-// function to change the item of the carrousels
+// Function to change the item of the carousels
 function changePart(side, carrousel, carrouselsActualParts) {
     const parts = carrousel.find(".parts").children();
     let actualPart = carrouselsActualParts[carrousel.data("carrousel-name")];
     actualPart = actualPart + side;
-    if (side > 0 & actualPart == parts.length) {
+    if (side > 0 && actualPart == parts.length) {
         actualPart = 0;
-    } else if (side < 0 & actualPart < 0) {
+    } else if (side < 0 && actualPart < 0) {
         actualPart = parts.length - 1;
     }
 
@@ -218,7 +218,7 @@ function changePart(side, carrousel, carrouselsActualParts) {
     changeDots(carrousel, actualPart);
 }
 
-// function to change the dot of the actual item of the carrousel
+// Function to change the dot of the current item of the carousel
 function changeDots(carrousel, part) {
     const dots = carrousel.find(".dots").children();
     dots.each(index => {
@@ -236,8 +236,8 @@ function changeDots(carrousel, part) {
 }
 
 /* 
-calls the request function with the parameters for get all the questions of an ova
-and if each of them was answered or not by the student
+Calls the request function with the parameters to get all the questions 
+of an OVA and whether each of them was answered or not by the student.
 */
 function getQuestions() {
     const data = {
@@ -248,14 +248,14 @@ function getQuestions() {
 }
 
 /*
-calls the request function with the parameters for get all the questions 
-of an ova with the answers given by the student
+Calls the request function with the parameters to get all the questions 
+of an OVA along with the answers given by the student.
 */
 function answerQuestion(data) {
     return doRequest(`/question/answer`, data, 'POST');
 }
 
-// make the questions html
+// Creates the HTML for the questions
 function makeQuestions(response) {
     const questions = $(".questions");
     questions.html("");
@@ -266,7 +266,7 @@ function makeQuestions(response) {
             <h3>${i + 1}. ${question.statement}</h3>
             <form action="#">
                 <div class="alternatives my-3"></div>
-                <div class="btn btn-primary w-100 verify-question">Verificar</div>
+                <div class="btn btn-primary w-100 verify-question">Verify</div>
                 <p class="message w-100 text-center mt-2 rounded"></p>
             </form>
         </div>
@@ -277,7 +277,7 @@ function makeQuestions(response) {
     }
 }
 
-// make the html for each alternatives of each questions
+// Creates the HTML for each alternative of each question
 function makeQuestionAlternatives(list, alternatives, number) {
     const letters = "abcdefghijklmnopqrstuvwxyz";
     for (let i = 0; i < alternatives.length; i++) {
@@ -293,8 +293,8 @@ function makeQuestionAlternatives(list, alternatives, number) {
 }
 
 /*
-when the students mark the option in each alternatives, the API register
-the interaction and if he marked the correct answer or not
+When students select an option in each alternative, the API registers
+the interaction and whether they selected the correct answer or not.
 */
 function setListener(question) {
     const alternatives = question.find(".alternatives").children();
@@ -307,7 +307,7 @@ function setListener(question) {
     verifyQuestion.on("click", async function(e) {
         e.preventDefault();
         const checked = question.find(".alternatives").find("input:checked");
-        let action =`The user x clicked the button of the question ${question.data("number")}`;
+        let action = `The user x clicked the button for question ${question.data("number")}`;
         const isCorrect = checked.val() == question.data("correct");
         if (isCorrect) {
             message.addClass("bg-success");

@@ -1,15 +1,15 @@
-# import the necessary classes
+# Import the necessary classes
 from base import BaseModel
 from subjects import Subjects
 from peewee import *
 
-# class for the ovas table
+# Class representing the OVAs table
 class OVAs(BaseModel):
-    # id of the ova
+    # Unique identifier for the OVA
     ova_id = IntegerField(primary_key=True)
-    # name of the ova
+    # Name of the OVA
     ova_name = TextField()
-    # subject to which it belongs
+    # Foreign key referencing the subject to which the OVA belongs
     subject_id = ForeignKeyField(Subjects, backref="ovas", on_delete="cascade", on_update="cascade")
-    # html link to an ova page
+    # HTML link to the OVA page
     link = TextField()

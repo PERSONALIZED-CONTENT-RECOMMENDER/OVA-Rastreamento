@@ -1,36 +1,37 @@
-# this lines below enable import from other submodules
+# Add parent directories to the path to enable imports from submodules
 import sys, os
+
 root = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
 sys.path.append(root)
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), 'data/models')))
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), 'data')))
 
-# necessary libraries import
+# Import necessary libraries
 from flask import Blueprint, request
 from flask_cors import cross_origin
-import json
 from peewee import PeeweeException # ORM library
+import json
 
-# import of the necessary orm classes
+# Import the necessary ORM classes
 from questions import Questions
 from answers import Answers
 from students import Students
 
-# creation of a route blueprint, a reusable component
+# Create a route blueprint as a reusable component
 app_question = Blueprint("question", __name__)
 
-# it returns all the questions from the database
+# Return all the questions from the database
 @app_question.route("/question/all", methods=["GET"])
-# activate the cross-origin, that accepts requests from another domain
+# Activate cross-origin to accept requests from another domain
 @cross_origin()
 def show_all_questions():
     if request.method == "GET":
         try:
-            # get all the questions
+            # Get all the questions
             questions = Questions.select()
             question_list = []
-            # for each question, append to the list its id, statement
-            # alternatives and answer
+            # For each question, append its id, statement,
+            # alternatives, and answer to the list
             for question in questions:
                 question_dict = {
                     "question_id": question.question_id,
@@ -39,24 +40,24 @@ def show_all_questions():
                     "answer": question.answer
                 }
                 question_list.append(question_dict.copy())
-            # returns the result array
+            # Return the result array
             return json.dumps(question_list)
         except PeeweeException as err:
-            # handle the error returning the description of the error
+            # Handle the error by returning the description of the error
             return json.dumps({"Error": f"{err}"}), 501
     else:
-        # return this if the http method is any other than GET
+        # Return this if the HTTP method is not GET
         return "Wrong Request Methods. Only GET Allowed", 405
 
-#given an ova, return all the question of this ova
+# Given an OVA, return all the questions of this OVA
 @app_question.route("/question/ova", methods=["POST"])
-# activate the cross-origin, that accepts requests from another domain
+# Activate cross-origin to accept requests from another domain
 @cross_origin()
 def show_ova_questions():
     if request.method == "POST":
         try:
             question_data = request.get_json()[0]
-            # get all the questions of the given ova
+            # Get all the questions of the given OVA
             questions = Questions.select().where(Questions.ova_id == question_data["ova_id"])
             questions_ids = [question.question_id for question in questions]
             
@@ -64,8 +65,8 @@ def show_ova_questions():
             answers_ids = [id.question_id.question_id for id in answers_ids]
             
             question_list = []
-            # for each question, append to the list its id, statement
-            # alternatives, answer and the competency_id
+            # For each question, append its id, statement,
+            # alternatives, answer, and the competency_id
             # of the competency worked with this question
             for question in questions:
                 question_dict = {
@@ -77,16 +78,16 @@ def show_ova_questions():
                     "competency_id": question.competency_id.competency_id
                 }
                 question_list.append(question_dict.copy())
-            # returns the result array
+            # Return the result array
             return json.dumps(question_list)
         except PeeweeException as err:
-            # handle the error returning the description of the error
+            # Handle the error by returning the description of the error
             return json.dumps({"Error": f"{err}"}), 501
     else:
-        # return this if the http method is any other than POST
+        # Return this if the HTTP method is not POST
         return "Wrong Request Methods. Only POST Allowed", 405
  
-# given a student's id, this function inserts a new answer of a question
+# Given a student's id, this function inserts a new answer for a question
 @app_question.route("/question/answer", methods=['POST'])
 @cross_origin()
 def answer_question():
@@ -94,18 +95,18 @@ def answer_question():
         try:
             answer_data = request.get_json()[0]
             
-            # get the answer of a student for a given question
+            # Get the answer of a student for a given question
             answer = Answers.select(Answers.question_id).where(Answers.question_id == answer_data["question_id"], Answers.student_id == answer_data["student_id"]).first()
             
-            # verifies if the answer is correct and if it doesn't
-            # exists in database. If both of conditions are correct,
-            # insert a new answer in database
+            # Verify if the answer is correct and if it doesn't
+            # exist in the database. If both conditions are true,
+            # insert a new answer in the database
             if answer_data["is_correct"] and answer is None:
                 print("new")
                 student = Students.select().where(Students.student_id == answer_data["student_id"]).first()
                 question = Questions.select().where(Questions.question_id == answer_data["question_id"]).first()
                 
-                # inserts a new answer in database
+                # Insert a new answer in the database
                 answer = Answers.create(
                     student_id = student,
                     question_id = question
@@ -113,8 +114,8 @@ def answer_question():
             
             return json.dumps("Question answered!"), 200
         except PeeweeException as err:
-            # handle the error returning the description of the error
+            # Handle the error by returning the description of the error
             return json.dumps({"Error": f"{err}"}), 501
     else:
-        # return this if the http method is any other than POST
+        # Return this if the HTTP method is not POST
         return "Wrong Request Methods. Only POST Allowed", 405
