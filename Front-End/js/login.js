@@ -1,4 +1,7 @@
-import { doRequest, makeCourseOptions, getCourses } from "./request.js";
+import { 
+    login, 
+    getOVAs 
+} from "./request.js";
 
 $(document).ready(function() {
     const loginTab = $("#login"); // Select the login tab element
@@ -106,12 +109,6 @@ $(document).ready(function() {
     });
 });
 
-// Calls the request function with the parameters for login
-function login(user_data) {
-    const url = "/login"; // Define the login URL
-    return doRequest(url, user_data, "POST", true); // Send the login request
-}
-
 // Request the student's OVAs and render the items grouped by subject
 async function makeStudentOVAs(ovaDiv) {
     await getOVAs(localStorage.getItem("course_id")) // Retrieve OVAs for the course
@@ -131,11 +128,6 @@ async function makeStudentOVAs(ovaDiv) {
         }
     })
     .catch(error => console.log(error)); // Log any errors
-}
-
-// Calls the request function with the parameters to get the OVAs of a course
-function getOVAs(course_id) {
-    return doRequest(`/ova/course/${course_id}`, {}, "GET"); // Send request to get OVAs
 }
 
 // Dynamically create the HTML for each OVA and append to the course div

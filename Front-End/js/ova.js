@@ -1,4 +1,9 @@
-import { doRequest, registerInteraction } from "./request.js";
+import { 
+    registerInteraction, 
+    getQuestions, 
+    makeQuestions
+} 
+from "./request.js";
 
 // Access the HTML inside the iframe
 // const mainIframe = $("#iframe");
@@ -232,101 +237,5 @@ function changeDots(carrousel, part) {
             dot.addClass("bi-circle");
             dot.removeClass("fs-5");
         }
-    });
-}
-
-/* 
-Calls the request function with the parameters to get all the questions 
-of an OVA and whether each of them was answered or not by the student.
-*/
-function getQuestions() {
-    const data = {
-        ova_id: localStorage.getItem("ova_id"),
-        student_id: localStorage.getItem("student_id")
-    };
-    return doRequest(`/question/ova`, data, 'POST');
-}
-
-/*
-Calls the request function with the parameters to get all the questions 
-of an OVA along with the answers given by the student.
-*/
-function answerQuestion(data) {
-    return doRequest(`/question/answer`, data, 'POST');
-}
-
-// Creates the HTML for the questions
-function makeQuestions(response) {
-    const questions = $(".questions");
-    questions.html("");
-    for (let i = 0; i < response.length; i++) {
-        const question = response[i];
-        const item = $(`
-        <div class="question mb-5" data-number="${i + 1}" data-correct="${question.answer}" data-id="${question.question_id}" data-answered="${question.answered}" data-competency-id="${question.competency_id}">
-            <h3>${i + 1}. ${question.statement}</h3>
-            <form action="#">
-                <div class="alternatives my-3"></div>
-                <div class="btn btn-primary w-100 verify-question">Verify</div>
-                <p class="message w-100 text-center mt-2 rounded"></p>
-            </form>
-        </div>
-        `);
-        makeQuestionAlternatives(item.find(".alternatives"), question.alternatives, i + 1);
-        setListener(item);
-        questions.append(item);
-    }
-}
-
-// Creates the HTML for each alternative of each question
-function makeQuestionAlternatives(list, alternatives, number) {
-    const letters = "abcdefghijklmnopqrstuvwxyz";
-    for (let i = 0; i < alternatives.length; i++) {
-        const alternative = alternatives[i];
-        const item = $(`
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="${letters[i]}" id="${number}${letters[i]}">
-            <label class="form-check-label" for="${number}${letters[i]}">${alternative}</label>
-        </div>    
-        `);
-        list.append(item);
-    }
-}
-
-/*
-When students select an option in each alternative, the API registers
-the interaction and whether they selected the correct answer or not.
-*/
-function setListener(question) {
-    const alternatives = question.find(".alternatives").children();
-    const message = question.find(".message");
-    alternatives.on("click", function() {
-        alternatives.find("input").prop("checked", false);
-        $(this).find("input").prop("checked", true);
-    });
-    const verifyQuestion = question.find(".verify-question");
-    verifyQuestion.on("click", async function(e) {
-        e.preventDefault();
-        const checked = question.find(".alternatives").find("input:checked");
-        let action = `The user x clicked the button for question ${question.data("number")}`;
-        const isCorrect = checked.val() == question.data("correct");
-        if (isCorrect) {
-            message.addClass("bg-success");
-            message.removeClass("bg-danger");
-            message.html("Correct!");
-
-            const answer_data = {
-                student_id: localStorage.getItem("student_id"),
-                question_id: question.data("id"),
-                is_correct: isCorrect
-            };
-            if (!question.data("answered")) answerQuestion(answer_data);
-        } else {
-            message.addClass("bg-danger");
-            message.removeClass("bg-success");
-            message.html("Incorrect.");
-        }
-        await registerInteraction(action)
-        .then(response => console.log("success"))
-        .catch(error => console.log(error));
     });
 }

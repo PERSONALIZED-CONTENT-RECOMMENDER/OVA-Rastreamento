@@ -1,4 +1,17 @@
-import { doRequest, makeCourseOptions, makeStudentOptions, getCourses, makeOVAsOptions, getCourseSubjects, makeSubjectsOptions, getCourseOVAs } from "./request.js";
+import { 
+    makeCourseOptions, 
+    makeStudentOptions, 
+    getCourses, 
+    makeOVAsOptions, 
+    getCourseSubjects, 
+    makeSubjectsOptions, 
+    getCourseOVAs,
+    getStudentPlot,
+    getCoursePlot,
+    getOVAPlot,
+    getStudentsByCourse,
+    getStudentInteractionsNum
+} from "./request.js";
 // Importing necessary functions from the request.js module.
 
 $(document).ready(function () {
@@ -244,35 +257,6 @@ $(document).ready(function () {
         .catch(error => console.log(error)); // Logging errors in fetching student interactions.
     });
 });
-
-// Calls the request function with the parameters to get the student plot
-function getStudentPlot(data, single_ova=false) {
-    const url = `/plot/student`; // Defining the endpoint URL for student plot.
-    return doRequest(url, data, "POST"); // Making a POST request to retrieve the student plot data.
-}
-
-// Calls the request function with the parameters to get the course plot
-function getCoursePlot(data) {
-    const url = "/plot/course"; // Defining the endpoint URL for course plot.
-    return doRequest(url, data, "POST"); // Making a POST request to retrieve the course plot data.
-}
-
-// Calls the request function with the parameters to get the OVA plot
-function getOVAPlot(data) {
-    const url = "/plot/ova"; // Defining the endpoint URL for OVA plot.
-    return doRequest(url, data, "POST"); // Making a POST request to retrieve the OVA plot data.
-}
-
-// Calls the request function with the parameters to get the students of a course
-function getStudentsByCourse(course_id) {
-    const url = `/student/course/${course_id}`; // Defining the endpoint URL for fetching students of a specific course.
-    return doRequest(url, {}, "GET"); // Making a GET request to retrieve the list of students in the course.
-}
-
-function getStudentInteractionsNum(data) {
-    const url = "/plot/interaction/ova" // Defining the endpoint URL for fetching student interactions for a specific OVA.
-    return doRequest(url, data, "POST") // Making a POST request to retrieve the student interactions data.
-}
 
 /*
 // Calls the request function with the parameters to get the competency plot
