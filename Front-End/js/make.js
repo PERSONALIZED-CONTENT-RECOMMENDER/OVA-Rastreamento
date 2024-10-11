@@ -1,3 +1,5 @@
+import { answerQuestion, registerInteraction } from "./request.js";
+
 // Request the student's OVAs and render the items grouped by subject
 export function makeCourseOVAs(response, ovaDiv) {
     for (let key in response) {

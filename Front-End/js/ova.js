@@ -1,7 +1,6 @@
 import { 
     registerInteraction, 
-    getOVAQuestions, 
-    makeQuestions
+    getOVAQuestions
 } 
 from "./request.js";
 
