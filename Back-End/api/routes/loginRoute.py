@@ -36,7 +36,7 @@ def login():
             if (not student or login_data["ra"] == "") or login_data["password"] != student.student_password:
                 return "Wrong RA or Password", 401
             
-            # Retrieve the student's course ID and course name
+            # Retrieve the student's course
             course = Courses.select().where(Courses.course_id == student.course_id).first()
             
             ids = {

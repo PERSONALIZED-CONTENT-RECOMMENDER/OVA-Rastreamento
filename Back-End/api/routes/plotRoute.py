@@ -15,8 +15,8 @@ import json
 from interactions import Interactions
 
 # Import the data_analysis module for data plotting
-from data_analysis import ova_interactions_by_competencies, course_general_performance, ova_performance_by_students
-# from data_analysis import competency_performance_by_students, ova_interactions_by_competencies, course_general_performance, ova_performance_by_students
+from data_analysis import subject_performance_by_competencies, course_general_performance, ova_performance_by_students
+# from data_analysis import competency_performance_by_students, subject_performance_by_competencies, course_general_performance, ova_performance_by_students
 
 # Format the data to send to the front-end, including the type of plot,
 # the data itself, and the title of the plot
@@ -39,7 +39,7 @@ def get_student_plots():
             student_data = request.get_json()[0]
             
             # Call the plot function for the plot module
-            title, data = ova_interactions_by_competencies(student_data)
+            title, data = subject_performance_by_competencies(student_data)
             # Get the formatted data for the plot
             plot = format_data("bar", title, data)
             

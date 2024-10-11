@@ -1,9 +1,11 @@
 import { 
     registerInteraction, 
-    getQuestions, 
+    getOVAQuestions, 
     makeQuestions
 } 
 from "./request.js";
+
+import { makeQuestions } from "./make.js";
 
 // Access the HTML inside the iframe
 // const mainIframe = $("#iframe");
@@ -49,7 +51,7 @@ $(document).ready(function() {
     const carrousels = $("section").find(".carrousel");
     const accordionItems = $(".accordion-item");
 
-    getQuestions()
+    getOVAQuestions()
     .then(response => {
         makeQuestions(response);
 

@@ -10,11 +10,13 @@ from collections import defaultdict
 from base import db
 import json
 
-# Returns all the interactions that a student made in the OVAs, grouped by
-# competencies of each course subject
-def ova_interactions_by_competencies(data):
+# Returns the performance of the student in a subject,
+# grouped by competencies
+def subject_performance_by_competencies(data):
     # Reuse the connection if it's already open
     db.connect(reuse_if_open=True)
+    
+    # get the ids for the query
     student_id = data["student_id"]
     course_id = data["course_id"]
     subject_id = data["subject_id"]
@@ -23,7 +25,6 @@ def ova_interactions_by_competencies(data):
     if has_ova_id:
         ova_id = data["ova_id"]
         ova_where = f" and q.ova_id = {ova_id}"
-    print(data)
     
     # Perform the query
     query = (f"""select c.competency_description, count(sub_q.answer_id), 
@@ -47,7 +48,6 @@ left join (
 on sub_q.competency_id = c.competency_id
 where offe.course_id = {course_id} and cs.subject_id = {subject_id}
 group by c.competency_id""")
-    print(query)
     
     # Execute raw SQL due to complexity
     cursor = db.execute_sql(query)
@@ -58,8 +58,7 @@ group by c.competency_id""")
     for row in data:
         result.append((row[0], int(row[1]), int(row[2])))
         
-    # Return the result and the max of competencies that a subject has
-    # to show different amounts of columns in the front-end graphic    
+    # Return the result  
     return "Title", result
 
 # Given an ID of a course, return the general performance of each student

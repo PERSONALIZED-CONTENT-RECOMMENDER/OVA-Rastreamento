@@ -1,7 +1,9 @@
 import { 
     login, 
-    getOVAs 
+    getCourseOVAs, 
 } from "./request.js";
+
+import { makeCourseOVAs } from "./make.js";
 
 $(document).ready(function() {
     const loginTab = $("#login"); // Select the login tab element
@@ -22,9 +24,8 @@ $(document).ready(function() {
             loginTab.removeClass("d-none"); // Show login tab
             chooseOVAsTab.addClass("d-none"); // Hide OVA selection tab
         } else {
-            loginTab.addClass("d-none"); // Hide login tab
-            chooseOVAsTab.removeClass("d-none"); // Show OVA selection tab
-            makeStudentOVAs(ovaDiv); // Load the OVAs for the student
+            chooseOVAsTab.addClass("d-none"); // Hide OVA selection tab
+            loginTab.removeClass("d-none"); // Show login tab
         }
     } else {
         localStorage.clear(); // Clear local storage if not returning from the plot page
@@ -88,7 +89,9 @@ $(document).ready(function() {
                         chooseOVAsTab.removeClass("d-none"); // Show OVA selection tab
 
                         // Get the OVAs of the student's course for selection
-                        await makeStudentOVAs(ovaDiv);
+                        getCourseOVAs(localStorage.getItem("course_id"))
+                        .then(response => makeCourseOVAs(response, ovaDiv))
+                        .catch(error => console.log(error)); // Log any errors
                     }
                 }, 500); // Delay before redirecting
             }
@@ -108,51 +111,6 @@ $(document).ready(function() {
         sessionStorage.setItem("past_page", "choose-ova");
     });
 });
-
-// Request the student's OVAs and render the items grouped by subject
-async function makeStudentOVAs(ovaDiv) {
-    await getOVAs(localStorage.getItem("course_id")) // Retrieve OVAs for the course
-    .then(response => {
-        for (let key in response) {
-            const subject = response[key]; // Get the subject
-            // Create the HTML dynamically for the subject div
-            const subjectDiv = $(`
-                <div class="py-3 border-top">
-                    <h2 id="${subject.subject_id}" class="subject text-center">${key}</h2>
-                    <ul class="list-group list-group-horizontal-md d-flex flex-wrap w-100 ova-list p-3"></ul>
-                </div>
-            `);
-            // Call the function to render the OVAs of each subject
-            makeOVAOptions(subject, subjectDiv.find(".ova-list"));
-            ovaDiv.append(subjectDiv); // Append the subject div to the OVA div
-        }
-    })
-    .catch(error => console.log(error)); // Log any errors
-}
-
-// Dynamically create the HTML for each OVA and append to the course div
-function makeOVAOptions(response, ovaList) {
-    const ovas = response.ovas; // Get the list of OVAs
-    ovaList.html(""); // Clear existing list
-    for (let i = 0; i < ovas.length; i++) {
-        const ova = ovas[i]; // Get the current OVA
-        const listItem = $(`
-        <li class="ova-item list-group-item d-flex flex-column justify-content-between align-items-center rounded-3 shadow m-2">
-            <a class="align-self-start" href="./iframe.html">
-                <p><span class="fw-bold">Nome:</span> ${ova.ova_name}</p> <!-- Display OVA name -->
-            </a>
-        </li>
-        `);
-        listItem.on("click", function() {
-            // Store the ID and the link of the clicked OVA
-            localStorage.setItem("ova_id", ova.ova_id); // Store OVA ID
-            localStorage.setItem("ova_link", `${ova.link}`); // Store OVA link
-            window.location.href = "iframe.html"; // Redirect to iframe page
-            localStorage.setItem("subject_id", response.subject_id); // Store subject ID
-        });
-        ovaList.append(listItem); // Append the list item to the OVA list
-    }
-}
 
 // Animation for the error/success status bar
 function statusBarAnimation(statusBar) {

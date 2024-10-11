@@ -41,7 +41,7 @@ export function login(user_data) {
 }
 
 // Calls the request function with the parameters to get the OVAs of a course
-export function getOVAs(course_id) {
+export function getCourseOVAs(course_id) {
     return doRequest(`/ova/course/${course_id}`, {}, "GET"); // Send request to get OVAs
 }
 
@@ -49,7 +49,7 @@ export function getOVAs(course_id) {
 Calls the request function with the parameters to get all the questions 
 of an OVA
 */
-export function getQuestions() {
+export function getOVAQuestions() {
     const data = {
         ova_id: localStorage.getItem("ova_id"),
         student_id: localStorage.getItem("student_id")
@@ -64,7 +64,7 @@ export function getCourses() {
 }
 
 // Calls the request function with the parameters to get all the OVAs
-export function getCourseOVAs(subject_id) {
+export function getSubjectOVAs(subject_id) {
     const url = `/ova/subject/${subject_id}`;
     return doRequest(url, {}, "GET");
 }
@@ -111,135 +111,6 @@ of an OVA along with the answers given by the student.
 export function answerQuestion(data) {
     return doRequest(`/question/answer`, data, 'POST');
 }
-
-// Create the options for the course select
-export function makeCourseOptions(data, select) {
-    for (let i = 0; i < data.length; i++) {
-        const option = $(`
-            <option value="${data[i]["course_id"]}">${data[i]["course_name"]}</option>
-        `);
-        select.append(option);
-    }
-}
-
-// Create the options for the student select
-export function makeStudentOptions(data, select) {
-    for (let i = 0; i < data.length; i++) {
-        const option = $(`
-            <option value="${data[i]["student_id"]}">${data[i]["student_name"]}</option>
-        `);
-        select.append(option);
-        option.insertBefore(select.find(".all-students"));
-    }
-}
-
-// Create the options for the OVA select
-export function makeOVAsOptions(data, select) {
-    for (let i = 0; i < data.length; i++) {
-        const option = $(`
-            <option value="${data[i]["ova_id"]}">${data[i]["ova_name"]}</option>
-        `);
-        select.append(option);
-    }
-}
-
-// Create the options for the subjects select
-export function makeSubjectsOptions(data, select) {
-    for (let i = 0; i < data.length; i++) {
-        const option = $(`
-            <option value="${data[i]["subject_id"]}">${data[i]["subject_name"]}</option>
-        `);
-        select.append(option);
-    }
-}
-
-// Creates the HTML for the questions
-export function makeQuestions(response) {
-    const questions = $(".questions");
-    questions.html("");
-    for (let i = 0; i < response.length; i++) {
-        const question = response[i];
-        const item = $(`
-        <div class="question mb-5" data-number="${i + 1}" data-correct="${question.answer}" data-id="${question.question_id}" data-answered="${question.answered}" data-competency-id="${question.competency_id}">
-            <h3>${i + 1}. ${question.statement}</h3>
-            <form action="#">
-                <div class="alternatives my-3"></div>
-                <div class="btn btn-primary w-100 verify-question">Verify</div>
-                <p class="message w-100 text-center mt-2 rounded"></p>
-            </form>
-        </div>
-        `);
-        makeQuestionAlternatives(item.find(".alternatives"), question.alternatives, i + 1);
-        setListener(item);
-        questions.append(item);
-    }
-}
-
-// Creates the HTML for each alternative of each question
-export function makeQuestionAlternatives(list, alternatives, number) {
-    const letters = "abcdefghijklmnopqrstuvwxyz";
-    for (let i = 0; i < alternatives.length; i++) {
-        const alternative = alternatives[i];
-        const item = $(`
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="${letters[i]}" id="${number}${letters[i]}">
-            <label class="form-check-label" for="${number}${letters[i]}">${alternative}</label>
-        </div>    
-        `);
-        list.append(item);
-    }
-}
-
-/*
-When students select an option in each alternative, the API registers
-the interaction and whether they selected the correct answer or not.
-*/
-export function setListener(question) {
-    const alternatives = question.find(".alternatives").children();
-    const message = question.find(".message");
-    alternatives.on("click", function() {
-        alternatives.find("input").prop("checked", false);
-        $(this).find("input").prop("checked", true);
-    });
-    const verifyQuestion = question.find(".verify-question");
-    verifyQuestion.on("click", async function(e) {
-        e.preventDefault();
-        const checked = question.find(".alternatives").find("input:checked");
-        let action = `The user x clicked the button for question ${question.data("number")}`;
-        const isCorrect = checked.val() == question.data("correct");
-        if (isCorrect) {
-            message.addClass("bg-success");
-            message.removeClass("bg-danger");
-            message.html("Correct!");
-
-            const answer_data = {
-                student_id: localStorage.getItem("student_id"),
-                question_id: question.data("id"),
-                is_correct: isCorrect
-            };
-            if (!question.data("answered")) answerQuestion(answer_data);
-        } else {
-            message.addClass("bg-danger");
-            message.removeClass("bg-success");
-            message.html("Incorrect.");
-        }
-        await registerInteraction(action)
-        .then(response => console.log("success"))
-        .catch(error => console.log(error));
-    });
-}
-
-// Create the options for the competency select
-/*
-export function makeCompetenciesOptions(data, select) {
-    for (let i = 0; i < data.length; i++) {
-        const option = $(`
-            <option value="${data[i]["competency_id"]}">${data[i]["competency_description"]}</option>
-        `);
-        select.append(option);
-    }
-}
-*/
 
 // Calls the request function with the parameters to get all the competencies
 /*

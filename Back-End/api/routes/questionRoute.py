@@ -61,6 +61,7 @@ def show_ova_questions():
             questions = Questions.select().where(Questions.ova_id == question_data["ova_id"])
             questions_ids = [question.question_id for question in questions]
             
+            # Get all the questions of the ova given by the student
             answers_ids = Answers.select(Answers.question_id).where(Answers.student_id == question_data["student_id"], Answers.question_id.in_(questions_ids))
             answers_ids = [id.question_id.question_id for id in answers_ids]
             

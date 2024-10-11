@@ -1,17 +1,23 @@
 import { 
-    makeCourseOptions, 
-    makeStudentOptions, 
     getCourses, 
-    makeOVAsOptions, 
     getCourseSubjects, 
-    makeSubjectsOptions, 
-    getCourseOVAs,
+    getSubjectOVAs,
     getStudentPlot,
     getCoursePlot,
     getOVAPlot,
     getStudentsByCourse,
-    getStudentInteractionsNum
+    getStudentInteractionsNum,
+    // getAllCompetencies
 } from "./request.js";
+
+import {
+    makeCourseOptions, 
+    makeStudentOptions, 
+    makeOVAsOptions, 
+    makeSubjectsOptions, 
+    // makeCompetenciesOptions
+} from "./make.js";
+
 // Importing necessary functions from the request.js module.
 
 $(document).ready(function () {
@@ -223,7 +229,7 @@ $(document).ready(function () {
         ovas.html(`<option value=""></option>`); // Clear OVAs dropdown.
 
         // Fetching OVAs based on the selected subject.
-        getCourseOVAs(option.val())
+        getSubjectOVAs(option.val())
         .then(response => makeOVAsOptions(response, ovas)) // Populating OVAs dropdown.
         .catch(error => console.log(error)); // Logging errors in fetching OVAs.
     });
