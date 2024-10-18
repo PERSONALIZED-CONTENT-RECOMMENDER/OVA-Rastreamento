@@ -14,7 +14,7 @@ from peewee import *  # ORM
 db = MySQLDatabase(
     "ova_db",
     user="root",
-    host="172.18.0.2",
+    host="172.25.0.2",
     port=3306,
     password="Password-123"
 )

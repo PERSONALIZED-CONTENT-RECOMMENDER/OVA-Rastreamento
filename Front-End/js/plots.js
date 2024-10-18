@@ -492,7 +492,7 @@ function studentInteractionsOva(response, plots) {
     };
 
     const num_interactions = response.num_interactions; // Getting the number of interactions from the response.
-    const total_interactions = sessionStorage.getItem("total_interactions"); // Retrieving the total number of interactions from session storage.
+    const total_interactions = response.total_interactions; // Retrieving the total number of interactions from the response.
     const perc = num_interactions / total_interactions; // Calculating the percentage of interactions.
 
     // Set the data for the plot and its options

@@ -1,6 +1,9 @@
 # Add parent directories to the path to enable imports from submodules
 import sys, os
 
+from ovas import OVAs
+from questions import Questions
+
 root = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
 sys.path.append(root)
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), 'plots')))
@@ -99,9 +102,12 @@ def get_interaction_plots():
             interaction_data = request.get_json()[0]
             print(interaction_data)
             
-            data = Interactions.select().where(Interactions.student_id == interaction_data["student_id"] and Interactions.ova_id == interaction_data["ova_id"]).count()
+            student_interactions = Interactions.select().where(Interactions.student_id == interaction_data["student_id"] and Interactions.ova_id == interaction_data["ova_id"]).count()
             
-            return json.dumps({"num_interactions": data})
+            num_questions = Questions.select().where(Questions.ova_id == interaction_data["ova_id"]).count()
+            ova = OVAs.select(OVAs.num_interactions).where(OVAs.ova_id == interaction_data["ova_id"]).first()
+            
+            return json.dumps({"num_interactions": student_interactions, "total_interactions": num_questions + ova.num_interactions})
         except PeeweeException as err:
             return json.dumps({"Error": f"{err}"}), 501
     else:

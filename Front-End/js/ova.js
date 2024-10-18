@@ -51,23 +51,7 @@ $(document).ready(function() {
     const accordionItems = $(".accordion-item");
 
     getOVAQuestions()
-    .then(response => {
-        makeQuestions(response);
-
-        let total_interactions = 0;
-
-        carrousels.each(index => {
-            const carrousel = carrousels.eq(index);
-            const parts = carrousel.find(".parts").children();
-            total_interactions += parts.length;
-        });
-        total_interactions += accordionItems.length;
-        total_interactions += scrollPoints.length;
-        total_interactions += $(".ova_video").length;
-        total_interactions += response.length;
-        
-        sessionStorage.setItem("total_interactions", total_interactions);
-    })
+    .then(response => makeQuestions(response))
     .catch(error => console.log(error));
     
 
