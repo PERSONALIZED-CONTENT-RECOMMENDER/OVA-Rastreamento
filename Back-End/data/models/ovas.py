@@ -11,7 +11,7 @@ class OVAs(BaseModel):
     ova_name = TextField()
     # Foreign key referencing the subject to which the OVA belongs
     subject_id = ForeignKeyField(Subjects, backref="ovas", on_delete="cascade", on_update="cascade")
+    num_interactions = IntegerField()
     # HTML link to the OVA page
     link = TextField()
-    num_interactions = IntegerField()
     

@@ -1,0 +1,48 @@
+services:
+  ova_mysql:
+    container_name: ova_db
+    build:
+      context: "./Database"
+      dockerfile: Dockerfile
+    environment:
+      MYSQL_ROOT_PASSWORD: "Password-1"
+      MYSQL_USER: "eduardo"
+      MYSQL_PASSWORD: "Password-1"
+      MYSQL_DATABASE: "ova_db"
+    ports:
+      - 3310:3306
+    networks:
+      - ova_network
+
+  ova_flask:
+    container_name: ova_back_end
+    build:
+      context: "./Back-End"
+      dockerfile: Dockerfile
+    ports:
+      - 5010:8090
+    volumes:
+      - ./Back-End:/api
+    depends_on:
+      - ova_mysql
+    networks:
+      - ova_network
+
+  ova_apache:
+    container_name: ova_front_end
+    build:
+      context: "./Front-End"
+      dockerfile: Dockerfile
+    ports:
+      - 8010:80
+    volumes:
+      - ./Front-End:/usr/local/apache2/htdocs/
+    depends_on:
+      - ova_flask
+    networks:
+      - ova_network
+
+networks:
+  ova_network:
+    name: ova_network
+    driver: bridge

@@ -13,10 +13,11 @@ from peewee import *  # ORM
 # Configuration for local development
 db = MySQLDatabase(
     "ova_db",
-    user="root",
-    host="172.25.0.2",
+    user="eduardo",
+    host="172.20.0.2",
     port=3306,
-    password="Password-123"
+    password="Password-1",
+    charset='utf8mb4'
 )
 
 # Base class for other models

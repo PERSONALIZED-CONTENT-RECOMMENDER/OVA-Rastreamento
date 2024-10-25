@@ -13,7 +13,7 @@ from routes.questionRoute import app_question
 
 # Create the Flask app and configure CORS
 app = Flask(__name__)
-cors = CORS(app, resources={r"/*": {"origins": "http://localhost:*/*"}})
+cors = CORS(app, resources={r"/*": {"origins": "http://ova_apache:*/*"}})
 
 # Register the API routes as blueprints
 app.register_blueprint(app_login)
@@ -26,4 +26,4 @@ app.register_blueprint(app_question)
 
 # Start the application
 if __name__ == "__main__":
-    app.run(debug=True, port=8090)
+    app.run(debug=True, host="ova_flask", port=8090)

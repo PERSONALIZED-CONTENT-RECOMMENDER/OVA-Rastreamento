@@ -53,9 +53,9 @@ values
 
 insert into ovas
 values
-(1, "Computação Quântica", "quantum_computing.html", 1),
-(2, "Cálculo", "calculus.html", 2),
-(3, "Cálculo 2", "calculus2.html", 2);
+(1, "Computação Quântica", "quantum_computing.html", 19, 1),
+(2, "Cálculo", "calculus.html", 19, 2),
+(3, "Cálculo 2", "calculus2.html", 19, 2);
 
 insert into questions
 values
