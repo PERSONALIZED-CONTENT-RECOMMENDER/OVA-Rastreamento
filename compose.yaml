@@ -12,7 +12,8 @@ services:
     ports:
       - 3310:3306
     networks:
-      - ova_network
+      ova_network:
+        ipv4_address: 172.168.30.2
 
   ova_flask:
     container_name: ova_back_end
@@ -26,7 +27,8 @@ services:
     depends_on:
       - ova_mysql
     networks:
-      - ova_network
+      ova_network:
+        ipv4_address: 172.168.30.3
 
   ova_apache:
     container_name: ova_front_end
@@ -40,9 +42,13 @@ services:
     depends_on:
       - ova_flask
     networks:
-      - ova_network
+      ova_network:
+        ipv4_address: 172.168.30.4
 
 networks:
   ova_network:
     name: ova_network
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.168.30.0/29
