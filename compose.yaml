@@ -38,7 +38,7 @@ services:
     ports:
       - 8010:80
     volumes:
-      - ./Front-End:/usr/local/apache2/htdocs/
+      - ./Front-End/files:/usr/local/apache2/htdocs/
     depends_on:
       - ova_flask
     networks:

@@ -1,6 +1,6 @@
 // Basic configurations for the URL
 const PORT = 8090;
-const HOST = "172.20.0.3";
+const HOST = "172.168.30.3";
 const BASE_URL = `http://${HOST}:${PORT}`;
 
 // The lines below dynamically add the script for 
