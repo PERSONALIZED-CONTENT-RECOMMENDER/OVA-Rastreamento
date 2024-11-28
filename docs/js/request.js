@@ -1,6 +1,6 @@
 // Base parameters to make the API request
-const PORT = 8090;
-const HOST = "172.168.30.3";
+const PORT = 5000;
+const HOST = "18.117.233.222";
 const BASE_URL = `http://${HOST}:${PORT}`;
 
 // Send the request to the API using a Promise, due to the async functionality
