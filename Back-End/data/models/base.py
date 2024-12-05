@@ -11,13 +11,12 @@ from peewee import *  # ORM
 # )
 
 # Configuration for local development
-db = MySQLDatabase(
-    "ova_db",
-    user="eduardo",
-    host="ova_mysql",
-    port=3306,
-    password="Password-1",
-    charset='utf8mb4'
+db = PostgresqlDatabase(
+    user="postgres.yqccrsmufrvbamwpanmj",
+    password="IC-2024.234",
+    host="aws-0-sa-east-1.pooler.supabase.com",
+    port=5432,
+    database="postgres"
 )
 
 # Base class for other models
