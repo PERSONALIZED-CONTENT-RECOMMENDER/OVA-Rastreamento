@@ -20,6 +20,8 @@ services:
     build:
       context: "./Back-End"
       dockerfile: Dockerfile
+    environment:
+      DB_HOST: ova_mysql
     ports:
       - 5010:8090
     volumes:
