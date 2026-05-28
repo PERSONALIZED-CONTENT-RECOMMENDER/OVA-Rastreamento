@@ -1,6 +1,6 @@
 // Base parameters to make the API request
-const PORT = 8090;
-const HOST = "172.168.30.3";
+const PORT = 5010;
+const HOST = window.location.hostname || "localhost";
 const BASE_URL = `http://${HOST}:${PORT}`;
 
 // Send the request to the API using a Promise, due to the async functionality
@@ -13,9 +13,6 @@ export function doRequest(url, data, type="POST", is_login=0) {
             dataType: "json",
             crossDomain: true,
             contentType: "application/json",
-            headers: {
-                "Access-Control-Allow-Origin": "http:"
-            },
             success: (response) => resolve(response),
             error: (response) => reject(response)
         });

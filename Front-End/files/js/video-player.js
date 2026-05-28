@@ -1,6 +1,6 @@
 // Basic configurations for the URL
-const PORT = 8090;
-const HOST = "172.168.30.3";
+const PORT = 5010;
+const HOST = window.location.hostname || "localhost";
 const BASE_URL = `http://${HOST}:${PORT}`;
 
 // The lines below dynamically add the script for 
@@ -123,9 +123,6 @@ function videoVisualization(perc_watched, type="POST") {
             dataType: "json",
             crossDomain: true,
             contentType: "application/json",
-            headers: {
-                "Access-Control-Allow-Origin": "http:"
-            },
             success: (response) => resolve(response),
             error: (response) => reject(response)
         });
